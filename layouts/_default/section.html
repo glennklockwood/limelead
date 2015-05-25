@@ -1,0 +1,22 @@
+{{ partial "header.html" . }}
+
+    <div class="container">
+
+        {{ partial "container-header.html" . }}
+
+        <div class="content-box">
+            <div class="content">
+                {{ range .Data.Pages }}
+                <div>
+                    <h2><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
+                    <span class="lead">{{ .Date.Format "Mon, Jan 2, 2006" }}</span>
+                </div>
+                {{ end }}
+            </div>
+        </div>
+
+        {{ partial "container-footer.html" . }}
+
+     </div>
+     
+{{ partial "footer.html" . }}
