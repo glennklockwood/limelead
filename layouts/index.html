@@ -3,32 +3,31 @@
     <div class="container">
         <div class="content-box">
 
-            <div style="display:block; float:right; vertical-align:middle; padding:0; margin-right:8px; margin-top:8px; margin-left:1em">
-                <img src="me2.jpg" alt="Glenn K. Lockwood" style="border:1px solid black;margin:0;" />
+            <div class="main-page-header">
+            <img src="me2.jpg" alt="Glenn K. Lockwood">
+                <h1>Glenn K. Lockwood, Ph.D.</h1>
+                <p>
+        <!--    User Services Group<br/>
+                9500 Gilman Dr. #0505<br/>
+                La Jolla, CA 92093-0505<br/> -->
+                High-Performance and Data-Intensive Computing</br>
+                San Francisco Bay Area<br/>
+                <script type="text/javascript">
+                    //<![CDATA[
+                    var username = "glenn"; var hostname = "glennklockwood.com"; var linktext = username + "@" + hostname;
+                    document.write("<a href='" + "mail" + "to:" + username + "@" + hostname + "'>" + linktext + "<\/a>");
+                //]]></script>
+                </p>
+                <hr>
             </div>
 
-            <div style="font-size:250%;letter-spacing:-1px">Glenn K. Lockwood, Ph.D.</div>
-           <!-- <div style="font-size:150%;letter-spacing:-1px">San Diego Supercomputer Center</div> -->
-                <div class="content">
-            <!--    User Services Group<br/>
-                    9500 Gilman Dr. #0505<br/>
-                    La Jolla, CA 92093-0505<br/> -->
-                    High-Performance and Data-Intensive Computing</br>
-                    San Francisco Bay Area<br/>
-                    <script type="text/javascript">
-                        //<![CDATA[
-                        var username = "glenn"; var hostname = "glennklockwood.com"; var linktext = username + "@" + hostname;
-                        document.write("<a href='" + "mail" + "to:" + username + "@" + hostname + "'>" + linktext + "<\/a>");
-                    //]]></script>
-                </div>
-
 <div class="content">
-<hr style="margin-bottom:1em"/>
 <p>I am a specialist in data-intensive and high-performance computing currently
 working in the DNA sequencing industry.  My formal educational background is in
 materials science, and I used to be a researcher in computational chemical 
 physics where I studied problems related to the water/silica interfaces with
-molecular dynamics.  More information about me is available on <a href="cv.php">my CV</a> and on <a href="http://www.linkedin.com/in/glennklockwood">LinkedIn</a>.</p>
+molecular dynamics.  More information about me is available on 
+<a href="cv.html">my CV</a> and on <a href="http://www.linkedin.com/in/glennklockwood">LinkedIn</a>.</p>
 
 <p>This site contains various notes I've taken over the years with an emphasis 
 on my time working at <a href="http://www.sdsc.edu/">the San Diego Supercomputer
@@ -45,6 +44,8 @@ official help, I strongly recommend contacting
 contents of this site.  My email address is listed above and at the bottom of 
 every page, and I also am an active contributor in <code>#hpc</code> on <a 
 href="http://freenode.net/">freenode</a>.</p>
+
+<hr>
 
 <ul id="list">
     {{ range .Data.Pages }}
