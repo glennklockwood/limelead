@@ -1,15 +1,17 @@
+        
+        {{ $.Scratch.Set "linkurl" $.Site.BaseUrl }}
         <div class="content-box page-header">
             <h1>{{ .Title }}</h1>
             <hr>
 
             <div role="navigation">
-                {{ $linkurl := $.Site.BaseUrl }}
                 <ul class="breadcrumb">
-                    <li><a href="{{ $linkurl }}">Home</a></li>
+                    <li><a href="{{ $.Scratch.Get "linkurl" }}">Home</a></li>
                     {{ if .IsPage }}
                         {{ range $dir := .Params.parentdirs }}
-                            {{ $linkurl := print $linkurl $dir }}
-                            <li><a href="{{ $linkurl }}">
+                            {{ $.Scratch.Add "linkurl" $dir }}
+                            {{ $.Scratch.Add "linkurl" "/" }}
+                            <li><a href="{{ $.Scratch.Get "linkurl" }}">
                                 {{ index $.Site.Data.dirnamemap $dir }}
                                 </a>
                             </li>
