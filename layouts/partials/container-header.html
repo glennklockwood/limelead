@@ -1,5 +1,24 @@
         <div class="content-box page-header">
             <h1>{{ .Title }}</h1>
-            <hr/>
-            {{ partial "navbar.html" . }}
+            <hr>
+
+            <div role="navigation">
+                {{ $linkurl := $.Site.BaseUrl }}
+                <ul class="breadcrumb">
+                    <li><a href="{{ $linkurl }}">Home</a></li>
+                    {{ if .IsPage }}
+                        {{ range $dir := .Params.parentdirs }}
+                            {{ $linkurl := print $linkurl $dir }}
+                            <li><a href="{{ $linkurl }}">
+                                {{ index $.Site.Data.dirnamemap $dir }}
+                                </a>
+                            </li>
+                        {{ end }}
+                    {{ else }}
+                        <li>{{ .Url }}</li>
+                    {{ end }}
+                    <li>{{ .Title }}</li>
+                </ul>
+            </div>
+
         </div>

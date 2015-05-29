@@ -38,6 +38,20 @@ body {
     font-size: 18px;
     line-height: 1.3;
 }
+
+.content pre {
+    word-wrap: normal;
+    overflow: auto;
+}
+.content samp, code, kbd {
+    font-size: 13px;
+}
+.content kbd {
+    background-color: inherit;
+    color: #00b;
+    box-shadow: inherit;
+}
+
 .main-page-header {
     margin: 10px auto 20px auto;
 }
@@ -79,7 +93,6 @@ body {
     margin-top: 0px;
     margin-bottom: 10px;
 }
-
 
 /* Bootstrap stuff */
 
@@ -160,4 +173,18 @@ body {
 .dropdown-submenu.pull-left>.dropdown-menu {
     left: -100%;
     margin-left: 10px;
+}
+
+.breadcrumb {
+    padding: 0;
+    margin-bottom: 0;
+    background-color: inherit;
+    border-radius: inherit;
+}
+
+.breadcrumb>li+li:before {
+    content: ": ";
+    color: inherit;
+    padding-left: 0;
+    padding-right: 0;
 }

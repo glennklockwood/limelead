@@ -6,7 +6,7 @@
 
         <div class="content-box">
             <div class="content">
-                {{ range .Data.Pages }}
+                {{ range .Site.Pages }}
                 <div>
                     <h2><a href="{{ .Permalink }}">{{ .Title }}</a></h2>
                     <span class="lead">{{ .Date.Format "Mon, Jan 2, 2006" }}</span>
