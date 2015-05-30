@@ -208,15 +208,15 @@ of RAM was left, came from such a node.
 There is nothing you can do about a downed node as a user.  Fortunately, 
 the node's MOM will send an update to the queue manager right after the downed
 node reboots, and your stuck job will clear the queue automatically.  For what 
-it's worth, jobs that are terminated this way do <em>not</em> get charged SUs 
+it's worth, jobs that are terminated this way do _not_ get charged SUs 
 for the time they legitimately used before the node failure or the time spent 
 frozen in that <code>R</code> state.
 
 If your job remains stuck for longer than you'd like, you should send an
 e-mail to the <a href="mailto:help@xsede.org">XSEDE helpdesk</a> so the 
 administrators can purge the job for you.  This may be necessary in the rare 
-case where the primary node for a job (the <em>mother superior</em> node) goes
-down but the remaining compute nodes (<em>sister</em> nodes) remain up and
+case where the primary node for a job (the _mother superior_ node) goes
+down but the remaining compute nodes (_sister_ nodes) remain up and
 running your stuck, half-dead job.
 
 <!-- mpideath -->
@@ -240,13 +240,13 @@ Your job should have generated an error file in the directory from which you
 submitted it, and it should contain the more specific error messages that
 would make diagnosing the issue easier.
 
-<em>This section is not yet complete</em>
+_This section is not yet complete_
 
 ### <a name="mpideath:cure"></a>Cure: Contact User Services
 
 Contact the <a href="mailto:help@xsede.org">XSEDE helpdesk</a> if your error 
 file does not contain anything that helps you figure out why your job broke. 
-<em>This section is not yet complete</em>
+_This section is not yet complete_
 
 <!-- mpd -->
 
@@ -273,7 +273,7 @@ There are two common causes of this error.
 
 #### 1. If you are trying to use OpenMPI...
 
-<em>This section is not yet complete.</em> In brief, OpenMPI needs to be 
+_This section is not yet complete._ In brief, OpenMPI needs to be 
 explicitly loaded from within the submit script when running OpenMPI jobs.
 
 #### 2. If you are NOT trying to use OpenMPI or aren't sure...
@@ -286,7 +286,7 @@ when using mvapich2.
 
 ### <a name="mpd:cure"></a>Cure: Fix your submit script
 
-<em>This section is not yet complete</em>
+_This section is not yet complete_
 
 <!-- java heap problem -->
 
@@ -384,7 +384,7 @@ MVAPICH2 parameters.
 
 If you encounter this problem on Gordon (or any other system with a 
 multi-rail InfiniBand fabric), first rule out that the problem is with your 
-MVAPICH2 environment.  Log into a compute node (this will <em>NOT</em> work
+MVAPICH2 environment.  Log into a compute node (this will _NOT_ work
 on a login node) and issue the following command:
 
 <pre>
@@ -393,7 +393,7 @@ MV2_IBA_HCA=mlx4_0
 MV2_NUM_HCAS=1
 </pre>
 
-If this <kbd>env|grep MV2</kbd> does <em>not</em> return the above two
+If this <kbd>env|grep MV2</kbd> does _not_ return the above two
 environment variables, there is a problem with your environment which will
 always cause MVAPICH2 to hang.  The remedy is to add the following two lines
 to your <code>~/.bashrc</code> file:
