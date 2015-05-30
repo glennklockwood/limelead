@@ -21,6 +21,10 @@ body {
     max-width: 800px;
 }
 
+.content-box img {
+    max-width: 400px;
+}
+
 .content-box hr {
     border-color: #777;
     border-style: solid none;
@@ -32,6 +36,12 @@ body {
 }
 .content-box p {
     text-align: justify;
+}
+
+.content-box img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .content {
@@ -83,6 +93,10 @@ body {
 .page-header {
     margin-top: 1em;
     margin-bottom: 0px;
+}
+
+.page-header a {
+    text-decoration: none;
 }
 
 .page-header h1 {
@@ -187,4 +201,7 @@ body {
     color: inherit;
     padding-left: 0;
     padding-right: 0;
+}
+.breadcrumb li {
+    font-size: 16px;
 }

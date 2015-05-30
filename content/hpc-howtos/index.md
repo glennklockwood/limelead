@@ -5,3 +5,4 @@ title: "HPC Howtos"
 ---
 
 * [Common Problems on Supercomputers](common-problems.html)
+* [Installing Software Without Root](installing-without-root.html)
