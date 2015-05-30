@@ -1,0 +1,22 @@
+{{ $.Page.Scratch.Set "class" 0 }}
+{{ if eq ($.Get 0) "success" }}
+{{ $.Page.Scratch.Set "class" "success" }}
+{{ $.Page.Scratch.Set "glyphicon" "ok-sign" }}
+{{ end }}
+{{ if eq ($.Get 0) "danger" }}
+{{ $.Page.Scratch.Set "class" "danger" }}
+{{ $.Page.Scratch.Set "glyphicon" "remove-sign" }}
+{{ end }}
+{{ if eq ($.Get 0) "warning" }}
+{{ $.Page.Scratch.Set "class" "warning" }}
+{{ $.Page.Scratch.Set "glyphicon" "exclamation-sign" }}
+{{ end }}
+{{ if not ($.Page.Scratch.Get "class") }}
+{{ $.Page.Scratch.Set "class" "info" }}
+{{ $.Page.Scratch.Set "glyphicon" "info-sign" }}
+{{ end }}
+<div role="alert" class="alert alert-{{ $.Page.Scratch.Get "class" }}">
+    <span class="glyphicon glyphicon-{{ $.Page.Scratch.Get "glyphicon" }}" aria-hidden="true"></span>
+    {{ .Inner }}
+</div>
+
