@@ -6,6 +6,13 @@ template: page.jade
 parentDirs: [ hpc-howtos ]
 ---
 
+{{% alertbox warning %}}
+This guide was written for use on SDSC's Trestles system which no longer
+exists.  Some of the information in this guide may still be relevant to
+users of other Torque-based clusters, but this page is no longer being
+maintained.
+{{% /alertbox %}}
+
 ## <a name="contents"></a>Contents
 
 * [Introduction](#intro)
