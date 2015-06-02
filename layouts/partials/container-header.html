@@ -19,7 +19,11 @@
                     {{ else }}
                         <li>{{ .Url }}</li>
                     {{ end }}
+                    {{ if isset .Params "shorttitle" }}
+                    <li>{{ .Params.shorttitle }}</li>
+                    {{ else }}
                     <li>{{ .Title }}</li>
+                    {{ end }}
                 </ul>
             </div>
 
