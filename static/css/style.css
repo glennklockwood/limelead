@@ -66,6 +66,11 @@ body {
     margin: 1em 0em;
 }
 
+.alert {
+    margin: 1em 2em;
+    font-size:smaller;
+}
+
 .alert .glyphicon {
     display:table-cell;
     vertical-align: middle;
