@@ -209,106 +209,101 @@ something like this:
 
 {{<figure src="mapreduce-workflow.png" link="mapreduce-workflow.png" alt="program flow of a map-reduce application" >}}
 
-<p>The left half of the diagram depicts the HDFS magic described in the previous
+The left half of the diagram depicts the HDFS magic described in the previous
 section, where the <kbd>hadoop dfs -copyFromLocal</kbd> command is used to move
 a large data file into HDFS and it is automatically replicated and distributed 
 across multiple physical compute nodes.  While this step of moving data into
 HDFS is not strictly a part of a map-reduce job (i.e., your dataset may already 
 have a permanent home on HDFS just like it would any other filesystem), 
 a map-reduce job's input data must already exist on HDFS before the job can be
-started.</p>
+started.
 
 #### <a name="hadoop:mr:map"></a>3.2.1. The Map Step
-<p>Once a map-reduce job is initiated, the map step</p>
-<ol>
-  <li>Launches a number of parallel mappers across the compute nodes that
-      contain chunks of your input data</li>
-  <li>For each chunk, a mapper then "splits" the data into individual lines of
-      text on newline characters (<code>\n</code>)</li>
-  <li>Each split (line of text that was terminated by <code>\n</code>) is given
-      to your mapper function</li>
-  <li>Your mapper function is expected to turn each line into zero or more 
-      key-value pairs and then "emit" these key-value pairs for the subsequent
-      reduce step</li>
-</ol>
-<p>That is, <em>the map step's job is to transform your raw input data into a 
-series of key-value pairs</em> with the expectation that these parsed 
-key-value pairs can be analyzed meaningfully by the reduce step.  It's perfectly
-fine for duplicate keys to be emitted by mappers.</p>
 
-<table class="inset">
-<tr><th>Input splitting</th></tr>
-<tr><td>
-<p>The decision to split your input data along newline characters is just the
+Once a map-reduce job is initiated, the map step
+
+1. Launches a number of parallel mappers across the compute nodes that
+   contain chunks of your input data
+2. For each chunk, a mapper then "splits" the data into individual lines of
+   text on newline characters (<code>\n</code>)
+3. Each split (line of text that was terminated by <code>\n</code>) is given
+   to your mapper function
+4. Your mapper function is expected to turn each line into zero or more 
+   key-value pairs and then "emit" these key-value pairs for the subsequent
+   reduce step
+
+That is, _the map step's job is to transform your raw input data into a 
+series of key-value pairs_ with the expectation that these parsed key-value
+pairs can be analyzed meaningfully by the reduce step.  It's perfectly fine for
+duplicate keys to be emitted by mappers.
+
+{{% alertbox info %}}
+The decision to split your input data along newline characters is just the
 default behavior, which assumes your input data is just an ascii text file.
 You can change how input data is split before being passed to your mapper 
-function using alternate <code>InputFormat</code>s.</p>
-</td></tr></table>
+function using alternate <code>InputFormat</code>s.
+{{% /alertbox %}}
 
 #### <a name="hadoop:mr:reduce"></a>3.2.2. The Reduce Step
-<p>Once all of the mappers have finished digesting the input data and have 
+
+Once all of the mappers have finished digesting the input data and have 
 emitted all of their key-value pairs, those key-value pairs are sorted according
 to their keys and then passed on to the reducers.  The reducers are given 
-key-value pairs in such a way that <em>all key-value pairs sharing the same 
-key always go to the same reducer</em>.  The corollary is then that if one 
+key-value pairs in such a way that _all key-value pairs sharing the same 
+key always go to the same reducer_.  The corollary is then that if one 
 particular reducer has one specific key, it is guaranteed to have all other 
 key-value pairs sharing that same key, and all those common keys will be in a 
-continuous strip of key-value pairs that reducer received.</p>
-<p>Your job's reducer function then does some sort of calculation based on
-all of the values that share a common key.  For example, the reducer might
-calculate the sum of all values for each key (e.g., <a 
-href="hadoop-streaming.php">the word count example</a>).  The reducers then
-emit key-value pairs back to HDFS where each key is unique, and each of these
-unique keys' values are the result of the reducer function's calculation.</p>
+continuous strip of key-value pairs that reducer received.
 
-<table class="inset">
-<tr><th>The Sort and Shuffle</th></tr>
-<tr><td>
-<p>The process of sorting and distributing the mapper's output to the reducers
+Your job's reducer function then does some sort of calculation based on
+all of the values that share a common key.  For example, the reducer might
+calculate the sum of all values for each key (e.g., [the word count example][hadoop streaming guide]).
+The reducers then emit key-value pairs back to HDFS where each key is unique,
+and each of these unique keys' values are the result of the reducer function's
+calculation.
+
+{{% alertbox info %}}
+The process of sorting and distributing the mapper's output to the reducers
 can be seen as a separate step often called the "shuffle".  What really happens
-is that as mappers emit key-value pairs, the keys are passed through the 
-<code>Partitioner</code> to determine which reducer they are sent to.</p>
-<p>The default <code>Partitioner</code> is a function which hashes the key and 
+is that as mappers emit key-value pairs, the keys are passed through the
+<code>Partitioner</code> to determine which reducer they are sent to.<br><br>
+The default <code>Partitioner</code> is a function which hashes the key and 
 then takes the modulus of this hash and the number of reducers to determine 
 which reducer gets that key-value pair.  Since the hash of a given key will 
 always be the same, all key-value pairs sharing the same key will get the same
 output value from the <code>Partitioner</code> and therefore wind up on the
-same reducer.</p>
-<p>Once all key-value pairs are assigned to their reducers, the reducers all
+same reducer.<br><br>
+Once all key-value pairs are assigned to their reducers, the reducers all
 sort their keys so that a single loop over all of a reducer's keys will examine
 all the values of a single key before moving on to the next key.  As you will
-see in my tutorial on <a href="hadoop-streaming.php">writing mappers and 
-reducers in Python</a>, this is an essential feature of the Hadoop streaming
-interface.</p>
-</td></tr></table>
+see in the tutorial on writing mappers and reducers in Python that follows,
+this is an essential property of the Hadoop streaming interface.
+{{% /alertbox %}}
 
-<p>This might sound a little complicated or abstract without an actual problem
+This might sound a little complicated or abstract without an actual problem
 or sample code to examine; it is far easier to demonstrate what the reducer 
-does by <a href="hadoop-streaming.php">working through an example</a>.</p>
+does by [working through an example][hadoop streaming guide].
 
 ## <a name="summary"></a>4. Summary
-<p>This conceptual overview of map-reduce and Hadoop is admittedly dry without
+This conceptual overview of map-reduce and Hadoop is admittedly dry without
 a meaningful example to accompany it, so here are the key points you should
-take away:</p>
-<ul>
-<li>map-reduce brings <em>compute to the data</em> in contrast to traditional parallelism, which brings data to the compute resources</li>
-<li>Hadoop accomplishes this by storing data in a replicated and distributed fashion on HDFS
-  <ul>
-    <li>HDFS stores files in chunks which are physically stored on multiple compute nodes</li>
-    <li>HDFS still presents data to users and applications as single continuous files despite the above fact</li>
-  </ul>
-</li>
-<li>map-reduce is ideal for operating on very large, flat (unstructured) datasets and perform trivially parallel operations on them</li>
-<li>Hadoop jobs go through a map stage and a reduce stage where
-  <ul>
-    <li>the mapper transforms the raw input data into key-value pairs where multiple values for the same key may occur</li>
-    <li>the reducer transforms all of the key-value pairs sharing a common key into a single key with a single value</li>
-  </ul>
-</li>
-</ul>
-<p>If you have any interest remaining after having read this, I strongly 
-recommend looking through my tutorial on <a href="hadoop-streaming.php">Writing
-Hadoop Applications in Python with Hadoop Streaming</a>.  That tutorial covers
-much of the same material, but in the context of an actual problem (counting
-the number of times each word appears in a text) with actual code written in
-Python.</p>
+take away:
+
+* map-reduce brings _compute to the data_ in contrast to traditional parallelism, which brings data to the compute resources
+* Hadoop accomplishes this by storing data in a replicated and distributed fashion on HDFS
+   * HDFS stores files in chunks which are physically stored on multiple compute nodes
+   * HDFS still presents data to users and applications as single continuous files despite the above fact
+* map-reduce is ideal for operating on very large, flat (unstructured) datasets and perform trivially parallel operations on them
+* Hadoop jobs go through a map stage and a reduce stage where
+   * the mapper transforms the raw input data into key-value pairs where multiple values for the same key may occur</li>
+   * the reducer transforms all of the key-value pairs sharing a common key into a single key with a single value</li>
+
+If you have any interest remaining after having read this, I strongly 
+recommend looking through my tutorial on 
+[Writing Hadoop Applications in Python with Hadoop Streaming][hadoop streaming guide].
+That tutorial covers much of the same material, but in the context of an actual
+problem (counting the number of times each word appears in a text) with actual
+code written in Python.
+
+<!-- -->
+[hadoop streaming guide]: hadoop-streaming.html
