@@ -127,6 +127,18 @@ body {
     margin-bottom: 10px;
 }
 
+/* pygments */
+
+.highlight {
+    margin: 1em 0em 1em 2em;
+}
+
+.highlight pre {
+    word-wrap: inherit;
+    overflow: inherit;
+    margin: 0;
+}
+
 /* Bootstrap stuff */
 
 /* blow away the whitespace surrounding navbar */

@@ -104,7 +104,7 @@ the mapped key/value pairs to the reducer via stdin.
 The mapper, as described above, is quite simple to implement in Python.  It
 will look something like this:
 
-{{< highlight python  >}}
+{{< highlight python >}}
 #!/usr/bin/env python
 
 import sys
@@ -119,96 +119,109 @@ for line in sys.stdin:
 
 where
 
-<ol>
-<li>Hadoop sends a line of text from the input file ("line" being defined by a string of text terminated by a linefeed character, <code>\n</code>)</li>
-<li>Python strips all leading/trailing whitespace (<code>line.strip()</code></li>
-<li>Python splits that line into a list of individual words along whitespace (<code>line.split()</code>)</li>
-<li>For each word (which will become a key), we assign a value of 1 and then print the key-value pair on a single line, separated by a tab (<code>\t</code>)</li>
-</ol>
-<p>A more detailed explanation of this process can be found in <a 
-href="http://developer.yahoo.com/hadoop/tutorial/module4.html">Yahoo's 
-excellent Hadoop Tutorial</a>.</p>
+
+1. Hadoop sends a line of text from the input file ("line" being defined by a string of text terminated by a linefeed character, <code>\n</code>)
+2. Python strips all leading/trailing whitespace (<code>line.strip()</code>
+3. Python splits that line into a list of individual words along whitespace (<code>line.split()</code>)
+4. For each word (which will become a key), we assign a value of 1 and then print the key-value pair on a single line, separated by a tab (<code>\t</code>)
+
+A more detailed explanation of this process can be found in
+[Yahoo's excellent Hadoop Tutorial][yahoo hadoop tutorial].
+
 ### <a name="wordcount:shuffle"></a>3.2. The Shuffle
-<p>A lot happens between the map and reduce steps that is largely transparent 
+
+A lot happens between the map and reduce steps that is largely transparent 
 to the developer.  In brief, the output of the mappers is transformed and 
-distributed to the reducers (termed <em>the shuffle</em> step) in such a way 
-that</p>
-<ol>
-<li>All key/value pairs are sorted before being presented to the reducer function</li>
-<li>All key/value pairs sharing the same key are sent to the same reducer</li>
-</ol>
-<p>These two points are important because</p>
-<ol>
-<li>As you read in key/value pairs, if you encounter a key that is different from the last key you processed, you know that that previous key will never appear again</li>
-<li>If your keys are <em>all</em> the same, you will only use one reducer and gain <em>no parallelization</em>.  You should come up with a more unique key if this happens!</li>
-</ol>
-### <a name="wordcount:reducer">3.3. The Reducer
-<p>The output from our mapper step will go to the reducer step sorted.  Thus,
-we can loop over all input key/pairs and apply the following logic:</p>
-<blockquote>
-<div>If this key is the same as the previous key,</div>
-<div> &nbsp; &nbsp;add this key's value to our running total.</div>
-<div>Otherwise,</div>
-<div> &nbsp; &nbsp;print out the previous key's name and the running total,</div>
-<div> &nbsp; &nbsp;reset our running total to 0,</div>
-<div> &nbsp; &nbsp;add this key's value to the running total, and</div>
-<div> &nbsp; &nbsp;"this key" is now considered the "previous key"</div>
-</blockquote>
-<p>Translating this into Python and adding a little extra code to tighten up
-the logic, we get</p>
-<blockquote>
-<div>#!/usr/bin/env python</div>
-<div>&nbsp;</div>
-<div>import sys</div>
-<div>&nbsp;</div>
-<div>last_key = None</div>
-<div>running_total = 0</div>
-<div>&nbsp;</div>
-<div>for input_line in sys.stdin:</div>
-<div> &nbsp; &nbsp;input_line = input_line.strip()</div>
-<div> &nbsp; &nbsp;this_key, value = input_line.split("\t", 1)</div>
-<div> &nbsp; &nbsp;value = int(value)</div>
-<div>&nbsp;</div>
-<div> &nbsp; &nbsp;if last_key == this_key:</div>
-<div> &nbsp; &nbsp; &nbsp; &nbsp;running_total += value </div>
-<div> &nbsp; &nbsp;else:</div>
-<div> &nbsp; &nbsp; &nbsp; &nbsp;if last_key:</div>
-<div> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;print( "%s\t%d" % (last_key, running_total) )</div>
-<div> &nbsp; &nbsp; &nbsp; &nbsp;running_total = value</div>
-<div> &nbsp; &nbsp; &nbsp; &nbsp;last_key = this_key </div>
-<div>&nbsp;</div>
-<div>if last_key == this_key:</div>
-<div> &nbsp; &nbsp;print( "%s\t%d" % (last_key, running_total) )</div>
-</blockquote>
+distributed to the reducers (termed _the shuffle_ step) in such a way 
+that
+
+1. All key/value pairs are sorted before being presented to the reducer function
+2. All key/value pairs sharing the same key are sent to the same reducer
+
+These two points are important because
+
+1. As you read in key/value pairs, if you encounter a key that is different from the last key you processed, you know that that previous key will never appear again
+2. If your keys are _all_ the same, you will only use one reducer and gain _no parallelization_.  You should come up with a more unique key if this happens!
+
+### <a name="wordcount:reducer"></a>3.3. The Reducer
+
+The output from our mapper step will go to the reducer step sorted.  Thus,
+we can loop over all input key/pairs and apply the following logic:
+
+<pre>
+If this key is the same as the previous key,
+   add this key's value to our running total.
+Otherwise,
+    print out the previous key's name and the running total,
+    reset our running total to 0,
+    add this key's value to the running total, and
+    "this key" is now considered the "previous key"
+</pre>
+
+Translating this into Python and adding a little extra code to tighten up
+the logic, we get
+
+{{< highlight python >}}
+#!/usr/bin/env python
+ 
+import sys
+ 
+last_key = None
+running_total = 0
+ 
+for input_line in sys.stdin:
+   input_line = input_line.strip()
+   this_key, value = input_line.split("\t", 1)
+   value = int(value)
+ 
+   if last_key == this_key:
+       running_total += value
+   else:
+       if last_key:
+           print( "%s\t%d" % (last_key, running_total) )
+       running_total = value
+       last_key = this_key
+ 
+if last_key == this_key:
+   print( "%s\t%d" % (last_key, running_total) )
+{{< /highlight >}}
+
 ### <a name="wordcount:run"></a>3.4. Running the Hadoop Job
-<p>If we name the mapper script <code>mapper.py</code> and the reducing script
+
+If we name the mapper script <code>mapper.py</code> and the reducing script
 <code>reducer.py</code>, we would first want to download the input data (Moby
 Dick) and load it into HDFS.  I purposely am renaming the copy stored in HDFS
 to <code>mobydick.txt</code> instead of the original <code>pg2701.txt</code> to
-highlight the location of the file:</p>
-<blockquote>
-<div>$ <kbd>wget http://www.gutenberg.org/cache/epub/2701/pg2701.txt</kbd></div>
-<div>$ <kbd>hadoop dfs -mkdir wordcount</kbd></div>
-<div>$ <kbd>hadoop dfs -copyFromLocal ./pg2701.txt wordcount/mobydick.txt</kbd></div>
-</blockquote>
-<p>You can verify that the file was loaded properly:</p>
-<blockquote>
-<div>$ <kbd>hadoop dfs -ls wordcount/mobydick.txt</kbd></div>
-<div>Found 1 items</div>
-<div>-rw-r--r-- &nbsp; 2 glock supergroup &nbsp; &nbsp;1257260 2013-07-17 13:24 /user/glock/wordcount/mobydick.txt</div>
-</blockquote>
-<p><strong>Before submitting the Hadoop job, you should make sure your mapper
-and reducer scripts actually work.</strong>  This is just a matter of running
+highlight the location of the file:
+
+<pre>
+$ <kbd>wget http://www.gutenberg.org/cache/epub/2701/pg2701.txt</kbd>
+$ <kbd>hadoop dfs -mkdir wordcount</kbd>
+$ <kbd>hadoop dfs -copyFromLocal ./pg2701.txt wordcount/mobydick.txt</kbd>
+</pre>
+
+You can verify that the file was loaded properly:
+
+<pre>
+$ <kbd>hadoop dfs -ls wordcount/mobydick.txt</kbd>
+Found 1 items
+-rw-r--r--   2 glock supergroup    1257260 2013-07-17 13:24 /user/glock/wordcount/mobydick.txt
+</pre>
+
+**Before submitting the Hadoop job, you should make sure your mapper
+and reducer scripts actually work.**  This is just a matter of running
 them through pipes on a little bit of sample data (e.g., the first 1000 lines of
-Moby Dick):</p>
-<blockquote>
-<div>$ <kbd>head -n1000 pg2701.txt | ./mapper.py | sort | ./reducer.py</kbd></div>
-<div>...</div>
-<div>young &nbsp; 4</div>
-<div>your &nbsp; &nbsp;16</div>
-<div>yourself &nbsp; &nbsp;3</div>
-<div>zephyr &nbsp;1</div>
-</blockquote>
+Moby Dick):
+
+<pre>
+$ <kbd>head -n1000 pg2701.txt | ./mapper.py | sort | ./reducer.py</kbd>
+...
+young   4
+your    16
+yourself    3
+zephyr  1
+</pre>
+
 <p>Once you know the mapper/reducer scripts work without errors, we can plug
 them into Hadoop.  We accomplish this by running the Hadoop Streaming jar file 
 as our Hadoop job.  This <code>hadoop-streaming-X.Y.Z.jar</code> file comes 
@@ -340,3 +353,4 @@ frameworks for users of traditional HPC</a> on FutureGrid Hotel and Sierra.</p>
 [semi-persistent hadoop cluster script]: https://github.com/glennklockwood/hpchadoop/blob/master/hadoopcluster.xsede-gordon.qsub
 [non-interactive hadoop word count script]: https://github.com/glennklockwood/hpchadoop/blob/master/wordcount.py/streaming-wordcount-py.xsede-gordon.qsub
 [moby dick fulltext]: http://www.gutenberg.org/cache/epub/2701/pg2701.txt
+[yahoo hadoop tutorial]: http://developer.yahoo.com/hadoop/tutorial/module4.html
