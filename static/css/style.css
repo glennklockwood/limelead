@@ -54,7 +54,8 @@ body {
     overflow: auto;
     margin: 1em 0em 1em 2em;
 }
-.content samp, code, kbd {
+.content samp, code, kbd, var {
+    font-family: monospace;
     font-size: 13px;
 }
 .content kbd {
