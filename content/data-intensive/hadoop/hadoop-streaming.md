@@ -222,7 +222,7 @@ yourself    3
 zephyr  1
 </pre>
 
-<p>Once you know the mapper/reducer scripts work without errors, we can plug
+Once you know the mapper/reducer scripts work without errors, we can plug
 them into Hadoop.  We accomplish this by running the Hadoop Streaming jar file 
 as our Hadoop job.  This <code>hadoop-streaming-X.Y.Z.jar</code> file comes 
 with the standard Apache Hadoop distribution and should be in 
@@ -230,115 +230,113 @@ with the standard Apache Hadoop distribution and should be in
 where <var>$HADOOP_HOME</var> is the base directory of your Hadoop installation
 and <code>X.Y.Z</code> is the version of Hadoop you are running.  On Gordon 
 the location is <code>/opt/hadoop/contrib/streaming/hadoop-streaming-1.0.3.jar</code>,
-so our actual job launch command would look like</p>
+so our actual job launch command would look like
 
-<blockquote>
-<div>$ <kbd>hadoop \</kbd></div>
-<div><kbd> &nbsp; &nbsp;jar /opt/hadoop/contrib/streaming/hadoop-streaming-1.0.3.jar \</kbd></div>
-<div><kbd> &nbsp; &nbsp;-mapper "<span style="color:green">python $PWD/mapper.py</span>" \</kbd></div>
-<div><kbd> &nbsp; &nbsp;-reducer "<span style="color:green">python $PWD/reducer.py</span>" \</kbd></div>
-<div><kbd> &nbsp; &nbsp;-input "wordcount/mobydick.txt" &nbsp; \</kbd></div>
-<div><kbd> &nbsp; &nbsp;-output "wordcount/output"</kbd></div>
-<div>&nbsp;</div>
-<div>packageJobJar: [/scratch/glock/819550.gordon-fe2.local/hadoop-glock/data/hadoop-unjar4721749961014550860/] [] /tmp/streamjob7385577774459124859.jar tmpDir=null</div>
-<div>13/07/17 19:26:16 INFO util.NativeCodeLoader: Loaded the native-hadoop library</div>
-<div>13/07/17 19:26:16 WARN snappy.LoadSnappy: Snappy native library not loaded</div>
-<div>13/07/17 19:26:16 INFO mapred.FileInputFormat: Total input paths to process : 1</div>
-<div>13/07/17 19:26:16 INFO streaming.StreamJob: getLocalDirs(): [/scratch/glock/819550.gordon-fe2.local/hadoop-glock/data/mapred/local]</div>
-<div>13/07/17 19:26:16 INFO streaming.StreamJob: Running job: <span style="color:red">job_201307171926_0001</span></div>
-<div>13/07/17 19:26:16 INFO streaming.StreamJob: To kill this job, run:</div>
-<div>13/07/17 19:26:16 INFO streaming.StreamJob: /opt/hadoop/libexec/../bin/hadoop job &nbsp;-Dmapred.job.tracker=gcn-13-34.ibnet0:54311 -kill job_201307171926_0001</div>
-<div>13/07/17 19:26:16 INFO streaming.StreamJob: Tracking URL: http://gcn-13-34.ibnet0:50030/jobdetails.jsp?jobid=job_201307171926_0001</div>
-</blockquote>
+<pre>
+$ <kbd>hadoop \</kbd>
+<kbd>    jar /opt/hadoop/contrib/streaming/hadoop-streaming-1.0.3.jar \</kbd>
+<kbd>    -mapper "<span style="color:green">python $PWD/mapper.py</span>" \</kbd>
+<kbd>    -reducer "<span style="color:green">python $PWD/reducer.py</span>" \</kbd>
+<kbd>    -input "wordcount/mobydick.txt" \</kbd>
+<kbd>    -output "wordcount/output"</kbd>
 
-<p>And at this point, the job is running.  That "tracking URL" is a bit 
-deceptive in that you probably won't be able to access it.  This is a really 
-good example of how different of a world Hadoop cluster computing is from 
-traditional HPC.  Fortunately, there is a command-line interface for monitoring
-Hadoop jobs that is somewhat similar to <code>qstat</code>.  Noting the Hadoop 
-jobid (highlighted in <span style="color:red">red</span> above), you can do:</p>
+packageJobJar: [/scratch/glock/819550.gordon-fe2.local/hadoop-glock/data/hadoop-unjar4721749961014550860/] [] /tmp/streamjob7385577774459124859.jar tmpDir=null
+13/07/17 19:26:16 INFO util.NativeCodeLoader: Loaded the native-hadoop library
+13/07/17 19:26:16 WARN snappy.LoadSnappy: Snappy native library not loaded
+13/07/17 19:26:16 INFO mapred.FileInputFormat: Total input paths to process : 1
+13/07/17 19:26:16 INFO streaming.StreamJob: getLocalDirs(): [/scratch/glock/819550.gordon-fe2.local/hadoop-glock/data/mapred/local]
+13/07/17 19:26:16 INFO streaming.StreamJob: Running job: <span style="color:red">job_201307171926_0001</span>
+13/07/17 19:26:16 INFO streaming.StreamJob: To kill this job, run:
+13/07/17 19:26:16 INFO streaming.StreamJob: /opt/hadoop/libexec/../bin/hadoop job  -Dmapred.job.tracker=gcn-13-34.ibnet0:54311 -kill job_201307171926_0001
+13/07/17 19:26:16 INFO streaming.StreamJob: Tracking URL: http://gcn-13-34.ibnet0:50030/jobdetails.jsp?jobid=job_201307171926_0001
+</pre>
 
-<blockquote>
-<div>$ <kbd>hadoop -status job_201307171926_0001</kbd></div>
-<div>Job: job_201307171926_0001</div>
-<div>file: hdfs://gcn-13-34.ibnet0:54310/scratch/glock/819550.gordon-fe2.local/hadoop-glock/data/mapred/staging/glock/.staging/job_201307171926_0001/job.xml</div>
-<div>tracking URL: http://gcn-13-34.ibnet0:50030/jobdetails.jsp?jobid=job_201307171926_0001</div>
-<div>map() completion: 1.0 </div>
-<div>reduce() completion: 1.0</div>
-<div>&nbsp;</div>
-<div>Counters: 30</div>
-<div> &nbsp; &nbsp;Job Counters</div>
-<div> &nbsp; &nbsp; &nbsp; &nbsp;<span style="color:red">Launched reduce tasks=1</span></div>
-<div> &nbsp; &nbsp; &nbsp; &nbsp;SLOTS_MILLIS_MAPS=16037</div>
-<div> &nbsp; &nbsp; &nbsp; &nbsp;Total time spent by all reduces waiting after reserving slots (ms)=0</div>
-<div> &nbsp; &nbsp; &nbsp; &nbsp;Total time spent by all maps waiting after reserving slots (ms)=0</div>
-<div> &nbsp; &nbsp; &nbsp; &nbsp;<span style="color:red">Launched map tasks=2</span></div>
-<div> &nbsp; &nbsp; &nbsp; &nbsp;Data-local map tasks=2</div>
-<div>...</div>
-</blockquote>
-<p>Since the hadoop streaming job runs in the foreground, you will have to
+And at this point, the job is running.  That "tracking URL" is a bit 
+deceptive in that you probably won't be able to access it.  Fortunately, there
+is a command-line interface for monitoring Hadoop jobs that is somewhat similar
+to <code>qstat</code>.  Noting the Hadoop jobid (highlighted in 
+<span style="color:red">red</span> above), you can do:
+
+<pre>
+$ <kbd>hadoop -status job_201307171926_0001</kbd>
+Job: job_201307171926_0001
+file: hdfs://gcn-13-34.ibnet0:54310/scratch/glock/819550.gordon-fe2.local/hadoop-glock/data/mapred/staging/glock/.staging/job_201307171926_0001/job.xml
+tracking URL: http://gcn-13-34.ibnet0:50030/jobdetails.jsp?jobid=job_201307171926_0001
+map() completion: 1.0 
+reduce() completion: 1.0
+ 
+Counters: 30
+    Job Counters
+        <span style="color:red">Launched reduce tasks=1</span>
+        SLOTS_MILLIS_MAPS=16037
+        Total time spent by all reduces waiting after reserving slots (ms)=0
+        Total time spent by all maps waiting after reserving slots (ms)=0
+        <span style="color:red">Launched map tasks=2</span>
+        Data-local map tasks=2
+...
+</pre>
+
+Since the hadoop streaming job runs in the foreground, you will have to
 use another terminal (with <var>HADOOP_CONF_DIR</var> properly exported) to
 check on the job while it runs.  However, you can also review the job metrics
 after the job has finished.  In the example highlighted above, we can see that
 the job only used one reduce task and two map tasks despite the cluster having
-more than two nodes.</p>
+more than two nodes.
 
 ## <a name="wordcount:tweaks"></a>3.5. Adjusting Parallelism
 
-<p>Unlike with a traditional HPC job, the level of parallelism a Hadoop job
+Unlike with a traditional HPC job, the level of parallelism a Hadoop job
 is not necessarily the full size of your compute resource.  The number of map
 tasks is ultimately determined by the nature of your input data due to how
 HDFS distributes chunks of data to your mappers.  You can "suggest" a number
 of mappers when you submit the job though.  Doing so is a matter of applying
-the change highlighted in <span style="color:green">green</span>:</p>
-<blockquote>
-<div>$ <kbd>hadoop jar /opt/hadoop/contrib/streaming/hadoop-streaming-1.0.3.jar \</kbd></div>
-<div><kbd style="color:green"> &nbsp; &nbsp;-D mapred.map.tasks=4 \</kbd></div>
-<div><kbd> &nbsp; &nbsp;-mapper "python $PWD/mapper.py" \</kbd></div>
-<div><kbd> &nbsp; &nbsp;-reducer "python $PWD/reducer.py" \</kbd></div>
-<div><kbd> &nbsp; &nbsp;-input wordcount/mobydick.txt \</kbd></div>
-<div><kbd> &nbsp; &nbsp;-output wordcount/output</kbd></div>
-<div>...</div>
-<div>$ <kbd>hadoop -status job_201307172000_0001</kbd></div>
-<div>...</div>
-<div> &nbsp; &nbsp;Job Counters</div>
-<div> &nbsp; &nbsp; &nbsp; &nbsp;<span style="color:red">Launched reduce tasks=1</span></div>
-<div> &nbsp; &nbsp; &nbsp; &nbsp;SLOTS_MILLIS_MAPS=24049 </div>
-<div> &nbsp; &nbsp; &nbsp; &nbsp;Total time spent by all reduces waiting after reserving slots (ms)=0</div>
-<div> &nbsp; &nbsp; &nbsp; &nbsp;Total time spent by all maps waiting after reserving slots (ms)=0</div>
-<div> &nbsp; &nbsp; &nbsp; &nbsp;Rack-local map tasks=1</div>
-<div> &nbsp; &nbsp; &nbsp; &nbsp;<span style="color:red">Launched map tasks=4</span></div>
-<div> &nbsp; &nbsp; &nbsp; &nbsp;Data-local map tasks=3</div>
-</blockquote>
-<p>Similarly, you can add <code>-D mapred.reduce.tasks=4</code> to suggest the
-number of reducers.  The reducer count is a little more flexible, and you can
-set it to zero if you just want to apply a mapper to a large file.</p>
+the change highlighted in <span style="color:green">green</span>:
 
-<p>With all this being said, the fact that Hadoop defaults to only two mappers
-says something about the problem we're trying to solve--<strong>that is, this 
-entire example is actually very stupid</strong>.  While it illustrates the
+<pre>
+$ <kbd>hadoop jar /opt/hadoop/contrib/streaming/hadoop-streaming-1.0.3.jar \</kbd>
+<kbd style="color:green">    -D mapred.map.tasks=4 \</kbd>
+<kbd>    -mapper "python $PWD/mapper.py" \</kbd>
+<kbd>    -reducer "python $PWD/reducer.py" \</kbd>
+<kbd>    -input wordcount/mobydick.txt \</kbd>
+<kbd>    -output wordcount/output</kbd>
+...
+$ <kbd>hadoop -status job_201307172000_0001</kbd>
+...
+    Job Counters
+        <span style="color:red">Launched reduce tasks=1</span>
+        SLOTS_MILLIS_MAPS=24049 
+        Total time spent by all reduces waiting after reserving slots (ms)=0
+        Total time spent by all maps waiting after reserving slots (ms)=0
+        Rack-local map tasks=1
+        <span style="color:red">Launched map tasks=4</span>
+        Data-local map tasks=3
+</pre>
+
+Similarly, you can add <code>-D mapred.reduce.tasks=4</code> to suggest the
+number of reducers.  The reducer count is a little more flexible, and you can
+set it to zero if you just want to apply a mapper to a large file.
+
+With all this being said, the fact that Hadoop defaults to only two mappers
+says something about the problem we're trying to solve--**that is, this 
+entire example is actually very stupid**.  While it illustrates the
 concepts quite neatly, counting words in a 1.2 MB file is a waste of time if
 done through Hadoop because, by default, Hadoop assigns chunks to mappers in
 increments of 64 MB.  Hadoop is meant to handle multi-gigabyte files, and
 actually getting Hadoop streaming to do something useful for your research
-often requires a bit more knowledge than what I've presented above.</p>
+often requires a bit more knowledge than what I've presented above.
 
-<p>To fill in these gaps, the next part of this tutorial, <a 
-href="hadoop-vcfparse.php">Parsing VCF Files with Hadoop Streaming</a>, 
+To fill in these gaps, the next part of this tutorial,
+[Parsing VCF Files with Hadoop Streaming][parsing vcfs], 
 shows how I applied Hadoop to solve a real-world problem involving Python, 
-some exotic Python libraries, and some not-completely-uniform files.</p>
+some exotic Python libraries, and some not-completely-uniform files.
 
+<hr style="margin-bottom:0">
 
-<hr/>
-<p style="padding-top:2em;font-size:x-small">This document was developed with 
-support from the National Science Foundation (NSF) under Grant No. 0910812 to 
-Indiana University for "FutureGrid: An Experimental, High-Performance Grid 
-Test-bed." Any opinions, findings, and conclusions or recommendations 
-expressed in this material are those of the author(s) and do not necessarily 
-reflect the views of the NSF.  This work was made possible by the resources
-afforded to me through a project entitled <a 
-href="https://portal.futuregrid.org/projects/344">Exploring map/reduce 
-frameworks for users of traditional HPC</a> on FutureGrid Hotel and Sierra.</p>
+<p style="font-size:x-small">This document was developed with support from the National Science Foundation
+(NSF) under Grant No. 0910812 to Indiana University for "FutureGrid: An
+Experimental, High-Performance Grid Test-bed." Any opinions, findings, and
+conclusions or recommendations expressed in this material are those of the
+author(s) and do not necessarily reflect the views of the NSF.</p>
 
 <!-- references -->
 
