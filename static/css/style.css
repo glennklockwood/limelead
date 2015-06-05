@@ -77,8 +77,8 @@ body {
     vertical-align: middle;
 }
 .alert p {
-    display:table-cell;
     padding-left: inherit;
+    display: table-cell;
 }
 
 

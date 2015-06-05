@@ -305,5 +305,5 @@ That tutorial covers much of the same material, but in the context of an actual
 problem (counting the number of times each word appears in a text) with actual
 code written in Python.
 
-<!-- -->
+<!-- References -->
 [hadoop streaming guide]: hadoop-streaming.html

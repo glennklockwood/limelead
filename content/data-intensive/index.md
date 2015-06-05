@@ -32,6 +32,12 @@ each tutorial page.
 
 - [Conceptual Overview of Map/Reduce and Hadoop](hadoop/overview.html)
 - [Writing Hadoop Applications in Python with Hadoop Streaming](hadoop/hadoop-streaming.html)
-- Running Hadoop on HPC Clusters
+- [Parsing VCF Files with Hadoop Streaming](hadoop/parsing-vcfs.html)
+- [Running Hadoop on HPC Clusters](hadoop/hadoop-on-hpc-clusters.html)
 
 ## Topics in R
+
+- Using R on HPC Clusters
+- Parallel Options for R
+- Parallel R using Hadoop
+- [Code Samples for Parallel R](https://github.com/glennklockwood/paraR)
