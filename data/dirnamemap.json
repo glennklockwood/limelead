@@ -1,5 +1,6 @@
 {
     "data-intensive" : "Data-Intensive Computing",
     "hadoop"         : "Hadoop",
-    "hpc-howtos"     : "HPC Howtos"
+    "hpc-howtos"     : "HPC Howtos",
+    "r"              : "R"
 }

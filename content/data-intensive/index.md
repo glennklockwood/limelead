@@ -31,9 +31,9 @@ each tutorial page.
 ## Topics in Hadoop
 
 - [Conceptual Overview of Map/Reduce and Hadoop](hadoop/overview.html)
-- [Writing Hadoop Applications in Python with Hadoop Streaming](hadoop/hadoop-streaming.html)
+- [Writing Hadoop Applications in Python with Hadoop Streaming](hadoop/streaming.html)
 - [Parsing VCF Files with Hadoop Streaming](hadoop/parsing-vcfs.html)
-- [Running Hadoop on HPC Clusters](hadoop/hadoop-on-hpc-clusters.html)
+- [Running Hadoop on HPC Clusters](hadoop/on-hpc.html)
 
 ## Topics in R
 

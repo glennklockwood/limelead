@@ -347,7 +347,7 @@ author(s) and do not necessarily reflect the views of the NSF.</p>
 [glennklockwood/hpchadoop repo]: https://github.com/glennklockwood/hpchadoop
 [hadoop overview]: overview.html
 [gordon hadoop tutorial]: http://www.sdsc.edu/support/user_guides/tutorials/hadoop.html
-[running hadoop on hpc]: running-hadoop-on-hpc.html
+[running hadoop on hpc]: on-hpc.html
 [semi-persistent hadoop cluster script]: https://github.com/glennklockwood/hpchadoop/blob/master/hadoopcluster.xsede-gordon.qsub
 [non-interactive hadoop word count script]: https://github.com/glennklockwood/hpchadoop/blob/master/wordcount.py/streaming-wordcount-py.xsede-gordon.qsub
 [moby dick fulltext]: http://www.gutenberg.org/cache/epub/2701/pg2701.txt

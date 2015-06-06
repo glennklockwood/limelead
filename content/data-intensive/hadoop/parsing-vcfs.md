@@ -223,8 +223,8 @@ author(s) and do not necessarily reflect the views of the NSF.</p>
 <!-- references -->
 [vcf format]: http://www.1000genomes.org/node/101
 [vcf repository]: ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/release/20110521/
-[hadoop streaming tutorial]: hadoop-streaming.md
-[hadoop on hpc clusters]: hadoop-on-hpc-clusters.html
+[hadoop streaming tutorial]: streaming.md
+[hadoop on hpc clusters]: on-hpc.html
 [virtualenv]: http://www.virtualenv.org/en/latest/
 [install python without root]: ../../hpc-howtos/installing-without-root.html#pylib
 [vcfparser code]: https://github.com/glennklockwood/hpchadoop/tree/master/vcfparser.py
