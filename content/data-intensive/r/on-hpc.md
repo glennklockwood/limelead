@@ -67,7 +67,7 @@ Content type 'application/x-tar' length 176106 bytes (171 Kb)
 opened URL
 ==================================================
 downloaded 171 Kb
-
+&nbsp; 
 * installing *source* package 'lmtest' ...
 ** package 'lmtest' successfully unpacked and MD5 sums checked
 ** libs
@@ -164,17 +164,17 @@ allocate some locked memory.  This typically can indicate that the
 memlock limits are set too low.  For most HPC installations, the
 memlock limits should be set to "unlimited".  The failure occured
 here:
- 
+&nbsp; 
   Local host:    trestles-login2.sdsc.edu
   OMPI source:   btl_openib_component.c:1216
   Function:      ompi_free_list_init_ex_new()
   Device:        mlx4_0
   Memlock limit: 65536
- 
+&nbsp; 
 You may need to consult with your system administrator to get this
 problem fixed.  This FAQ entry on the Open MPI web site may also be
 helpful:
- 
+&nbsp; 
     http://www.open-mpi.org/faq/?category=openfabrics#ib-locked-pages
 --------------------------------------------------------------------------
 --------------------------------------------------------------------------
@@ -191,7 +191,7 @@ because the test is running on one of the cluster's login nodes (where you are
 doing all of this) and cannot access the MPI execution environment that real
 jobs on compute nodes use.
 
-<p>At this point you should have <code>Rmpi</code> installed, and this allows 
+At this point you should have <code>Rmpi</code> installed, and this allows 
 the <code>snow</code>  package to use MPI for distributed computing.  If you 
 run into an error that looks like this:
 
@@ -209,172 +209,182 @@ ERROR: loading failed
 </pre>
 
 You probably forgot to load the prerequisite modules correctly.  Purge all of
-your currently loaded modules, then re-load the ones necessary to build R 
-libraries:
+your currently loaded modules, then re-load the ones necessary to build R
+libraries
 
 <pre>
 $ <kbd>module purge</kbd>
 $ <kbd>module load gnu/4.6.1 openmpi R</kbd>
 $ <kbd>R CMD INSTALL</kbd> --configure-vars=...
 </pre>
-
-<!-- Consider making a bona fide inset -->
-<table class="inset">
-<tr><th>Note about MVAPICH2</th></tr>
-<tr><td>
-<p>If you log into Gordon, start an interactive job (do not run R on the login
+{{% inset "Note about MVAPICH2" %}}
+If you log into Gordon, start an interactive job (do not run R on the login
 nodes!), and try run a snow-based script which calls <code>ClusterApply</code>,
-you may find that it just segfaults:</p>
-<blockquote>
-<div>$ <kbd>mpirun_rsh -np 1 -hostfile $PBS_NODEFILE $(which R) CMD BATCH ./snowapp.R</kbd></div>
-<div>[gcn-14-17.sdsc.edu:mpispawn_0][readline] Unexpected End-Of-File on file descriptor 5. MPI process died?</div>
-<div>[gcn-14-17.sdsc.edu:mpispawn_0][mtpmi_processops] Error while reading PMI socket. MPI process died?</div>
-<div>/opt/R/lib64/R/bin/BATCH: line 60: 130758 Segmentation fault      ${R_HOME}/bin/R -f ${in} ${opts} ${R_BATCH_OPTIONS} > ${out} 2>&1</div>
-<div>[gcn-14-17.sdsc.edu:mpispawn_0][child_handler] MPI process (rank: 0, pid: 130753) exited with status 139</div>
-</blockquote>
-<p>If you instead try to use mpiexec (which is mpiexec.hydra) you will instead
-get this error:</p>
-<blockquote>
-<div>*** caught segfault ***</div>
-<div>address 0x5ddcbc7, cause 'memory not mapped'</div>
-<div> </div>
-<div>Traceback:</div>
-<div> 1: .Call("mpi_comm_spawn", as.character(slave), as.character(slavearg),     as.integer(nslaves), as.integer(info), as.integer(root),     as.integer(intercomm), as.integer(quiet), PACKAGE = "Rmpi")</div>
-<div> 2: mpi.comm.spawn(slave = mpitask, slavearg = args, nslaves = count,     intercomm = intercomm)</div>
-<div> 3: snow::makeMPIcluster(spec, ...)</div>
-<div> 4: makeCluster(10, type = "MPI")</div>
-<div>aborting ...</div>
-</blockquote>
+you may find that it just segfaults:
 
-<p>Alternatively, your application may produce this error instead of 
-segfaulting:</p>
+<pre>
+$ <kbd>mpirun_rsh -np 1 -hostfile $PBS_NODEFILE $(which R) CMD BATCH ./snowapp.R</kbd>
+[gcn-14-17.sdsc.edu:mpispawn_0][readline] Unexpected End-Of-File on file descriptor 5. MPI process died?
+[gcn-14-17.sdsc.edu:mpispawn_0][mtpmi_processops] Error while reading PMI socket. MPI process died?
+/opt/R/lib64/R/bin/BATCH: line 60: 130758 Segmentation fault      ${R_HOME}/bin/R -f ${in} ${opts} ${R_BATCH_OPTIONS} > ${out} 2>&amp;1
+[gcn-14-17.sdsc.edu:mpispawn_0][child_handler] MPI process (rank: 0, pid: 130753) exited with status 139
+</pre>
 
-<blockquote>
-<div>Error in mpi.universe.size() : </div>
-<div>  This function is not supported under MPI 1.2</div>
-<div>Calls: mpi.spawn.Rslaves -> mpi.comm.spawn -> mpi.universe.size</div>
-<div>Execution halted</div>
-</blockquote>
+If you instead try to use mpiexec (which is mpiexec.hydra) you will instead
+get this error:
 
-<p>These errors all indicate a major bug in the Rmpi package which remains 
-fixed.  I take this to mean that <strong>Rmpi simply does not work with 
-MVAPICH2.  Use OpenMPI when using Rmpi or its derivatives.</strong>  You can
+<pre>
+*** caught segfault ***
+address 0x5ddcbc7, cause 'memory not mapped'
+&nbsp; 
+Traceback:
+ 1: .Call("mpi_comm_spawn", as.character(slave), as.character(slavearg),     as.integer(nslaves), as.integer(info), as.integer(root),     as.integer(intercomm), as.integer(quiet), PACKAGE = "Rmpi")
+ 2: mpi.comm.spawn(slave = mpitask, slavearg = args, nslaves = count,     intercomm = intercomm)
+ 3: snow::makeMPIcluster(spec, ...)
+ 4: makeCluster(10, type = "MPI")
+aborting ...
+</pre>
+
+Alternatively, your application may produce this error instead of 
+segfaulting:
+
+<pre>
+Error in mpi.universe.size() : 
+  This function is not supported under MPI 1.2
+Calls: mpi.spawn.Rslaves -> mpi.comm.spawn -> mpi.universe.size
+Execution halted
+</pre>
+
+These errors all indicate a major bug in the Rmpi package which remains 
+fixed.  I take this to mean that **Rmpi simply does not work with 
+MVAPICH2.  Use OpenMPI when using Rmpi or its derivatives.**  You can
 do this by loading the <code>openmpi_ib</code> module before loading the 
-<code>R</code> module</strong>.</p>
-</td></tr></table>
-
-
+<code>R</code> module.
+{{% /inset %}}
 ## <a name="pbs"></a>Submitting Parallel R Jobs
-<p>On personal workstations, R is often used by running the R shell in an
+
+On personal workstations, R is often used by running the R shell in an
 interactive fashion and either typing in commands or doing something like 
 <kbd>source('script.R')</kbd>.  Supercomputers generally operate through batch
 schedulers though, so you will want to get your R script running 
-non-interactively.  There are a few ways of doing this:</p>
-<ol>
-<li>Add <samp>#!/usr/bin/env Rscript</samp> to the very top of your R script and
-    make it executable (<kbd>chmod +x script.R</kbd>), then just run the script
-    as you would a bash script or any program (<kbd>./script.R</kbd>)</li>
-<li>Call Rscript with the script's name as a command line parameter: 
-    <kbd>Rscript script.R</kbd>.  I've seen this break an otherwise working
-    R script though, and I never got to the bottom of it.</li>
-<li>Call <kbd>R CMD BATCH script.R</kbd></li>
-</ol>
-<p>I am going to use #3 in the following examples because it is the most proper
+non-interactively.  There are a few ways of doing this:
+
+1. Add <samp>#!/usr/bin/env Rscript</samp> to the very top of your R script and
+   make it executable (<kbd>chmod +x script.R</kbd>), then just run the script
+   as you would a bash script or any program (<kbd>./script.R</kbd>)
+2. Call Rscript with the script's name as a command line parameter: 
+   <kbd>Rscript script.R</kbd>.  I've seen this break an otherwise working
+   R script though, and I never got to the bottom of it.
+3. Call <kbd>R CMD BATCH script.R</kbd>
+
+I am going to use #3 in the following examples because it is the most proper
 way.  The sample job submit scripts that follow are for Torque, which is the 
 batch manager we run on SDSC Gordon and Trestles.  These scripts can be 
 trivially adapted to SGE/Grid Engine, Slurm, LSF, Load Leveler, or whatever 
-other batch system your system may have.</p>
+other batch system your system may have.
 
 ### <a name="pbs:serial"></a>Running Serial R Jobs
-<p>Running an R script in serial is quite straightforward.  On XSEDE's Gordon
-resource at SDSC, your queue script should look something like this:</p>
-<blockquote>
-<div>#!/bin/sh</div>
-<div>#PBS -q normal</div>
-<div>#PBS -l nodes=1:ppn=16:native</div>
-<div>#PBS -l walltime=0:05:00</div>
-<div> </div>
-<div>module load R</div>
-<div> </div>
-<div>cd $PBS_O_WORKDIR</div>
-<div> </div>
-<div>export OMP_NUM_THREADS=1 </div>
-<div>R CMD BATCH test.serial.R</div>
-</blockquote>
-<p>The peculiar bit to note here is our use of <code>export OMP_NUM_THREADS=1</code>.
+
+Running an R script in serial is quite straightforward.  On XSEDE's Gordon
+resource at SDSC, your queue script should look something like this:
+
+<pre>
+#!/bin/sh
+#PBS -q normal
+#PBS -l nodes=1:ppn=16:native
+#PBS -l walltime=0:05:00
+&nbsp; 
+module load R
+&nbsp; 
+cd $PBS_O_WORKDIR
+&nbsp; 
+export OMP_NUM_THREADS=1 
+R CMD BATCH test.serial.R
+</pre>
+
+The peculiar bit to note here is our use of <code>export OMP_NUM_THREADS=1</code>.
 If you don't specify this, R will use as many threads as it can grab if your
 script uses a library that supports multithreading.  This isn't bad per se, but
 explicitly specifying <var>OMP_NUM_THREADS</var> is good practice--that way you
-always know exactly how many cores your script will use.</p>
+always know exactly how many cores your script will use.
 
 ### <a name="pbs:smp"></a>Running Shared-Memory R Jobs
-<p>Running shared-memory parallel R on a single node is also quite simple.  Here
+
+Running shared-memory parallel R on a single node is also quite simple.  Here
 is a sample queue script that uses all 16 cores on a dedicated (non-shared)
-node.</p>
-<blockquote>
-<div>#!/bin/sh</div>
-<div>#PBS -q normal</div>
-<div>#PBS -l nodes=1:ppn=16:native</div>
-<div>#PBS -l walltime=0:05:00</div>
-<div> </div>
-<div>module load R</div>
-<div> </div>
-<div>cd $PBS_O_WORKDIR</div>
-<div> </div>
-<div>export OMP_NUM_THREADS=1</div>
-<div>R CMD BATCH test.doMC.R</div>
-</blockquote>
-<p>It is actually the same script as the serial version.  Bear in mind that the
+node.
+
+<pre>
+#!/bin/sh
+#PBS -q normal
+#PBS -l nodes=1:ppn=16:native
+#PBS -l walltime=0:05:00
+&nbsp; 
+module load R
+&nbsp; 
+cd $PBS_O_WORKDIR
+&nbsp; 
+export OMP_NUM_THREADS=1
+R CMD BATCH test.doMC.R
+</pre>
+
+It is actually the same script as the serial version.  Bear in mind that the
 <var>OMP_NUM_THREADS</var> <em>only</em> controls the number of cores used by
 libraries which support OpenMP.  By comparison, the <code>multicore</code> (and
 <code>parallel</code>) libraries do <em>not</em> use OpenMP; they let you 
-control the number of cores from within R.</p>
+control the number of cores from within R.
 
 ### <a name="pbs:snow"></a>Running Parallel Jobs with snow/doSNOW
-<p>Snow (and its derived libraries) does its own process managements, so you
-<em>must</em> run it as if it were a one-way MPI job.  For example,</p>
-<blockquote>
-<div>#!/bin/sh</div>
-<div>#PBS -q normal</div>
-<div>#PBS -l nodes=2:ppn=16:native</div>
-<div>#PBS -l walltime=0:05:00</div>
-<div> </div>
-<div>module swap mvapich2_ib openmpi_ib</div>
-<div>module load R</div>
-<div> </div>
-<div>cd $PBS_O_WORKDIR</div>
-<div> </div>
-<div>export OMP_NUM_THREADS=1</div>
-<div>mpirun <span style="color:#CC0000">-np 1</span> -hostfile $PBS_NODEFILE R CMD BATCH test.doSNOW.R</div>
-</blockquote>
-<p>If you forget to request only one core, your job will fail and you will get
-a lot of horrific errors:</p>
-<blockquote>
-<div>CMA: unable to open RDMA device</div>
-<div>CMA: unable to open RDMA device</div>
-<div>[[59223,26],16][btl_openib_component.c:1493:init_one_device] error obtaining device context for mlx4_0 errno says No such device</div>
-<div>[[59223,27],23][btl_openib_component.c:1493:init_one_device] error obtaining device context for mlx4_0 errno says No such device</div>
-<div>[[59223,31],5][btl_openib_component.c:1493:init_one_device] error obtaining device context for mlx4_0 errno says No such device</div>
-</blockquote>
-<p>This is because the R script winds up running in duplicate, and each 
+
+Snow (and its derived libraries) does its own process managements, so you
+_must_ run it as if it were a one-way MPI job.  For example,
+
+<pre>
+#!/bin/sh
+#PBS -q normal
+#PBS -l nodes=2:ppn=16:native
+#PBS -l walltime=0:05:00
+&nbsp; 
+module swap mvapich2_ib openmpi_ib
+module load R
+&nbsp; 
+cd $PBS_O_WORKDIR
+&nbsp; 
+export OMP_NUM_THREADS=1
+mpirun <span style="color:#CC0000">-np 1</span> -hostfile $PBS_NODEFILE R CMD BATCH test.doSNOW.R
+</pre>
+
+If you forget to request only one core, your job will fail and you will get
+a lot of horrific errors:
+
+<pre>
+CMA: unable to open RDMA device
+CMA: unable to open RDMA device
+[[59223,26],16][btl_openib_component.c:1493:init_one_device] error obtaining device context for mlx4_0 errno says No such device
+[[59223,27],23][btl_openib_component.c:1493:init_one_device] error obtaining device context for mlx4_0 errno says No such device
+[[59223,31],5][btl_openib_component.c:1493:init_one_device] error obtaining device context for mlx4_0 errno says No such device
+</pre>
+
+This is because the R script winds up running in duplicate, and each 
 duplicate tries to spawn a full complement of its own MPI ranks.  Thus, instead
-of getting 2&#215;16 ranks, you get (2&#215;16)&#215;(2&#215;16).</p>
+of getting 2&#215;16 ranks, you get (2&#215;16)&#215;(2&#215;16).
 
 ## <a name="samp"></a>Trivial sample code
-<p>I've created some <a 
-href="https://github.com/glennklockwood/paraR/tree/master/hello">trivial Hello 
-World samples that can be found on my GitHub account</a>.  They illustrate 
-the very minimum needed to use the parallel backends for the 
-<code>foreach</code> package and are a good way to verify that your parallel 
-libraries and R environment are set up correctly.  The idea here is that you 
-can replace the <samp>hello.world()</samp> function with something useful and 
-be off to a good start.</p>
 
-<p>However, these samples do <em>not</em> illustrate how data, libraries, and 
+I've created some [trivial Hello World samples that can be found on my GitHub
+account][parallel hello world in r].  They illustrate the very minimum needed
+to use the parallel backends for the <code>foreach</code> package and are a
+good way to verify that your parallel libraries and R environment are set up
+correctly.  The idea here is that you can replace the 
+<samp>hello.world()</samp> function with something useful and be off to a good
+start.
+
+However, these samples do _not_ illustrate how data, libraries, and 
 subfunctions may have to be transferred to other nodes when using MPI.  For more
 details on how to approach those more realistic problems, see the next part in
-this series:  <a href="R-para.php">Parallel Options for R</a>.</p>
+this series:  [Parallel Options for R][parallel options]
 
 <!-- references -->
 [parallel options]: parallel-options.html
 [rmpi website]: http://cran.r-project.org/web/packages/Rmpi/index.html
+[parallel hello world in r]: https://github.com/glennklockwood/paraR/tree/master/hello
