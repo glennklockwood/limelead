@@ -22,36 +22,36 @@ questions was on December 2, 2013.
 
 ## Content
 
-* [Encrypted SSH Keys](#sshkey)
-    * [Symptom](#sshkey:symp)
-    * [Diagnosis: Your SSH key is encrypted](#sshkey:diag)
-    * [Cure: Generate new, unecrypted SSH keys](#sshkey:cure)
-* [Node Failure](#deadnode)
-    * [Symptom](#deadnode:symp)
-    * [Diagnosis: Your job's node is dead](#deadnode:diag)
-    * [Cure: Contact User Services and wait](#deadnode:cure)
-* [MPI Death](#mpideath)
-    * [Symptom](#mpideath:symp)
-    * [Diagnosis: Your job broke](#mpideath:diag)
-    * [Cure: Contact User Services](#mpideath:cure)
-* [Wrong MPI Process Ma](#mpd)
-    * [Symptom](#mpd:symp)
-    * [Diagnosis: You are using the wrong mpirun command](#mpd:diag)
-    * [Cure: Fix your submit script](#mpd:cure)
-* [Java Won't Start Due to Heap ](#javaheap)
-    * [Symptom](#javaheap:symp)
-    * [Diagnosis: You are hitting memory limitations on the login nodes](#javaheap:diag)
-    * [Cure: Explicitly set your Java heap size](#javaheap:cure)
-* [MVAPICH2 job fails with completion with error 12, vendor code](#error12)
-    * [Symptom](#error12:symp)
-    * [Diagnosis: MVAPICH2 could not communicate over InfiniBand](#error12:diag)
-    * [Cure: Increase timeouts in MVAPICH2](#error12:cure)
+* [1. Encrypted SSH Keys](#1-encrypted-ssh-keys)
+    * [1.1. Symptom](#1-1-symptom)
+    * [1.2. Diagnosis: Your SSH key is encrypted](#1-2-diagnosis-your-ssh-key-is-encrypted)
+    * [1.3. Cure: Generate new, unencrypted SSH keys](#1-3-cure-generate-new-unencrypted-ssh-keys)
+* [2. Node Failure](#2-node-failure)
+    * [2.1. Symptom](#2-1-symptom)
+    * [2.2. Diagnosis: Your job's node is dead](#2-2-diagnosis-your-job-s-node-is-dead)
+    * [2.3. Cure: Contact User Services](#2-3-cure-contact-user-services)
+* [3. MPI Dies](#3-mpi-dies)
+    * [3.1. Symptom](#3-1-symptom)
+    * [3.2. Diagnosis: Your job broke](#3-2-diagnosis-your-job-broke)
+    * [3.3. Cure: Contact User Services](#3-3-cure-contact-user-services)
+* [4. Wrong MPI Process Manager](#4-wrong-mpi-process-manager)
+    * [4.1. Symptom](#4-1-symptom)
+    * [4.2. Diagnosis: You are using the wrong mpirun command](#4-2-diagnosis-you-are-using-the-wrong-mpirun-command)
+    * [4.3. Cure: Fix your submit script](#4-3-cure-fix-your-submit-script)
+* [5. Java Won't Start Due to Heap Error](#5-java-won-t-start-due-to-heap-error)
+    * [5.1. Symptom](#5-1-symptom)
+    * [5.2. Diagnosis: You are hitting memory limitations on the login nodes](#5-2-diagnosis-you-are-hitting-memory-limitations-on-the-login-nodes)
+    * [5.3. Cure: Explicitly set your Java heap size](#5-3-cure-explicitly-set-your-java-heap-size)
+* [6. MVAPICH2 job fails with completion with error 12, vendor code=0x81](#6-mvapich2-job-fails-with-completion-with-error-12-vendor-code-0x81)
+    * [6.1. Symptom](#6-1-symptom)
+    * [6.2. Diagnosis: MVAPICH2 could not communicate over InfiniBand](#6-2-diagnosis-mvapich2-could-not-communicate-over-infiniband)
+    * [6.3. Cure: Increase timeouts in MVAPICH2](#6-3-cure-increase-timeouts-in-mvapich2)
 
 <!-- sshkey -->
 
-## <a name="sshkey"></a>Encrypted SSH Keys
+## 1. Encrypted SSH Keys
 
-### <a name="sshkey:symp"></a>Symptom:
+### 1.1. Symptom:
 
 Your job status, either reported to you via e-mail or contained in your job's
 error log, ends with errors that say
@@ -88,7 +88,7 @@ The application 'gnome-ssh-askpass' lost its connection to the display trestles-
 most likely the X server was shut down or you killed/destroyed the application.
 </pre>
 
-### <a name="sshkey:diag"></a>Diagnosis: Your SSH key is encrypted
+### 1.2. Diagnosis: Your SSH key is encrypted
 
 The MPI setup on SDSC Gordon and Trestles requires that users be able to
 ssh within the cluster without being prompted for a passphrase.  This is 
@@ -117,7 +117,7 @@ $ <kbd>grep -c '^Proc-Type: 4,ENCRYPTED$' ~/.ssh/id_rsa</kbd>
 
 If you see anything other than "0", this is the issue.
 
-### <a name="sshkey:cure"></a>Cure: Generate new, unecrypted SSH keys
+### 1.3. Cure: Generate new, unencrypted SSH keys
 
 Provide the following two commands:
 
@@ -153,9 +153,9 @@ And then the problem should be resolved.
 
 <!-- deadnode -->
 
-## <a name="deadnode"></a>Node Failure
+## 2. Node Failure
 
-### <a name="deadnode:symp"></a>Symptom:
+### 2.1. Symptom:
 
 Your job stopped producing output but is still in the '<code>R</code>'
 (running) state according to <code>qstat</code>.  When trying to 
@@ -165,7 +165,7 @@ Your job stopped producing output but is still in the '<code>R</code>'
 qdel: Server could not connect to MOM 1234567.trestles-fe1.sdsc.edu
 </pre>
 
-### <a name="deadnode:diag"></a>Diagnosis: Your job's node is dead
+### 2.2. Diagnosis: Your job's node is dead
 
 "MOM" is the program that runs on each compute node and receives jobs from
 the queue to be executed.  All of the q&ast; commands (<code>qsub</code>, 
@@ -203,7 +203,7 @@ node has less than a gigabyte of RAM left (&lt; 1,048,576kb), it is likely that
 your job did, in fact, run out of memory.  The above example, where only ~80 MB
 of RAM was left, came from such a node.
 
-### <a name="deadnode:cure"></a>Cure: Contact User Services and wait
+### 2.3. Cure: Contact User Services
 
 There is nothing you can do about a downed node as a user.  Fortunately, 
 the node's MOM will send an update to the queue manager right after the downed
@@ -221,18 +221,19 @@ running your stuck, half-dead job.
 
 <!-- mpideath -->
 
-## <a name="mpideath"></a>MPI Dies
+## 3. MPI Dies
 
-### <a name="mpideath:symp"></a>Symptom:
+### 3.1. Symptom:
 
 Your job died and the obvious error message e-mailed to you says something like this:
+
 <pre>
 [gcn-14-82.sdsc.edu:mpispawn_0][readline] Unexpected End-Of-File on file descriptor 6. MPI process died?
 [gcn-14-82.sdsc.edu:mpispawn_0][mtpmi_processops] Error while reading PMI socket. MPI process died?
 [gcn-14-82.sdsc.edu:mpispawn_0][child_handler] MPI process (rank: 0, pid: 15024) exited with status 252
 </pre>
 
-### <a name="mpideath:diag"></a>Diagnosis: Your job broke
+### 3.2. Diagnosis: Your job broke
 
 This is a generic error message displayed whenever MPI terminates without 
 calling <code>MPI_Finalize()</code>, and unfortunately it is not very helpful.
@@ -242,7 +243,7 @@ would make diagnosing the issue easier.
 
 _This section is not yet complete_
 
-### <a name="mpideath:cure"></a>Cure: Contact User Services
+### 3.3. Cure: Contact User Services
 
 Contact the <a href="mailto:help@xsede.org">XSEDE helpdesk</a> if your error 
 file does not contain anything that helps you figure out why your job broke. 
@@ -250,9 +251,9 @@ _This section is not yet complete_
 
 <!-- mpd -->
 
-## <a name="mpd"></a>Wrong MPI Process Manager
+## 4. Wrong MPI Process Manager
 
-### <a name="mpd:symp"></a>Symptom:
+### 4.1. Symptom:
 
 Upon submission, your job promptly fails with this error message:
 
@@ -267,16 +268,16 @@ For more details on starting mpds on a set of hosts, see
 the MVAPICH2 User Guide.
 </pre>
 
-### <a name="mpd:diag"></a>Diagnosis: You are using the wrong mpirun command
+### 4.2. Diagnosis: You are using the wrong mpirun command
 
 There are two common causes of this error.
 
-#### 1. If you are trying to use OpenMPI...
+#### 4.2.1. If you are trying to use OpenMPI...
 
 _This section is not yet complete._ In brief, OpenMPI needs to be 
 explicitly loaded from within the submit script when running OpenMPI jobs.
 
-#### 2. If you are NOT trying to use OpenMPI or aren't sure...
+#### 4.2.2. If you are NOT trying to use OpenMPI or aren't sure...
 
 You aren't following directions.  If you use the <code>mpirun</code> command 
 on Trestles, you will probably see this behavior because Trestles does not 
@@ -284,15 +285,15 @@ support <code>mpirun</code>.  According to the <a href="http://www.sdsc.edu/us/r
 User Guide</a>, you need to launch your MPI jobs using <kbd>mpirun_rsh</kbd>
 when using mvapich2.
 
-### <a name="mpd:cure"></a>Cure: Fix your submit script
+### 4.3. Cure: Fix your submit script
 
 _This section is not yet complete_
 
 <!-- java heap problem -->
 
-## <a name="javaheap"></a>Java Won't Start Due to Heap Error
+## 5. Java Won't Start Due to Heap Error
 
-### <a name="javaheap:symp"></a>Symptom:
+### 5.1. Symptom:
 
 You try to do something involving Java on either Gordon's or Trestles' 
 login nodes (<code>java</code>, <code>javac</code>, <code>ant</code>, etc) but 
@@ -305,7 +306,7 @@ Could not reserve enough space for object heap
 Could not create the Java virtual machine.
 </pre>
 
-### <a name="javaheap:diag"></a>Diagnosis: You are hitting memory limitations on the login nodes
+### 5.2. Diagnosis: You are hitting memory limitations on the login nodes
 
 Because the login nodes for Gordon and Trestles are shared across all users,
 there are limitations on how much memory any single user can consume (e.g., see
@@ -314,7 +315,7 @@ peculiar way, and it is not uncommon for certain Java applications to try to
 allocate more memory than we allow and throw these strange errors about the
 object heap.
 
-### <a name="javaheap:cure"></a>Cure: Explicitly set your Java heap size
+### 5.3. Cure: Explicitly set your Java heap size
 
 Most of the time, you can tell Java to not be so greedy when it starts by
 passing it the <code>-Xmx256m</code> option to force it to allocate only
@@ -349,9 +350,9 @@ and then run your Java task there.
 [gcn-4-11.sdsc.edu:mpi_rank_10][MPIDI_CH3I_MRAILI_Cq_poll] src/mpid/ch3/channels/mrail/src/gen2/ibv_channel_manager.c:586: [] Got completion with error 12, vendor code=0x81, dest rank=17
 -->
 
-## <a name="error12"></a>MVAPICH2 job fails with completion with error 12, vendor code=0x81
+## 6. MVAPICH2 job fails with completion with error 12, vendor code=0x81
 
-### <a name="error12:symp"></a>Symptom:
+### 6.1. Symptom:
 
 Your job ran for a minute or two, produced little or no output, then died 
 with a bunch of errors that look something like this:
@@ -362,7 +363,7 @@ with a bunch of errors that look something like this:
 [gcn-4-11.sdsc.edu:mpi_rank_10][MPIDI_CH3I_MRAILI_Cq_poll] src/mpid/ch3/channels/mrail/src/gen2/ibv_channel_manager.c:586: [] Got completion with error 12, vendor code=0x81, dest rank=17
 </pre>
 
-### <a name="error12:diag"></a>Diagnosis: MVAPICH2 could not communicate over InfiniBand
+### 6.2. Diagnosis: MVAPICH2 could not communicate over InfiniBand
 
 Unfortunately this error is pretty generic and only tells you that your job 
 failed when an MPI call to a remote host over the InfiniBand fabric could not
@@ -378,9 +379,9 @@ combination of InfiniBand congestion caused by other users and your code
 cause timeouts that can be fixed with a little bit of tweaking of the
 MVAPICH2 parameters.
 
-### <a name="error12:cure"></a>Cure: Increase timeouts in MVAPICH2
+### 6.3. Cure: Increase timeouts in MVAPICH2
 
-#### Check your MVAPICH2 multi-rail settings
+#### 6.3.1. Check your MVAPICH2 multi-rail settings
 
 If you encounter this problem on Gordon (or any other system with a 
 multi-rail InfiniBand fabric), first rule out that the problem is with your 
@@ -403,7 +404,7 @@ export MV2_IBA_HCA=mlx4_0
 export MV2_NUM_HCAS=1
 </pre>
 
-#### Increase your MVAPICH2 timeout thresholds
+#### 6.3.2. Increase your MVAPICH2 timeout thresholds
 
 If your <code>MV2_IBA_HCA</code> and <code>MV2_NUM_HCAS</code> are set
 correctly on your job's compute nodes, your code may just be running into
