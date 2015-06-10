@@ -6,19 +6,19 @@ shortTitle: "R on HPC"
 parentdirs: [ 'data-intensive', 'r' ]
 ---
 
-## <a name="contents"></a>Contents
+## Contents
 
-* [Introduction](#intro)
-* [Installing Libr](#installinglibs)
-    * [Most Libraries](#installinglibs:most)
-    * [Rmpi](#installinglibs:rmpi)
-* [Parallel R and Torqu](#pbs)
-    * [Serial](#pbs:serial)
-    * [Shared Memory](#pbs:smp)
-    * [snow/doSNOW](#pbs:snow)
-* [Trivial sample code](#samp)
+* [1. Introduction](#1-introduction)
+* [2. Installing Libraries](#2-installing-libraries)
+    * [2.1. Most Libraries](#2-1-most-libraries)
+    * [2.2. Rmpi](#2-2-rmpi)
+* [3. Submitting R Jobs to a Cluster](#3-submitting-r-jobs-to-a-cluster)
+    * [3.1 Running Serial R Jobs](#3-1-running-serial-r-jobs)
+    * [3.2 Running Shared Memory R Jobs](#3-2-running-shared-memory-r-jobs)
+    * [3.3 Running Parallel Jobs with snow/doSNOW](#3-3-running-parallel-jobs-with-snow-dosnow)
+* [4. Trivial sample code](#4-trivial-sample-code)
 
-## <a name="intro"></a>Introduction
+## 1. Introduction
 
 This page covers the gnarly system-specific overhead required to run R in
 parallel on shared computing resources such as clusters and supercomputers.
@@ -28,9 +28,9 @@ on [Parallel Options for R][parallel options].  Rather, it covers what you
 need to know about installing libraries and running R on someone else's
 supercomputer rather than your personal laptop or desktop.
 
-## <a name="installinglibs"></a>Installing Libraries
+## 2. Installing Libraries
 
-### <a name="installinglibs:most"></a>Most Libraries
+### 2.1. Most Libraries
 
 Users are typically not allowed to install R libraries globally on most
 clusters, but R makes it very easy for users to install libraries in their home
@@ -106,7 +106,7 @@ $ <kbd>module unload pgi</kbd>
 $ <kbd>module load gnu/4.8.2 openmpi_ib R</kbd>
 </pre>
 
-### <a name="installinglibs:rmpi"></a>Installing Rmpi
+### 2.2. Rmpi
 
 In order to use distributed memory parallelism (i.e., multi-node jobs) 
 within R, you will need to use <code>Rmpi</code> in some form or another.
@@ -217,6 +217,8 @@ $ <kbd>module purge</kbd>
 $ <kbd>module load gnu/4.6.1 openmpi R</kbd>
 $ <kbd>R CMD INSTALL</kbd> --configure-vars=...
 </pre>
+
+<div class="shortcode">
 {{% inset "Note about MVAPICH2" %}}
 If you log into Gordon, start an interactive job (do not run R on the login
 nodes!), and try run a snow-based script which calls <code>ClusterApply</code>,
@@ -260,8 +262,11 @@ fixed.  I take this to mean that **Rmpi simply does not work with
 MVAPICH2.  Use OpenMPI when using Rmpi or its derivatives.**  You can
 do this by loading the <code>openmpi_ib</code> module before loading the 
 <code>R</code> module.
+
 {{% /inset %}}
-## <a name="pbs"></a>Submitting Parallel R Jobs
+</div>
+
+## 3. Submitting R Jobs to a Cluster
 
 On personal workstations, R is often used by running the R shell in an
 interactive fashion and either typing in commands or doing something like 
@@ -283,7 +288,7 @@ batch manager we run on SDSC Gordon and Trestles.  These scripts can be
 trivially adapted to SGE/Grid Engine, Slurm, LSF, Load Leveler, or whatever 
 other batch system your system may have.
 
-### <a name="pbs:serial"></a>Running Serial R Jobs
+### 3.1. Running Serial R Jobs
 
 Running an R script in serial is quite straightforward.  On XSEDE's Gordon
 resource at SDSC, your queue script should look something like this:
@@ -308,7 +313,7 @@ script uses a library that supports multithreading.  This isn't bad per se, but
 explicitly specifying <var>OMP_NUM_THREADS</var> is good practice--that way you
 always know exactly how many cores your script will use.
 
-### <a name="pbs:smp"></a>Running Shared-Memory R Jobs
+### 3.2. Running Shared-Memory R Jobs
 
 Running shared-memory parallel R on a single node is also quite simple.  Here
 is a sample queue script that uses all 16 cores on a dedicated (non-shared)
@@ -334,7 +339,7 @@ libraries which support OpenMP.  By comparison, the <code>multicore</code> (and
 <code>parallel</code>) libraries do <em>not</em> use OpenMP; they let you 
 control the number of cores from within R.
 
-### <a name="pbs:snow"></a>Running Parallel Jobs with snow/doSNOW
+### 3.3. Running Parallel Jobs with snow/doSNOW
 
 Snow (and its derived libraries) does its own process managements, so you
 _must_ run it as if it were a one-way MPI job.  For example,
@@ -369,7 +374,7 @@ This is because the R script winds up running in duplicate, and each
 duplicate tries to spawn a full complement of its own MPI ranks.  Thus, instead
 of getting 2&#215;16 ranks, you get (2&#215;16)&#215;(2&#215;16).
 
-## <a name="samp"></a>Trivial sample code
+## 4. Trivial sample code
 
 I've created some [trivial Hello World samples that can be found on my GitHub
 account][parallel hello world in r].  They illustrate the very minimum needed
