@@ -8,18 +8,18 @@ parentdirs: [ 'data-intensive', 'hadoop' ]
 
 ## Table of Contents
 
-* [1. Introduction](#intro)
-* [2. Comparing Map-Reduce to Traditional Parallelism](#compare)
-    * [2.1. Traditional Parallel Applications](#compare:trad)
-    * [2.2. Data-intensive Applications](#compare:di)
-* [3. Hadoop - A Map-Reduce Implementation](#hadoop)
-    * [3.1 The Magic of HDFS](#hadoop:hdfs)
-    * [3.2 Map-Reduce Jobs](#hadoop:mr)
-        * [3.2.1. The Map Step](#hadoop:mr:map)
-        * [3.2.2. The Reduce Step](#hadoop:mr:reduce)
-* [4. Summary](#summary)
+* [1. Introduction](#1-introduction)
+* [2. Comparing Map-Reduce to Traditional Parallelism](#2-comparing-map-reduce-to-traditional-parallelism)
+    * [2.1. Traditional Parallel Applications](#2-1-traditional-parallel-applications)
+    * [2.2. Data-intensive Applications](#2-2-data-intensive-applications)
+* [3. Hadoop - A Map-Reduce Implementation](#3-hadoop-a-map-reduce-implementation)
+    * [3.1 The Magic of HDFS](#3-1-the-magic-of-hdfs)
+    * [3.2 Map-Reduce Jobs](#3-2-map-reduce-jobs)
+        * [3.2.1. The Map Step](#3-2-1-the-map-step)
+        * [3.2.2. The Reduce Step](#3-2-2-the-reduce-step)
+* [4. Summary](#4-summary)
 
-## <a name="intro"></a>1. Introduction
+## 1. Introduction
 
 This page serves as a 30,000-foot overview of the map-reduce programming
 paradigm and the key features that make it useful for solving certain types of 
@@ -32,7 +32,7 @@ written on:
 * Parsing VCF files with Hadoop Streaming
 * Parallel R using Hadoop
 
-## <a name="compare"></a>2. Comparing Map-Reduce to Traditional Parallelism
+## 2. Comparing Map-Reduce to Traditional Parallelism
 
 In order to appreciate what map-reduce brings to the table, I think it is
 most meaningful to contrast it to what I call _traditional_ computing
@@ -66,12 +66,12 @@ problems, data-intensive problems demonstrate the following features:
    its permanent location to the CPU than it takes for the CPU to operate on
    that data
 
-### <a name="compare:trad"></a>2.1. Traditional Parallel Applications
+### 2.1. Traditional Parallel Applications
 
 To illustrate these differences, the following schematic depicts how your
 typical traditionally parallel application works.
 
-{{<figure src="parallelism-traditional.png" link="parallelism-traditional.png" alt="program flow of a traditionally parallel problem">}}
+<div class="shortcode">{{<figure src="parallelism-traditional.png" link="parallelism-traditional.png" alt="program flow of a traditionally parallel problem">}}</div>
 
 The input data is stored on some sort of remote storage device (a SAN, a 
 file server serving files over NFS, a parallel Lustre or GPFS filesystem, etc; 
@@ -88,9 +88,11 @@ Upon launching a traditionally parallel application,
 * All of the parallel workers compute their chunk of the input data
 * All of the parallel workers communicate their results with each other, then continue the next iteration of the calculation
 
+<div class="shortcode">
 {{% alertbox info %}}
 NOTE: In some cases multiple workers may use a parallel I/O API like MPI-IO to collectively read input data, but the filesystem on which the input data resides must be a high-performance filesystem that can sustain the required device- and network-read bandwidth.
 {{% /alertbox %}}
+</div>
 
 The fundamental limit to scalability here is step #1--the process of reading
 the input data (<span style="color:#00CC00;font-weight:bolder">green 
@@ -102,7 +104,7 @@ between your data and your compute resources by throwing more money at it
 (e.g., buying fast SSDs, faster storage networking, and/or more parallel 
 storage servers), the cost of doing this does not scale linearly.
 
-### <a name="compare:di"></a>2.2. Data-intensive Applications
+### 2.2. Data-intensive Applications
 
 The map-reduce paradigm is a completely different way of solving a certain 
 subset of parallelizable problems that gets around the bottleneck of ingesting
@@ -110,7 +112,7 @@ input data from disk (that pesky green arrow).  Whereas traditional parallelism
 brings _the data to the compute_, map-reduce does the opposite--it 
 brings _the compute to the data_:
 
-{{<figure src="parallelism-mapreduce.png" link="parallelism-mapreduce.png" alt="program flow of a map-reduce parallel problem" >}}
+<div class="shortcode">{{<figure src="parallelism-mapreduce.png" link="parallelism-mapreduce.png" alt="program flow of a map-reduce parallel problem" >}}</div>
 
 In map-reduce, the input data is _not_ stored on a separate, high-capacity
 storage system.  Rather, the data exists in little pieces and is permanently
@@ -135,13 +137,13 @@ trivially parallel calculations on large quantities of data_, but if each
 worker's calculations depend on data that resides on other nodes, you will
 begin to encounter rapidly diminishing returns.
 
-### <a name="hadoop"></a>3. Hadoop - A Map-Reduce Implementation
+### 3. Hadoop - A Map-Reduce Implementation
 
 Now that we've established a description of the map-reduce paradigm and the
 concept of bringing compute to the data, we are equipped to look at Hadoop,
 an actual implementation of map-reduce.
 
-### <a name="hadoop:hdfs"></a>3.1. The Magic of HDFS
+### 3.1. The Magic of HDFS
 
 The idea underpinning map-reduce--bringing compute to the data instead of
 the opposite--should sound like a very simple solution to the I/O bottleneck
@@ -169,7 +171,7 @@ The magical part of HDFS is what is going on just underneath the surface.
 Although it appears to be a filesystem that contains files like any other, in
 reality those files are distributed across multiple physical compute nodes:
 
-{{<figure src="hdfs-magic.png" link="hdfs-magic.png" alt="schematic depicting the magic of HDFS">}}
+<div class="shortcode">{{<figure src="hdfs-magic.png" link="hdfs-magic.png" alt="schematic depicting the magic of HDFS">}}</div>
 
 When you copy a file into HDFS as depicted above, that file is transparently
 sliced into 64 MB "chunks" and replicated three times for reliability.  Each of
@@ -180,6 +182,7 @@ with the file on HDFS still make it appear as the same single file you copied
 into HDFS initially.  Thus, HDFS handles all of the burden of slicing, 
 distributing, and recombining your data for you.
 
+<div class="shortcode">
 {{% alertbox %}}
 HDFS's chunk size and replication
 The 64 MB chunk (block) size and the choice to replicate your data three 
@@ -194,8 +197,9 @@ times are only HDFS's default values.  These decisions can be changed:
   on your <code>-put</code> command line, or using the <kbd>hadoop dfs 
   -setrep -w 1</kbd> command.
 {{% /alertbox %}}
+</div>
 
-### <a name="hadoop:mr"></a>3.2. Map-Reduce Jobs
+### 3.2. Map-Reduce Jobs
 
 HDFS is an interesting technology in that it provides data distribution, 
 replication, and automatic recovery in a user-space filesystem that is 
@@ -207,7 +211,7 @@ As the name implies, map-reduce jobs are principally comprised of two steps:
 the map step and the reduce step.  The overall workflow generally looks 
 something like this:
 
-{{<figure src="mapreduce-workflow.png" link="mapreduce-workflow.png" alt="program flow of a map-reduce application" >}}
+<div class="shortcode">{{<figure src="mapreduce-workflow.png" link="mapreduce-workflow.png" alt="program flow of a map-reduce application" >}}</div>
 
 The left half of the diagram depicts the HDFS magic described in the previous
 section, where the <kbd>hadoop dfs -copyFromLocal</kbd> command is used to move
@@ -218,7 +222,7 @@ have a permanent home on HDFS just like it would any other filesystem),
 a map-reduce job's input data must already exist on HDFS before the job can be
 started.
 
-#### <a name="hadoop:mr:map"></a>3.2.1. The Map Step
+#### 3.2.1. The Map Step
 
 Once a map-reduce job is initiated, the map step
 
@@ -237,14 +241,16 @@ series of key-value pairs_ with the expectation that these parsed key-value
 pairs can be analyzed meaningfully by the reduce step.  It's perfectly fine for
 duplicate keys to be emitted by mappers.
 
+<div class="shortcode">
 {{% alertbox info %}}
 The decision to split your input data along newline characters is just the
 default behavior, which assumes your input data is just an ascii text file.
 You can change how input data is split before being passed to your mapper 
 function using alternate <code>InputFormat</code>s.
 {{% /alertbox %}}
+</div>
 
-#### <a name="hadoop:mr:reduce"></a>3.2.2. The Reduce Step
+#### 3.2.2. The Reduce Step
 
 Once all of the mappers have finished digesting the input data and have 
 emitted all of their key-value pairs, those key-value pairs are sorted according
@@ -262,6 +268,7 @@ The reducers then emit key-value pairs back to HDFS where each key is unique,
 and each of these unique keys' values are the result of the reducer function's
 calculation.
 
+<div class="shortcode">
 {{% alertbox info %}}
 The process of sorting and distributing the mapper's output to the reducers
 can be seen as a separate step often called the "shuffle".  What really happens
@@ -279,12 +286,13 @@ all the values of a single key before moving on to the next key.  As you will
 see in the tutorial on writing mappers and reducers in Python that follows,
 this is an essential property of the Hadoop streaming interface.
 {{% /alertbox %}}
+</div>
 
 This might sound a little complicated or abstract without an actual problem
 or sample code to examine; it is far easier to demonstrate what the reducer 
 does by [working through an example][hadoop streaming guide].
 
-## <a name="summary"></a>4. Summary
+## 4. Summary
 This conceptual overview of map-reduce and Hadoop is admittedly dry without
 a meaningful example to accompany it, so here are the key points you should
 take away:
@@ -295,8 +303,8 @@ take away:
    * HDFS still presents data to users and applications as single continuous files despite the above fact
 * map-reduce is ideal for operating on very large, flat (unstructured) datasets and perform trivially parallel operations on them
 * Hadoop jobs go through a map stage and a reduce stage where
-   * the mapper transforms the raw input data into key-value pairs where multiple values for the same key may occur</li>
-   * the reducer transforms all of the key-value pairs sharing a common key into a single key with a single value</li>
+   * the mapper transforms the raw input data into key-value pairs where multiple values for the same key may occur
+   * the reducer transforms all of the key-value pairs sharing a common key into a single key with a single value
 
 If you have any interest remaining after having read this, I strongly 
 recommend looking through my tutorial on 

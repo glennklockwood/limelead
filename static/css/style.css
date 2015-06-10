@@ -155,6 +155,11 @@ body {
     margin: 0;
 }
 
+.shortcode {
+    margin: 0;
+    padding: 0;
+}
+
 /* Bootstrap stuff */
 
 /* blow away the whitespace surrounding navbar */
