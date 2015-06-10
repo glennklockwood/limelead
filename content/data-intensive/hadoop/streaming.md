@@ -8,17 +8,17 @@ parentdirs: [ 'data-intensive', 'hadoop' ]
 
 ## Contents
 
-* [1. Introduction](#intro)
-* [2. Review of Hadoop on HPC](#recap)
-* [3. The Canonical Wordcount Ex](#wordcount)
-    * [3.1. The Mapper](#wordcount:mapper)
-    * [3.2. The Shuffle](#wordcount:shuffle)
-    * [3.3. The Reducer](#wordcount:reducer)
-    * [3.4. Running the Hadoop Job](#wordcount:run)
-    * [3.5. Adjusting Parallelism](#wordcount:tweaks)
+* [1. Introduction](#1-introduction)
+* [2. Review of Hadoop on HPC](#2-review-of-hadoop-on-hpc)
+* [3. The Canonical Wordcount Example](#3-the-canonical-wordcount-example)
+    * [3.1. The Mapper](#3-1-the-mapper)
+    * [3.2. The Shuffle](#3-2-the-shuffle)
+    * [3.3. The Reducer](#3-3-the-reducer)
+    * [3.4. Running the Hadoop Job](#3-4-running-the-hadoop-job)
+    * [3.5. Adjusting Parallelism](#3-5-adjusting-parallelism)
 * [Next: Parsing VCF Files][parsing vcfs]
 
-## <a name="intro"></a>1. Introduction
+## 1. Introduction
 
 One of the unappetizing aspects of Hadoop to users of traditional HPC is that
 it is written in Java.  Java is not designed to be a high-performance language
@@ -42,7 +42,7 @@ supercomputing account.
 The wordcount example here is on [my GitHub account][glennklockwood/hpchadoop repo].
 I've also got implementations of this in Perl and R posted there.
 
-## <a name="recap"></a>2. Review of Hadoop on HPC
+## 2. Review of Hadoop on HPC
 
 This guide assumes you are familiar with Hadoop and map/reduce at a 
 conceptual level.  You should be in good shape after reading the 
@@ -68,7 +68,7 @@ _non-interactive_ route, I have
 [a submit script on GitHub][non-interactive hadoop word count script]
 that wraps this example problem into a single non-interactive Gordon job.
 
-## <a name="wordcount"></a>3. The Canonical Wordcount Example
+## 3. The Canonical Wordcount Example
 
 Counting the number of words in a large document is the "hello world" of 
 map/reduce, and it is among the simplest of full map+reduce Hadoop jobs you 
@@ -85,7 +85,9 @@ up their values.  Since every key (word) has a value of 1, this will reduce
 our output to a list of unique keys, each with a value corresponding to that
 key's (word's) count.
 
+<div class="shortcode">
 {{< figure src="wordcount-schematic.png" link="wordcount-schematic.png" alt="schematic of wordcount in the context of map-reduce" >}}
+</div>
 
 With Hadoop Streaming, we need to write a program that acts as the mapper
 and a program that acts as the reducer.  These applications must interface with
@@ -99,11 +101,12 @@ $ <kbd>cat input.txt | ./mapper.py | sort | ./reducer.py > output.txt</kbd>
 That is, Hadoop Streaming sends raw data to the mapper via stdin, then sends 
 the mapped key/value pairs to the reducer via stdin.
 
-### <a name="wordcount:mapper"></a>3.1. The Mapper
+### 3.1. The Mapper
 
 The mapper, as described above, is quite simple to implement in Python.  It
 will look something like this:
 
+<div class="shortcode">
 {{< highlight python >}}
 #!/usr/bin/env python
 
@@ -116,6 +119,7 @@ for line in sys.stdin:
         value = 1
         print( "%s\t%d" % (key, value) )
 {{< /highlight >}}
+</div>
 
 where
 
@@ -128,7 +132,7 @@ where
 A more detailed explanation of this process can be found in
 [Yahoo's excellent Hadoop Tutorial][yahoo hadoop tutorial].
 
-### <a name="wordcount:shuffle"></a>3.2. The Shuffle
+### 3.2. The Shuffle
 
 A lot happens between the map and reduce steps that is largely transparent 
 to the developer.  In brief, the output of the mappers is transformed and 
@@ -143,7 +147,7 @@ These two points are important because
 1. As you read in key/value pairs, if you encounter a key that is different from the last key you processed, you know that that previous key will never appear again
 2. If your keys are _all_ the same, you will only use one reducer and gain _no parallelization_.  You should come up with a more unique key if this happens!
 
-### <a name="wordcount:reducer"></a>3.3. The Reducer
+### 3.3. The Reducer
 
 The output from our mapper step will go to the reducer step sorted.  Thus,
 we can loop over all input key/pairs and apply the following logic:
@@ -161,6 +165,7 @@ Otherwise,
 Translating this into Python and adding a little extra code to tighten up
 the logic, we get
 
+<div class="shortcode">
 {{< highlight python >}}
 #!/usr/bin/env python
  
@@ -185,8 +190,9 @@ for input_line in sys.stdin:
 if last_key == this_key:
    print( "%s\t%d" % (last_key, running_total) )
 {{< /highlight >}}
+</div>
 
-### <a name="wordcount:run"></a>3.4. Running the Hadoop Job
+### 3.4. Running the Hadoop Job
 
 If we name the mapper script <code>mapper.py</code> and the reducing script
 <code>reducer.py</code>, we would first want to download the input data (Moby
@@ -283,7 +289,7 @@ after the job has finished.  In the example highlighted above, we can see that
 the job only used one reduce task and two map tasks despite the cluster having
 more than two nodes.
 
-## <a name="wordcount:tweaks"></a>3.5. Adjusting Parallelism
+## 3.5. Adjusting Parallelism
 
 Unlike with a traditional HPC job, the level of parallelism a Hadoop job
 is not necessarily the full size of your compute resource.  The number of map

@@ -8,15 +8,15 @@ parentdirs: [ 'data-intensive', 'hadoop' ]
 
 ## Table of Contents
 
-* [1. Introduction](#intro)
-* [2. Conceptual Overview](#overview)
-* [3. Install Python Library as Non-Root](#venv)
-* [4. The Mapper](#shuffle)
-* [5. The Reducer](#reducer)
-* [6. Job Launch](#launch)
-* [7. Scaling Behavior](#performance)
+* [1. Introduction](#1-introduction)
+* [2. Conceptual Overview](#2-conceptual-overview)
+* [3. Install Python Library as Non-Root](#3-install-python-library-as-non-root)
+* [4. The Mapper](#4-the-mapper)
+* [5. The Reducer](#5-the-reducer)
+* [6. Job Launch](#6-job-launch)
+* [7. Scaling Behavior](#7-scaling-behavior)
 
-## <a name="intro"></a>1. Introduction
+## 1. Introduction
 
 [Variant Call Format (VCF) files][vcf format] are a standard type of file used
 to represent information about variations within a genome.  As with just about
@@ -40,7 +40,7 @@ also used [semi-persistent Hadoop clusters][hadoop on hpc clusters] on
 FutureGrid for much of the testing and development here, and this process should
 work on a wide range of clusters with minimal modification.
 
-## <a name="overview"></a>2. Conceptual Overview
+## 2. Conceptual Overview
 
 Files don't always come in a format that is a perfect for map/reduce, and the
 output of your analysis doesn't always take the form of key/value pairs.  Thus,
@@ -60,7 +60,9 @@ by Hadoop.  Thus, the preprocessing step here involves reading the _top_
 of the input file and printing the header lines to stdout _until the first
 non-header line is reached_:
 
+<div class="shortcode">
 {{< figure src="vcf.png" link="vcf.png" alt="schematic of VCF file preprocessing" >}}
+</div>
 
 We copy this printed header information to a separate file that exists 
 outside of HDFS and don't bother messing with the actual VCF file's contents.
@@ -76,7 +78,7 @@ be <code>COPY FROM</code>ed to a PostgreSQL database.  This process of taking
 the output from HDFS, connecting to the Postgres database, and <code>COPY 
 FROM</code>ing that data was handled in the postprocessing step.
 
-## <a name="venv"></a>3. Install Python Library as Non-Root
+## 3. Install Python Library as Non-Root
 
 Python makes it quite easy to [install libraries within having root privileges][install python without root]
 on a machine.  I recommend using [VirtualEnv][virtualenv] to this end; it
@@ -149,17 +151,17 @@ Type "help", "copyright", "credits" or "license" for more information.
 &gt;&gt;&gt;
 </pre>
 
-## <a name="shuffle"></a>4. The Mapper
+## 4. The Mapper
 
 This section is not done yet.  You can see the entire [mapper+reducer code
 in my github][vcfparser code].
 
-## <a name="reducer"></a>5. The Reducer
+## 5. The Reducer
 
 This section is not done yet.  You can see the entire [mapper+reducer code
 in my github][vcfparser code].
 
-## <a name="launch"></a>6. Job Launch
+## 6. Job Launch
 
 There are a number of additions that must be made to our <a href="http://users.sdsc.edu/~glockwood/comp/hadoopstreaming.php#wordcount:run">previous wordcount example</a>
 to run this VCF parsing map job.  Changes are highlighted in red below:
@@ -208,7 +210,7 @@ The changes highlighted do the following:
    can specify multiple <code>-cmdenv</code> options if you need to propagate
    other environment variables that your mappers/reducers may need.
 
-## <a name="performance"></a>7. Scaling Behavior
+## 7. Scaling Behavior
 
 This section is not done yet.
 

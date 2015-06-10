@@ -6,6 +6,7 @@ shortTitle: "Hadoop on HPC"
 parentdirs: [ 'data-intensive', 'hadoop' ]
 ---
 
+<div class="shortcode">
 {{% alertbox warning %}}
 This guide used to provide instructions based on
 [myHadoop 0.1](http://sourceforge.net/projects/myhadoop/) 
@@ -18,6 +19,7 @@ supports Spark and Hadoop 2.x which are not mentioned here.  If you are
 interested in an up-to-date version of this page, please contact me and I will
 prioritize updating it.
 {{% /alertbox %}}
+</div>
 
 This guide assumes the following:
 
@@ -317,6 +319,7 @@ existing persistent HDFS state and adjust the resulting Hadoop cluster
 configurations accordingly.  You can use this mechanism to store data on HDFS
 even when you have no jobs running in the batch system.
 
+<div class="shortcode">
 {{% alertbox warning %}}
 Use of persistent mode is not recommended, as Hadoop's performance and
 resiliency arises from the fact that HDFS resides on physically
@@ -331,6 +334,7 @@ may allow you to recover some of the performance loss because it will store
 your HDFS blocks on different object storage targets.  However, other 
 bottlenecks and limitations also enter the picture.
 {{%/alertbox%}}
+</div>
 
 #### IP over InfiniBand
 
@@ -352,7 +356,7 @@ can also be set via the environment variables listed below:
 
 <table class="table table-striped">
     <thead>
-        <th>Switch</th><th>Environment Variable</th><th>Option</th>
+        <tr><th>Switch</th><th>Environment Variable</th><th>Option</th></tr>
     </thead>
     <tbody>
         <tr><td><code>-n</code></td><td><var>NODES</var></td><td>number of nodes to use for Hadoop cluster</td></tr>
