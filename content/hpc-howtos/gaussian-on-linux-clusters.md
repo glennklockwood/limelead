@@ -6,25 +6,27 @@ template: page.jade
 parentDirs: [ hpc-howtos ]
 ---
 
+<div class="shortcode">
 {{% alertbox warning %}}
 This guide was written for use on SDSC's Trestles system which no longer
 exists.  Some of the information in this guide may still be relevant to
 users of other Torque-based clusters, but this page is no longer being
 maintained.
 {{% /alertbox %}}
+</div>
 
-## <a name="contents"></a>Contents
+## Contents
 
-* [Introduction](#intro)
-* [Logging In](#login)
-* [Getting Permission and Loading Gaussian](#loading)
-* [Job Setup](#setup)
-    * [Creating a job directory](#setup:mkdir)
-    * [Transferring files to Trestles](#setup:xfer)
-    * [Setting up the queue script](#setup:qscript)
-* [Running Gaussian](#run)
+* [1. Introduction](#1-introduction)
+* [2. Logging In](#2-logging-in)
+* [3. Getting Permission and Loading Gaussian](#3-getting-permission-and-loading-gaussian)
+* [4. Gaussian Job Setup](#4-gaussian-job-setup)
+    * [4.1. Creating a job directory](#4-1-creating-a-job-directory)
+    * [4.2. Transferring files to the cluster](#4-2-transferring-files-to-the-cluster)
+    * [4.3. Setting up the queue script](#4-3-setting-up-the-queue-script)
+* [5. Running Gaussian](#5-running-gaussian)
 
-## <a name="intro"></a>Introduction
+## 1. Introduction
 
 A lot of XSEDE users request allocations on SDSC Trestles and Gordon because
 we are one of two XSEDE sites (the other being [PSC and Blacklight][gaussian on blacklight]
@@ -40,7 +42,7 @@ resource, or the Linux command line.  Since Trestles gets most of the new
 Gaussian users on XSEDE, I will assume the reader is using that system.
 Instructions for using Gordon are quite similar.
 
-## <a name="login"></a>Logging into SDSC Trestles
+## 2. Logging in
 
 The XSEDE User Portal has a [guide to getting started][xsede getting started guide],
 and it covers all the options about which most users will want to know.  All
@@ -59,7 +61,7 @@ simple as possible, I'll lay out every step.
 
 This black screen should look something like this:
 
-<pre style="background:black;color:#CCC">Rocks 5.4 (Maverick)
+<pre class="terminal">Rocks 5.4 (Maverick)
 Profile built 10:09 13-Jan-2012
 
 Kickstarted 10:17 13-Jan-2012
@@ -92,7 +94,7 @@ type the <kbd>pwd</kbd> command in the Linux shell.  I also will forego the
 black background from my samples below.  You know what your terminal looks 
 like.
 
-## <a name="loading"></a>Getting Permission and Loading Gaussian
+## 3. Getting Permission and Loading Gaussian
 
 Because Gaussian requires a license to use, new login accounts must be given
 permission to run Gaussian before they can actually use it.  Chances are you
@@ -122,7 +124,7 @@ skip ahead and just start running g09**!  If you do, you will make a
  lot of other users upset and you will get a sternly worded e-mail from me or 
 one of my colleagues.
 
-## <a name="setup"></a>Gaussian Job Setup
+## 4. Gaussian Job Setup
 
 At this point I assume you have a Gaussian job you want to run, and it 
 consists of the following files on your personal computer:
@@ -130,7 +132,7 @@ consists of the following files on your personal computer:
 * <code>input.com</code> - your Gaussian input file
 * <code>molecule.chk</code> - a Gaussian checkpoint file containing the data for the molecule you want to simulate.  If you are starting from scratch, the coordinates of your nuclei will be in your .com file and you will not have this checkpoint file.
 
-### <a name="setup:mkdir"></a>Creating a job directory
+### 4.1. Creating a job directory
 
 The first thing you want to do is create a directory in which you want all 
 this simulation's data to reside.  Do
@@ -145,11 +147,11 @@ to create a directory called <code>job1</code>.  To then go into that directory,
 $ <kbd>cd job1</kbd>
 </pre>
 
-### <a name="setup:xfer"></a>Transferring files to Trestles
+### 4.2. Transferring files to the cluster
 
 Now you need to transfer your Gaussian input files from your computer to 
-Trestles.  The easiest way to do that is using a program like [WinSCP](winscp website)
-(Windows) or [FileZilla](filezilla website) (Windows or Mac) that allows you
+the cluster.  The easiest way to do that is using a program like [WinSCP][winscp website]
+(Windows) or [FileZilla][filezilla website] (Windows or Mac) that allows you
 to drag-and-drop files from your personal computer to any XSEDE resource.
 Connecting to your cluster will show your local files in the left pane and your
 <code>job1</code> directory on the cluster in the right pane.  Double click the
@@ -163,7 +165,7 @@ $ <kbd>ls</kbd>
 input.com &nbsp;molecule.chk
 </pre>
 
-### <a name="setup:qscript"></a>Setting up the queue script
+### 4.3. Setting up the queue script
 
 Up until now, the steps have been very generic and can be used by any user
 to get started on Trestles.  However to actually run jobs on Trestles, Gordon,
@@ -189,7 +191,7 @@ $ <kbd>nano g09job.qsub</kbd>
 to create and edit a file called <code>g09job.qsub</code>.  You will see a 
 screen like this:
 
-<pre style="background:black;color:#CCC"><span style="color:black;background:#CCC">  GNU nano 1.3.12             File: g09job.qsub                                 </span>
+<pre class="terminal"><span class="terminal-inverse">  GNU nano 1.3.12             File: g09job.qsub                                 </span>
 
 
 
@@ -197,8 +199,8 @@ screen like this:
 
 
 
-<span style="color:black;background:#CCC">^G</span> Get Help  <span style="color:black;background:#CCC">^O</span> WriteOut  <span style="color:black;background:#CCC">^R</span> Read File <span style="color:black;background:#CCC">^Y</span> Prev Page <span style="color:black;background:#CCC">^K</span> Cut Text  <span style="color:black;background:#CCC">^C</span> Cur Pos
-<span style="color:black;background:#CCC">^X</span> Exit      <span style="color:black;background:#CCC">^J</span> Justify   <span style="color:black;background:#CCC">^W</span> Where Is  <span style="color:black;background:#CCC">^V</span> Next Page <span style="color:black;background:#CCC">^U</span> UnCut Text<span style="color:black;background:#CCC">^T</span> To Spell</pre>
+<span class="terminal-inverse">^G</span> Get Help  <span class="terminal-inverse">^O</span> WriteOut  <span class="terminal-inverse">^R</span> Read File <span class="terminal-inverse">^Y</span> Prev Page <span class="terminal-inverse">^K</span> Cut Text  <span class="terminal-inverse">^C</span> Cur Pos
+<span class="terminal-inverse">^X</span> Exit      <span class="terminal-inverse">^J</span> Justify   <span class="terminal-inverse">^W</span> Where Is  <span class="terminal-inverse">^V</span> Next Page <span class="terminal-inverse">^U</span> UnCut Text<span class="terminal-inverse">^T</span> To Spell</pre>
 
 Some common nano commands are shown at the bottom: <kbd>ctrl+x</kbd> exits,
 <kbd>ctrl+w</kbd> to search, etc.  You will need to paste the following lines 
@@ -266,7 +268,7 @@ takes less time you can change that to, say,
 
 for fifteen minutes.
 
-## <a name="run"></a>Running Gaussian
+## 5. Running Gaussian
 
 Once you have your input file set up, you still cannot run Gaussian yet.
 Unlike a workstation where you can just use the <code>g09</code> command, 

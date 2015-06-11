@@ -32,18 +32,22 @@ launch to generate an SSH key for you to use to log into a remote system using
 key-based authentication.  Start it up, and you should see a screen similar to
 the one below:
 
+<div class="shortcode">
 {{<figure src="puttygen1.png" link="puttygen1.png" alt="puttygen main screen">}}
+</div>
 
 The first thing you need to do is change the "<samp>Number of bits in a 
 generated key</samp>" to at least <code>2048</code> (<span style="color:red">red arrow</span>).
 **The default value of 1024 bits is no longer considered secure**, so please
-don't forget to do this step!</p>
+don't forget to do this step!
 
 Then press the <code>Generate</code> button (<span style="color:green">green
 arrow</span>) and you will see this:
 
 
+<div class="shortcode">
 {{<figure src="puttygen2.png" link="puttygen2.png" alt="puttygen key generation screen">}}
+</div>
 
 You will need to wiggle your mouse over the blank area below the progress
 bar to feed <code>puttygen</code> enough randomness to generate an unpredictable
@@ -53,7 +57,9 @@ your ssh key, which takes the form of a bunch of letters and numbers.
 First, copy the public key that <code>puttygen</code> created into your
 clipboard:
 
+<div class="shortcode">
 {{<figure src="puttygen3.png" link="puttygen3.png" alt="puttygen copy publickey to clipboard">}}
+</div>
 
 Then you will need to paste this into your account on Gordon or Trestles.
 SSH to one of those machines (logging in with your password, since we haven't
@@ -111,13 +117,17 @@ encrypting your ssh key with a passphrase, anyone who can access your ssh key
 file will be able to log into your Gordon/Trestles account without needing to 
 know your login password.  On Windows, this is a very real hazard.
 
+<div class="shortcode">
 {{<figure src="puttygen4.png" link="puttygen4.png" alt="puttygen adding encryption to key">}}
+</div>
 
 Now you have to save the private part of your ssh key by clicking the
 <samp>Save private key</samp> button (<span style="color:red">red arrow</span> 
 below):
 
+<div class="shortcode">
 {{<figure src="puttygen5.png" link="puttygen5.png" alt="puttygen save private key">}}
+</div>
 
 If you disregarded my advice and are leaving your privatekey unencrypted,
 you will get a warning.  Again, _don't leave your ssh key unencrypted_
@@ -126,14 +136,18 @@ editing the file access permissions for the keyfile you will be generating to
 make sure nobody on your network can access this file and use it to break into
 your account on Gordon/Trestles.
 
+<div class="shortcode">
 {{<figure src="puttygen6.png" link="puttygen6.png" alt="puttygen unencrypted key warning">}}
+</div>
 
 Save your private key somewhere safe--definitely don't put it in a shared
 folder or anywhere someone can easily steal it from you.  This key file is all
 you (or whoever else gets ahold of it) needs to get into your account if you
 did not encrypt it with a passphrase.
 
+<div class="shortcode">
 {{<figure src="puttygen7.png" link="puttygen7.png" alt="puttygen saving encrypted private key">}}
+</div>
 
 ## Using the Key with PuTTY
 
@@ -151,26 +165,34 @@ style="color:red">red arrow</span> below) before proceeding--this will allow
 us to modify it instead of having to create a new profile for the ssh key we 
 just generated.
 
+<div class="shortcode">
 {{<figure src="putty1.png" link="putty1.png" alt="putty load existing profile">}}
+</div>
 
 On the list of options on the left side of the PuTTY window, scroll down to
 <samp>Connection</samp>, then expand it, expand the <samp>SSH</samp> tree, then
 click the <samp>Auth</samp> category.  You will be presented with something like
 this:
 
+<div class="shortcode">
 {{<figure src="putty2.png" link="putty2.png" alt="putty load private key ppk">}}
+</div>
 
 Click the <samp>Browse</samp> button under the <samp>Private key for 
 authentication</samp> input box, then find the <code>PPK</code> file we just
 saved in <code>puttygen</code> and load it:
 
+<div class="shortcode">
 {{<figure src="putty3.png" link="putty3.png" alt="putty find ppk file">}}
+</div>
 
 Navigate back to the <samp>Session</samp> option on the left side of the
 PuTTY window and click <samp>Save</samp> to save the location of your 
 <code>PPK</code> file with your profile for Gordon (or Trestles):
 
+<div class="shortcode">
 {{<figure src="putty4.png" link="putty4.png" alt="putty save updated profile with ppk">}}
+</div>
 
 Following this, you should be able to now <samp>Open</samp> the profile and
 have your private key used whenever you try to connect.  As a bonus, this

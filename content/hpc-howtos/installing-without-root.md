@@ -6,14 +6,14 @@ template: page.jade
 parentDirs: [ hpc-howtos ]
 ---
 
-## Table of Contents
+## Contents
 
-* [Introduction](#intro)
-* [Python Libraries](#pylib)
-* [Perl Modules](#perllib)
-* [R Libraries](#rlib)
+* [1. Introduction](#1-introduction)
+* [2. Python Libraries](#2-python-modules)
+* [3. Perl Modules](#3-perl-modules)
+* [4. R Libraries](#4-r-libraries)
 
-## <a name="intro"></a>Introduction
+## 1. Introduction
 
 A common request we get is to install some software package on either Gordon
 or Trestles, sometimes with the implicit assumption that it should be a simple
@@ -37,7 +37,7 @@ software applications on SDSC Trestles or Gordon (or any other Linux or UNIX
 machine, for that matter), here are some generic guidelines on how to do 
 this.
 
-## <a name='pylib'></a>Python Modules
+## 2. Python Modules
 
 There are several ways Python will let you manage your own set of libraries,
 and I find the virtualenv package to be the easiest.  It creates what amounts to
@@ -125,7 +125,7 @@ As you can see, pip automatically downloads and installs dependencies for
 you, making the task of managing Python libraries under your own user account
 on our supercomputers pretty easy.
 
-## <a name='perllib'></a>Perl Modules
+## 3. Perl Modules
 
 One of the standard ways of maintaining your own Perl libraries installed
 into your home directory is using the <code>local::lib</code> module which, 
@@ -149,7 +149,7 @@ loaded.  Once you're in that <code>local-lib-1.008010</code> directory, you can
 initiate the _bootstrap_ process by which <code>local::lib</code> creates
 your custom Perl installation and installs itself.  Let's assume that we want 
 to install our custom Perl into <code>~/perl5-gordon</code> (note: use 
-<var>$HOME</var> instead of <code>~</code>):</p>
+<var>$HOME</var> instead of <code>~</code>):
 
 <pre>
 $ <kbd>perl Makefile.PL --bootstrap=$HOME/perl5-gordon</kbd>
@@ -159,7 +159,7 @@ Attempting to create directory /home/username/perl5-gordon
 
 If you don't specify a path after the <code>--bootstrap</code> flag, your
 <code>local::lib</code> installation will be in <code>~/perl5</code>.  This
-bootstrapping process may take a very long time as <acronym title="Comprehensive Perl Archive Network">CPAN</acronym>
+bootstrapping process may take a very long time as <abbr title="Comprehensive Perl Archive Network">CPAN</abbr>
 needs to first configure itself, then install all of the libraries that 
 <code>local::lib</code> needs to work.  After a _lot_ of text scrolls by
 (many of which look like errors--this isn't necessarily bad), hopefully you 
@@ -174,7 +174,7 @@ Writing Makefile for local::lib
 Writing MYMETA.yml and MYMETA.json
 </pre>
 
-<p>Then test and install <code>local::lib</code>:</p>
+Then test and install <code>local::lib</code>:
 
 <pre>
 $ <kbd>make test</kbd>
@@ -219,12 +219,12 @@ Running install for module 'Time::Piece'
 </pre>
 
 
-## <a name='rlib'></a>R Libraries
+## 4. R Libraries
 
 Users cannot install R libraries globally on our machines, but R makes it 
 very easy for users to install libraries in their home directories.  To do 
 this, fire up R and when presented with the <code>&gt; </code> prompt, use the
-<kbd>install.packages()</kbd> method to install things:</p>
+<kbd>install.packages()</kbd> method to install things:
 
 <pre>
 &gt; <kbd>install.packages('doSNOW')</kbd>

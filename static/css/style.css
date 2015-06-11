@@ -160,6 +160,15 @@ body {
     padding: 0;
 }
 
+.terminal {
+    background: black;
+    color: #CCC;
+}
+.terminal-inverse {
+    color: black;
+    background: #CCC;
+}
+
 /* Bootstrap stuff */
 
 /* blow away the whitespace surrounding navbar */
