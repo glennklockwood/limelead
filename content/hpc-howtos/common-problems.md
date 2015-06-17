@@ -2,7 +2,6 @@
 title: Common Problems on Supercomputers
 shortTitle: Common Problems
 date: 2013-12-12T00:00:00-07:00
-template: page.jade
 parentDirs: [ hpc-howtos ]
 ---
 
