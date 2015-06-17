@@ -150,18 +150,6 @@ body {
     margin-bottom: 10px;
 }
 
-/* pygments */
-
-.highlight {
-    margin: 1em 0em 1em 2em;
-}
-
-.highlight pre {
-    word-wrap: inherit;
-    overflow: inherit;
-    margin: 0;
-}
-
 .shortcode {
     margin: 0;
     padding: 0;
@@ -174,6 +162,40 @@ body {
 .terminal-inverse {
     color: black;
     background: #CCC;
+}
+
+/* pygments */
+
+.highlight {
+    margin: 1em 0em 1em 2em;
+}
+
+.highlight pre {
+    word-wrap: inherit;
+    overflow: inherit;
+    margin: 0;
+}
+
+/* pygments - linenos=table */
+tr div.highlight {
+    margin-left: 0px;
+}
+tr div.highlight pre {
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    border-width: 1px;
+}
+tr div.linenodiv {
+    width: auto;
+    margin-left: 1em;
+    padding-right: 10px; /* this is hard-coded by hugo :( */
+}
+tr div.linenodiv pre {
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+    border-width: 1px;
+    margin-left: 0px;
+    margin-right: -11px; /* compensate for hard-coded hugo styling */
 }
 
 /* Bootstrap stuff */
