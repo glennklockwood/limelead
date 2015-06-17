@@ -369,182 +369,201 @@ Perhaps it is more sensible to illustrate what this means by comparing the
 equivalent commands expressed using <code>lapply</code> and 
 <code>foreach</code>:
 
-<blockquote>
-<div>mylist &lt;- c( 1, 2, 3, 4, 5 )</div>
-<div>output1 &lt;- lapply( mylist, FUN=function(x) { y = x + 1; y } )</div>
-<div>output2 &lt;- foreach(x = mlist) %do% { y = x + 1; y }</div>
-</blockquote>
+<div class="shortcode">
+{{< highlight r >}}
+mylist &lt;- c( 1, 2, 3, 4, 5 )
+output1 &lt;- lapply( mylist, FUN=function(x) { y = x + 1; y } )
+output2 &lt;- foreach(x = mlist) %do% { y = x + 1; y }
+{{< /highlight >}}
+</div>
 
-<p>Both codes iterate through every element in <var>mylist</var> and return a
+Both codes iterate through every element in <var>mylist</var> and return a
 list of the same length as <var>mylist</var> containing each of the elements
-in <var>mylist</var> plus one.</p>
-<p>However, there is an implicit assumption that <strong>there are no side 
-effects of the code being executed within the foreach loop</strong>--that is, 
+in <var>mylist</var> plus one.
+
+However, there is an implicit assumption that **there are no side 
+effects of the code being executed within the foreach loop**--that is, 
 we assume that the contents of the loop body are not changing any variables
 or somehow affecting any global state of the rest of our code.  For example,
 the variable <var>y</var> is not guaranteed to contain 6 at the end of the 
-foreach loop, and in fact, it is not even guaranteed to be defined.</p>
+foreach loop, and in fact, it is not even guaranteed to be defined.
 
 ### 4.1. Halfway to parallel
-<p>Going back to the simple k-means example, recall that this is what the most
-simplified (serial) version of the code would look like:</p>
 
-<blockquote>
-<div>data &lt;- read.csv('dataset.csv')</div>
-<div>&nbsp;</div>
-<div>result &lt;- kmeans(data, centers=4, nstart=100)</div>
-<div>&nbsp;</div>
-<div>print(result)</div>
-</blockquote>
-<p>As with lapply-based parallelism, we have to take a step backwards to make
+Going back to the simple k-means example, recall that this is what the most
+simplified (serial) version of the code would look like:
+
+<div class="shortcode">
+{{< highlight r >}}
+data &lt;- read.csv('dataset.csv')
+
+result &lt;- kmeans(data, centers=4, nstart=100)
+
+print(result)
+{{< /highlight >}}
+</div>
+
+As with lapply-based parallelism, we have to take a step backwards to make
 the code amenable to parallelization.  The foreach version of the k-means code
-looks like this:</p>
+looks like this:
 
-<blockquote>
-<div><span style='color:blue'>library(foreach)</span></div>
-<div>data &lt;- read.csv('dataset.csv')</div>
-<div>&nbsp;</div>
-<div>results &lt;- <span style='color:blue'>foreach( i = c(25,25,25,25) ) %do% {</span></div>
-<div> &nbsp; &nbsp;kmeans( x=data, centers=4, nstart=<span style='color:blue'>i</span> )</div>
-<div><span style='color:blue'>}</span></div>
-<div>&nbsp;</div>
-<div><span style='color:blue'>temp.vector &lt;- sapply( results, function(result)</span></div>
-<div><span style='color:blue'> &nbsp; &nbsp;{ result$tot.withinss } )</span></div>
-<div><span style='color:blue'>result &lt;- results[[which.min(temp.vector)]]</span></div>
-<div>&nbsp;</div>
-<div>print(result)</div>
-</blockquote>
-<p>Again, this is significantly more clunky than the simple three-line serial
+<pre>
+<span style='color:blue'>library(foreach)</span>
+data &lt;- read.csv('dataset.csv')
+
+results &lt;- <span style='color:blue'>foreach( i = c(25,25,25,25) ) %do% {</span>
+    kmeans( x=data, centers=4, nstart=<span style='color:blue'>i</span> )
+<span style='color:blue'>}</span>
+
+<span style='color:blue'>temp.vector &lt;- sapply( results, function(result)</span>
+<span style='color:blue'>    { result$tot.withinss } )</span>
+<span style='color:blue'>result &lt;- results[[which.min(temp.vector)]]</span>
+
+print(result)
+</pre>
+
+Again, this is significantly more clunky than the simple three-line serial
 k-means code; I've highlighted the differences in blue above.  However, if we
 compare it to the lapply-style version of our k-means code, it is actually quite
 similar.  Here is the same foreach code with the differences from lapply now
-highlighted:</p>
+highlighted:
 
-<blockquote>
-<div><span style='color:blue'>library(foreach)</span></div>
-<div>data &lt;- read.csv('dataset.csv')</div>
-<div>&nbsp;</div>
-<div>results &lt;- <span style='color:blue'>foreach( i = c(25,25,25,25) ) %do% </span>{</div>
-<div> &nbsp; &nbsp;kmeans( x=data, centers=4, nstart=i )</div>
-<div>}</div>
-<div>&nbsp;</div>
-<div>temp.vector &lt;- sapply( results, function(result)</div>
-<div> &nbsp; &nbsp;{ result$tot.withinss } )</div>
-<div>result &lt;- results[[which.min(temp.vector)]]</div>
-<div>&nbsp;</div>
-<div>print(result)</div>
-</blockquote>
+<pre>
+<span style='color:blue'>library(foreach)</span>
+data &lt;- read.csv('dataset.csv')
+
+results &lt;- <span style='color:blue'>foreach( i = c(25,25,25,25) ) %do% </span>{
+    kmeans( x=data, centers=4, nstart=i )
+}
+
+temp.vector &lt;- sapply( results, function(result)
+    { result$tot.withinss } )
+result &lt;- results[[which.min(temp.vector)]]
+
+print(result)
+</pre>
 
 ### 4.2. doMC: shared-memory parallelism
 
-<p>Once we've coerced our algorithm into the foreach-based 
-formulation, it becomes <em>very</em> easy to parallelize it.  Instead of making
-a new call parallelized form of lapply like <code>mclapply</code>,
-<code>foreach</code> lets us <em>register a parallel backend</em> by loading the
-appropriate backend library and registering it:</p>
-<blockquote>
-<div>library(foreach)</div>
-<div><span style='color:blue'>library(doMC)</span></div>
-<div>data &lt;- read.csv('dataset.csv')</div>
-<div>&nbsp;</div>
-<div><span style='color:blue'>registerDoMC(4)</span></div>
-<div>results &lt;- foreach( i = c(25,25,25,25) ) %do<span style='color:blue'>par</span>% {</div>
-<div> &nbsp; &nbsp;kmeans( x=data, centers=4, nstart=i )</div>
-<div>}</div>
-<div>&nbsp;</div>
-<div><span style='color:blue'>temp.vector &lt;- sapply( results, function(result)</span></div>
-<div><span style='color:blue'> &nbsp; &nbsp;{ result$tot.withinss } )</span></div>
-<div><span style='color:blue'>result &lt;- results[[which.min(temp.vector)]]</span></div>
-<div>&nbsp;</div>
-<div>print(result)</div>
-</blockquote>
-<p>The <code>doMC</code> library is what provides the "multicore" parallel 
+Once we've coerced our algorithm into the foreach-based formulation, it
+becomes _very_ easy to parallelize it.  Instead of making a new call
+parallelized form of lapply like <code>mclapply</code>, <code>foreach</code>
+lets us _register a parallel backend_ by loading the appropriate backend
+library and registering it:
+
+<pre>
+library(foreach)
+<span style='color:blue'>library(doMC)</span>
+data &lt;- read.csv('dataset.csv')
+
+<span style='color:blue'>registerDoMC(4)</span>
+results &lt;- foreach( i = c(25,25,25,25) ) %do<span style='color:blue'>par</span>% {
+    kmeans( x=data, centers=4, nstart=i )
+}
+
+<span style='color:blue'>temp.vector &lt;- sapply( results, function(result)</span>
+<span style='color:blue'>    { result$tot.withinss } )</span>
+<span style='color:blue'>result &lt;- results[[which.min(temp.vector)]]</span>
+
+print(result)
+</pre>
+
+The <code>doMC</code> library is what provides the "multicore" parallel 
 backend for the <code>foreach</code> library.  Once loaded, all you have to do
 to parallelize your loop is call <code>registerDoMC</code> to indicate the 
 number of cores to use (four in the above example) and replace the <code>%do</code>
 with <code>%dopar%</code> to tell <code>foreach</code> to use the parallel 
-backend you just registered.</p>
-<p>As one would hope, using <code>foreach</code> with the <code>doMC</code>
-parallel backend provides the same speedup as <code>mclapply</code>:</p>
+backend you just registered.
 
-<a href="mclapply-vs-foreach.png">
-<img src="mclapply-vs-foreach.png" 
-    alt="mclapply Scaling" 
-    style="display:block; margin:1em auto; width:400px; height:auto; border:0"
-/>
-</a>
-<p>The slightly greater speedup in the <code>foreach</code> case (<span 
+As one would hope, using <code>foreach</code> with the <code>doMC</code>
+parallel backend provides the same speedup as <code>mclapply</code>:
+
+<div class="shortcode">
+{{< figure src="mclapply-vs-foreach-scaling.png" link="mclapply-vs-foreach-scaling.png" alt="mclapply Scaling" >}}
+</div>
+
+The slightly greater speedup in the <code>foreach</code> case (<span 
 style="color:red">red</span> line) is not significant since the dataset I used 
-is a bit of a trivial case and only took a few seconds to run.</p>
+is a bit of a trivial case and only took a few seconds to run.
 
 ### 4.3. doSNOW: distributed-memory parallelism
 
-<p>Just as we used the <code>snow</code> library to perform multi-node, 
+Just as we used the <code>snow</code> library to perform multi-node, 
 distributed-memory parallelization with <code>parLapply</code>, we can use the
 <code>doSNOW</code> parallel backend with <code>foreach</code> to perform
 distributed-memory parallelization.  Here is what our k-means example would look
-like:</p>
+like:
 
-<blockquote>
-<div>library(foreach)</div>
-<div>library(do<span style='color:blue'>SNOW</span>)</div>
-<div>data &lt;- read.csv('dataset.csv')</div>
-<div><span style='color:blue'>cl &lt;- makeCluster( mpi.universe.size(), type='MPI' )</span></div>
-<div><span style='color:blue'>clusterExport(cl,c('data'))</span></div>
-<div>registerDo<span style='color:blue'>SNOW</span>(<span style='color:blue'>cl</span>)</div>
-<div>results &lt;- foreach( i = c(25,25,25,25) ) %dopar% {</div>
-<div> &nbsp; &nbsp;kmeans( x=data, centers=4, nstart=i )</div>
-<div>}</div>
-<div>&nbsp;</div>
-<div>temp.vector &lt;- sapply( results, function(result) </div>
-<div> &nbsp; &nbsp;{ result$tot.withinss } )</div>
-<div>result &lt;- results[[which.min(temp.vector)]]</div>
-<div>&nbsp;</div>
-<div>print(result)</div>
-<div><span style='color:blue'>stopCluster(cl)</span></div>
-<div><span style='color:blue'>mpi.exit()</span></div>
-</blockquote>
-<p>The differences between the <code>doMC</code> and <code>doSNOW</code> version
+<pre>
+library(foreach)
+library(do<span style='color:blue'>SNOW</span>)
+data &lt;- read.csv('dataset.csv')
+<span style='color:blue'>cl &lt;- makeCluster( mpi.universe.size(), type='MPI' )</span>
+<span style='color:blue'>clusterExport(cl,c('data'))</span>
+registerDo<span style='color:blue'>SNOW</span>(<span style='color:blue'>cl</span>)
+results &lt;- foreach( i = c(25,25,25,25) ) %dopar% {
+    kmeans( x=data, centers=4, nstart=i )
+}
+
+temp.vector &lt;- sapply( results, function(result) 
+    { result$tot.withinss } )
+result &lt;- results[[which.min(temp.vector)]]
+
+print(result)
+<span style='color:blue'>stopCluster(cl)</span>
+<span style='color:blue'>mpi.exit()</span>
+</pre>
+
+The differences between the <code>doMC</code> and <code>doSNOW</code> version
 of this foreach k-means example are highlighted in blue.  We really only had to 
-make three changes:</p>
-<ol>
-<li>we replaced <code>doMC</code> with <code>doSNOW</code> and used the corresponding backend registration function, <code>registerDoSNOW</code></li>
-<li>we had to create a cluster object just like we did with <code>parLapply</code></li>
-<li>we also had to export our input data to all worker nodes using <code>clusterExport</code>, also like we did with <code>parLapply</code></li>
-</ol>
+make three changes:
 
-<p>Everything we learned about the types of clusters we can create for 
+1. we replaced <code>doMC</code> with <code>doSNOW</code> and used the
+   corresponding backend registration function, <code>registerDoSNOW</code>
+2. we had to create a cluster object just like we did with
+   <code>parLapply</code>
+3. we also had to export our input data to all worker nodes using
+   <code>clusterExport</code>, also like we did with <code>parLapply</code>
+
+Everything we learned about the types of clusters we can create for 
 <code>parLapply</code> also work with the <code>doSNOW</code> backend for
 foreach.  It follows that we also have to be mindful of distributing all of 
 the data we will need our workers to see via the <code>clusterExport</code> 
 call when using MPI or SOCK clusters.  At the end of the day though, there 
 aren't any fundamental differences between the things we can do with these 
-cluster objects when moving from <code>parLapply</code> to 
-<code>doSNOW</code>.</p>
+cluster objects when moving from <code>parLapply</code> to <code>doSNOW</code>.
 
 ## 5. Caveats with lapply- and foreach-based parallelism
 
-<p>Ultimately, using these lapply- and foreach-style approaches to 
+Ultimately, using these lapply- and foreach-style approaches to 
 parallelizing your R scripts works well if your R script is very CPU-intensive 
 and spends a lot of time just doing processing on a relatively small-ish 
 dataset.  I often see people use this approach under conditions when they want 
-to</p>
-<ul>
-  <li>try many different statistical models on the same set of data</li>
-  <li>run the same statistical model on many different datasets</li>
-  <li>...or just about any other case where many independent calculations must be performed</li>
-</ul>
-<p>The biggest downside to using these methods is that <strong>you are still
-limited by the amount of memory you have in a single node</strong> as far as
-how large of a dataset you can process.  This is because you still load the
-entire dataset into memory on the master process:</p>
-<blockquote>
-<div>data &lt;- read.csv( 'dataset.csv' )</div>
-</blockquote>
-<p>and clone it across all of your nodes:</p>
-<blockquote>
-<div>clusterExport(cl, c('data'))</div>
-</blockquote>
+to
+
+* try many different statistical models on the same set of data
+* run the same statistical model on many different datasets
+* ...or just about any other case where many independent calculations must be performed
+
+The biggest downside to using these methods is that **you are still limited by
+the amount of memory you have in a single node** as far as how large of a
+dataset you can process.  This is because you still load the entire dataset
+into memory on the master process:
+
+<div class="shortcode">
+{{< highlight r >}}
+data &lt;- read.csv( 'dataset.csv' )
+{{< /highlight >}}
+</div>
+
+and clone it across all of your nodes:
+
+<div class="shortcode">
+{{< highlight r >}}
+clusterExport(cl, c('data'))
+{{< /highlight >}}
+</div>
+
 <p>Thus, these approaches will not really help you solve problems that are too
 large to fit into memory; in such cases, you either need to turn to special
 out-of-core packages (e.g., the <code><a href="http://cran.r-project.org/web/packages/ff/index.html">ff</a></code> or <code><a href="http://cran.r-project.org/web/packages/bigmemory/index.html">bigmemory</a></code> libraries)
@@ -554,71 +573,70 @@ loading subsets of the input data, distributing it, deleting that object, and
 then garbage collecting before loading the next subset) but they rapidly become
 extremely complicated.</p>
 
-<hr />
-
 ## 6. Poor man's parallelism
 
-<p>The simplest, yet ugliest, way to parallelize your R code is to simply run
+The simplest, yet ugliest, way to parallelize your R code is to simply run
 a bunch of copies of the same R script that each read in slightly different 
 set of input parameters or data.  I call this "poor man's parallelism" (or PMP)
-because</p>
-<ol>
-<li>you can use it without any special libraries, packages, or programs</li>
-<li>you can program R scripts to utilize this without knowing anything about parallel programming</li>
-<li>you can use multicore or multi-node parallelism without any added effort</li>
-</ol>
-<p>For these reasons, poor man's parallelism is, by far, the most popular way to
+because
+
+1. you can use it without any special libraries, packages, or programs
+2. you can program R scripts to utilize this without knowing anything about
+   parallel programming
+3. you can use multicore or multi-node parallelism without any added effort
+
+For these reasons, poor man's parallelism is, by far, the most popular way to
 parallelize codes in my experience.  That doesn't mean it's the best way though;
 it is simply the most accessible to the novice R programmer.  Hopefully the
 previous sections on lapply- and foreach-based parallelism provide enough 
 information to show that there are better ways to write portable, simplified 
-parallel R scripts.</p>
+parallel R scripts.
 
-<p>With that being said, sometimes it's just easiest to go the poor man's route
+With that being said, sometimes it's just easiest to go the poor man's route
 and run a ton of R scripts all at once.  Perhaps the easiest way to efficiently
 do this is to have the R script read in some input from the command line so that
-the same script can be called multiple times <em>without modification</em> to
+the same script can be called multiple times _without modification_ to
 generate the parallel outputs desired.  For example, let's rewrite our k-means
-script using PMP:</p>
+script using PMP:
 
-<blockquote>
-<div><span style='color:blue'>args &lt;- commandArgs(TRUE)</span></div>
-<div><span style='color:blue'>set.seed(args[1])</span></div>
-<div>&nbsp;</div>
-<div>data &lt;- read.csv('dataset.csv')</div>
-<div>&nbsp;</div>
-<div>result &lt;- kmeans(data, centers=4, nstart=25)</div>
-<div>&nbsp;</div>
-<div>print(result)</div>
-</blockquote>
-<p>I've highlighted the additional code to support PMP when compared to our
+<pre>
+<span style='color:blue'>args &lt;- commandArgs(TRUE)</span>
+<span style='color:blue'>set.seed(args[1])</span>
+
+data &lt;- read.csv('dataset.csv')
+
+result &lt;- kmeans(data, centers=4, nstart=25)
+
+print(result)
+</pre>
+
+I've highlighted the additional code to support PMP when compared to our
 very first serial k-means code.  Unlike the lapply- and foreach-based 
 approaches, we don't have to mangle our code to make it amenable to 
-parallelization; rather, we</p>
-<ol>
-  <li>take input from the command line so that we have a mechanism to distinguish one particular execution of this script from another</li>
-  <li>use this command-line input to set the random number generator's seed value</li>
-</ol>
-<table class="inset">
-<tr><th>Parallel Random Numbers</th></tr>
-<tr><td>
-<p>When running many instances of the same script in parallel, it is 
+parallelization; rather, we
+
+1. take input from the command line so that we have a mechanism to distinguish one particular execution of this script from another
+2. use this command-line input to set the random number generator's seed value
+
+<div class="shortcode">
+{{% inset "Parallel Random Numbers" %}}
+When running many instances of the same script in parallel, it is 
 particularly important to remember that computers generate pseudorandom numbers
 by using some deterministic algorithm based on a seed value.  If the seed value
 is not explicitly defined to be different for every parallel invocation of your
 R script, you may run the risk of having every single copy of the R script use
 an identical series of random numbers and literally performing the same exact
-operations.</p>
-<p>There are a variety of options for <em>parallel random number generation</em>
+operations.<br><br>
+There are a variety of options for _parallel random number generation_
 in R that are beyond the scope of this guide.  The reason I don't feel the need
 to dive into them here is because newer versions of R have gotten reasonably
 good at anticipating parallel execution and using highly random seeds for each
 parallel invocation of the same R script.  In this k-means example, manually
 calling <code>set.seed</code> is actually not necessary; I merely included it
 here to show how we can get command-line arguments from an R script to affect
-how one might use the same R script with PMP.</p>
-</td></tr>
-</table>
+how one might use the same R script with PMP.
+{{% /inset %}}
+</div>
 
 
 <p>We then run four copies of this script using different inputs to generate
