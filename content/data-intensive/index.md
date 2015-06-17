@@ -38,6 +38,6 @@ each tutorial page.
 ## Topics in R
 
 - [Using R on HPC Clusters](r/on-hpc.html)
-- Parallel Options for R
+- [Parallel Options for R](r/parallel-options.html)
 - Parallel R using Hadoop
 - [Code Samples for Parallel R](https://github.com/glennklockwood/paraR)

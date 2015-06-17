@@ -77,8 +77,8 @@ repository][my parallel r github repository].
 {{% alertbox info %}}
 This guide is adapted from a talk I give, and it assumes that you already
 know how to actually run R jobs on parallel computing systems.  I wrote a guide,
-<a href="on-hpc.html">Running R on HPC Clusters</a>
-that goes through the basics of how to actually run these example codes.
+[Running R on HPC Clusters](on-hpc.html) that goes through the basics of how
+to actually run these example codes.
 {{% /alertbox %}}
 </div>
 
@@ -639,22 +639,22 @@ how one might use the same R script with PMP.
 {{% /inset %}}
 </div>
 
+We then run four copies of this script using different inputs to generate
+different randomized starts:
 
-<p>We then run four copies of this script using different inputs to generate
-different randomized starts:</p>
-<blockquote>
-<div>$ <kbd>Rscript ./kmeans-pmp.R 1 &gt; output1.txt &amp;</kbd></div>
-<div>$ <kbd>Rscript ./kmeans-pmp.R 2 &gt; output2.txt &amp;</kbd></div>
-<div>$ <kbd>Rscript ./kmeans-pmp.R 3 &gt; output3.txt &amp;</kbd></div>
-<div>$ <kbd>Rscript ./kmeans-pmp.R 4 &gt; output4.txt &amp;</kbd></div>
-<div>$ <kbd>wait</kbd> # waits for all four backgrounded R scripts to finish</div>
-</blockquote>
+<pre>
+$ <kbd>Rscript ./kmeans-pmp.R 1 &gt; output1.txt &amp;</kbd>
+$ <kbd>Rscript ./kmeans-pmp.R 2 &gt; output2.txt &amp;</kbd>
+$ <kbd>Rscript ./kmeans-pmp.R 3 &gt; output3.txt &amp;</kbd>
+$ <kbd>Rscript ./kmeans-pmp.R 4 &gt; output4.txt &amp;</kbd>
+$ <kbd>wait</kbd> # waits for all four backgrounded R scripts to finish
+</pre>
 
-<p>Remembering that the trailing ampersand (&amp;) tells our Rscript to run in
+Remembering that the trailing ampersand (&amp;) tells our Rscript to run in
 the background, the above commands will run four invocations of our PMP k-means
-example concurrently and return us to the shell when they're all finished.</p>
+example concurrently and return us to the shell when they're all finished.
 
-<p>While the code for our PMP k-means is extremely simple and very similar to
+While the code for our PMP k-means is extremely simple and very similar to
 our very original k-means code, running this PMP code gives us four output files,
 each containing one of our local minima.  It then falls on us as the programmer
 to sift through those four outputs and determine which 
@@ -662,82 +662,96 @@ to sift through those four outputs and determine which
 invocations.  Thus, we save time on programming by using PMP, but we have to
 make up for it in sifting through our parallel outputs.  Ultimately, this is the
 biggest disadvantage to using PMP over the more elegant <code>lapply</code>- 
-or <code>foreach</code>-based approaches.</p>
+or <code>foreach</code>-based approaches.
 
-<p>There are actually a lot of different tricks you can use to make PMP more
+There are actually a lot of different tricks you can use to make PMP more
 attractive, but I am hesitant to go through them in detail here since using PMP
 is generally the poorest way to parallelize R code.  However, I will provide
-the following tips:</p>
-<ul>
-<li>You can make your R script run like any other program by adding <code>#!/usr/bin/env Rscript</code> as the very first line of your script (the hashbang).  Once you've done this and made the script executable (<kbd>chmod +x kmeans-pmp.R</kbd>).  Once you've done this, you can run it by simply doing <kbd>./kmeans-pmp.R 1</kbd>.</li>
-<li>You can use an MPI-based bundler script to let MPI manage the distribution of your R tasks.  I've written such <a href="https://github.com/sdsc/sdsc-user/tree/master/bundler">an MPI-based bundler which can be found on GitHub</a>.</li>
-<li>You can easily combine PMP with shared-memory parallelism (<code>mclapply</code> or <code>doMC</code>) or hands-off parallelism (see below) to do multi-level parallelization.  Further combined with the MPI bundler in the previous bullet point, you can then launch a massive, hybrid parallel (shared-memory and MPI) R job without a huge amount of effort.</li>
-</ul>
-<p>Just remember: poor man's parallelism may be easier to code up front, but you
-wind up paying for it when you have to do a lot of the recombination of the 
-output by hand!</p>
+the following tips:
 
-<hr />
+* You can make your R script run like any other program by adding <code>#!/usr/bin/env Rscript</code> as the very first line of your script (the hashbang).  Once you've done this and made the script executable (<kbd>chmod +x kmeans-pmp.R</kbd>).  Once you've done this, you can run it by simply doing <kbd>./kmeans-pmp.R 1</kbd>.
+* You can use an MPI-based bundler script to let MPI manage the distribution of your R tasks.  I've written such <a href="https://github.com/sdsc/sdsc-user/tree/master/bundler">an MPI-based bundler which can be found on GitHub</a>.
+* You can easily combine PMP with shared-memory parallelism (<code>mclapply</code> or <code>doMC</code>) or hands-off parallelism (see below) to do multi-level parallelization.  Further combined with the MPI bundler in the previous bullet point, you can then launch a massive, hybrid parallel (shared-memory and MPI) R job without a huge amount of effort.
+
+Just remember: poor man's parallelism may be easier to code up front, but you
+wind up paying for it when you have to do a lot of the recombination of the 
+output by hand!
 
 ## 7. Hands-off parallelism
 
-<p>The final form of parallelism that can be used in R is what I call 
+The final form of parallelism that can be used in R is what I call 
 "hands-off" parallelism because, quite simply, you don't need to do anything to
-use it as long as you are using a semi-modern version (&gt; 2.14) of R.</p>
-<p>R has included OpenMP support for some time now, and newer versions of R 
+use it as long as you are using a semi-modern version (&gt; 2.14) of R.
+
+R has included OpenMP support for some time now, and newer versions of R 
 enable OpenMP by default.  While this doesn't mean much for the core R libraries 
 themselves (only the <code>colSums</code> and <code>dist</code> functions 
 actually use OpenMP within the core R distribution as of version 3.0.2), a 
-growing number of libraries on CRAN include OpenMP support <em>if your R 
-distribution was also built with OpenMP</em>.</p>
-<p>This can be good and bad; on the upside, you don't need to know anything
+growing number of libraries on CRAN include OpenMP support _if your R 
+distribution was also built with OpenMP_.
+
+This can be good and bad; on the upside, you don't need to know anything
 about parallelism to be able to use multiple CPU cores on your machine as long
-as the R library you are using has this hands-off parallelism coded in.  
+as the R library you are using has this hands-off parallelism coded in.
 However, this can also be extremely hazardous if you are trying to use any of
 the other forms of parallelism we've discussed above.  For example, consider our
-mclapply k-means example:</p>
-<blockquote>
-<div>library(parallel)</div>
-<div>&nbsp;</div>
-<div>data &lt;- read.csv('dataset.csv')</div>
-<div>&nbsp;</div>
-<div>parallel.function &lt;- function(i) {</div>
-<div> &nbsp;<span style="color:blue">some.special.kmeans.with.builtin.openmp( data, centers=4, nstart=i )</span></div>
-<div>}</div>
-<div>&nbsp;</div>
-<div>results &lt;- mclapply( c(25, 25, 25, 25), FUN=parallel.function )</div>
-<div>&nbsp;</div>
-<div>temp.vector &lt;- sapply( results, function(result) { result$tot.withinss } )</div>
-<div>result &lt;- results[[which.min(temp.vector)]]</div>
-<div>&nbsp;</div>
-<div>print(result)</div>
-</blockquote>
-<p>If instead of <code>kmeans</code>, our code's <code>parallel.function</code>
+mclapply k-means example:
+
+<pre>
+library(parallel)
+
+data &lt;- read.csv('dataset.csv')
+
+parallel.function &lt;- function(i) {
+    <span style="color:blue">some.special.kmeans.with.builtin.openmp( data, centers=4, nstart=i )</span>
+}
+
+results &lt;- mclapply( c(25, 25, 25, 25), FUN=parallel.function )
+
+temp.vector &lt;- sapply( results, function(result) { result$tot.withinss } )
+result &lt;- results[[which.min(temp.vector)]]
+
+print(result)
+</pre>
+
+If instead of <code>kmeans</code>, our code's <code>parallel.function</code>
 makes a call to some library with hands-off parallelism built in (e.g., <code>some.special.kmeans.with.builtin.openmp</code> 
 as in the above example), we might actually be running four mclapply tasks 
-<em>multiplied by</em> the number of CPU cores in our system since hands-off 
-parallelism can try to use <em>all of the CPU cores with each parallel 
-worker</em> (depending on the compiler used to build R).  Needless to say, 
+_multiplied by_ the number of CPU cores in our system since hands-off 
+parallelism can try to use _all of the CPU cores with each parallel 
+worker_ (depending on the compiler used to build R).  Needless to say, 
 trying to use more cores than the computer has will cause everything to grind 
 to a halt, so you have to be extremely careful when dealing with a library 
-that may include OpenMP support!</p>
-<p>The safest way to protect yourself <em>against</em> hands-off parallelism 
+that may include OpenMP support!
+
+The safest way to protect yourself _against_ hands-off parallelism 
 when using other forms of explicit (or "hands-on") parallelism is to explicitly
 disable it using the OpenMP runtime API and setting
-<var>OMP_NUM_THREADS</var> in your shell:</p>
-<blockquote>
-<div>$ <kbd>export OMP_NUM_THREADS=1</kbd></div>
-</blockquote>
-<p>Whether hands-off parallelism will use only one core or all cores by
+<var>OMP_NUM_THREADS</var> in your shell:
+
+<pre>
+$ <kbd>export OMP_NUM_THREADS=1</kbd>
+</pre>
+
+Whether hands-off parallelism will use only one core or all cores by
 default is dependent upon the compiler used to build the R executable you are 
 using.  This is a result of the ambiguity of the OpenMP standard which leaves 
 the default "greediness" of OpenMP up to the OpenMP implementors, and I've seen
 different compilers choose both one and all cores if <var>OMP_NUM_THREADS</var>
-is not explicitly defined.  Just be mindful of the possibilities.</p>
+is not explicitly defined.  Just be mindful of the possibilities.
 
-<!-- the colSums() and dist() calls uses OpenMP as of 3.0.2.  That's it. -->
+{{% alertbox info %}}
+As of R 3.0.2, only the <code>colSums()</code> and <code>dist()</code> builtin
+functions actually support OpenMP.  However, third-party libraries from CRAN can
+also include OpenMP, and as long as your installation of R was built with OpenMP
+support, this poor-man's parallelism will be enabled whenever such a library
+is installed with <code>install.packages()</code>
+{{% /alertbox %}}
 
 ## Map-Reduce-based parallelism with Hadoop
+
+_This section is not yet complete._  Please contact me if you're interested
+in this topic, as I have the material for this section already prepared.
 
 <!-- references -->
 [my parallel r github repository]: https://github.com/glennklockwood/paraR/tree/master/kmeans
