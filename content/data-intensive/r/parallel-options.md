@@ -9,7 +9,7 @@ parentdirs: [ 'data-intensive', 'r' ]
 ## Contents
 
 * [1. Introduction](#1-introduction)
-* [2. The Parallel R Taxonomy](#2-the-parallel-r-taxonomy)
+* [2. The parallel R taxonomy](#2-the-parallel-r-taxonomy)
 * [3. lapply-based parallelism](lapply-parallelism.html)
     * [3.1. lapply: halfway to parallel](lapply-parallelism.html#3-1-lapply-halfway-to-parallel)
     * [3.2. mclapply: shared-memory parallelism](lapply-parallelism.html#3-2-mclapply-shared-memory-parallelism)
@@ -22,10 +22,14 @@ parentdirs: [ 'data-intensive', 'r' ]
     * [4.2. doMC: shared-memory parallelism](foreach-parallelism.html#4-2-domc-shared-memory-parallelism)
     * [4.3. doSNOW: distributed-memory parallelism](foreach-parallelism.html#4-3-dosnow-distributed-memory-parallelism)
 * [5. Caveats with lapply- and foreach-based parallelism](foreach-parallelism.html#5-caveats-with-lapply-and-foreach-based-parallelism)
-* [6. Alternative Forms of Parallelism](alternative-parallelism.html)
+* [6. Alternative forms of parallelism](alternative-parallelism.html)
     * [6.1. Poor-man's parallelism](alternative-parallelism.html#6-1-poor-man-s-parallelism)
     * [6.2. Hands-off parallelism](alternative-parallelism.html#6-2-hands-off-parallelism)
-* 7. Map-Reduce-based parallelism with Hadoop
+* [7. Map-Reduce-based parallelism with Hadoop](mapreduce-parallelism.html)
+    * [7.1. Halfway to parallel](mapreduce-parallelism.html#7-1-halfway-to-parallel)
+    * [7.2. Hadoop Streaming](mapreduce-parallelism.html#7-2-hadoop-streaming)
+    * [7.3. RHIPE](mapreduce-parallelism.html#7-3-rhipe)
+    * [7.4. RHadoop](mapreduce-parallelism.html#7-4-rhadoop)
 
 ## 1. Introduction
 
@@ -83,7 +87,7 @@ to actually run these example codes.
 {{% /alertbox %}}
 </div>
 
-## 2. The Parallel R Taxonomy
+## 2. The parallel R taxonomy
 
 There are a number of different ways to utilize parallelism to speed up a
 given R script.  I like to think of them as generally falling into one of a few
@@ -92,7 +96,7 @@ broad categories of parallel R techniques though:
 * [lapply-based parallelism](lapply-parallelism.html)
 * [foreach-based parallelism](foreach-parallelism.html)
 * [Poor-man's parallelism and hands-off parallelism](alternative-parallelism.html)
-* Map-Reduce-based parallelism
+* [Map-Reduce-based parallelism](mapreduce-parallelism.html)
 
 Although there are an increasing number of additional libraries entering
 CRAN that provide means to add parallelism that I have not included in this
