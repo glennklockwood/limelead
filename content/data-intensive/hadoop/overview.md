@@ -269,23 +269,25 @@ and each of these unique keys' values are the result of the reducer function's
 calculation.
 
 <div class="shortcode">
-{{% alertbox info %}}
+{{% inset "The Shuffle" %}}
 The process of sorting and distributing the mapper's output to the reducers
 can be seen as a separate step often called the "shuffle".  What really happens
 is that as mappers emit key-value pairs, the keys are passed through the
-<code>Partitioner</code> to determine which reducer they are sent to.<br><br>
+<code>Partitioner</code> to determine which reducer they are sent to.
+
 The default <code>Partitioner</code> is a function which hashes the key and 
 then takes the modulus of this hash and the number of reducers to determine 
 which reducer gets that key-value pair.  Since the hash of a given key will 
 always be the same, all key-value pairs sharing the same key will get the same
 output value from the <code>Partitioner</code> and therefore wind up on the
-same reducer.<br><br>
+same reducer.
+
 Once all key-value pairs are assigned to their reducers, the reducers all
 sort their keys so that a single loop over all of a reducer's keys will examine
 all the values of a single key before moving on to the next key.  As you will
 see in the tutorial on writing mappers and reducers in Python that follows,
 this is an essential property of the Hadoop streaming interface.
-{{% /alertbox %}}
+{{% /inset %}}
 </div>
 
 This might sound a little complicated or abstract without an actual problem

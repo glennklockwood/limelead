@@ -16,6 +16,10 @@
 {{ $.Page.Scratch.Set "glyphicon" "info-sign" }}
 {{ end }}
 <div role="alert" class="alert alert-{{ $.Page.Scratch.Get "class" }}">
+    <div class="alertbox-icon">
     <span class="glyphicon glyphicon-{{ $.Page.Scratch.Get "glyphicon" }}" aria-hidden="true"></span>
+    </div>
+    <div class="alertbox-content">
     {{ .Inner }}
+    </div>
 </div>

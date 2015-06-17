@@ -327,12 +327,12 @@ discrete storage devices.  By pointing all of your datanodes' HDFS blocks at
 the same persistent storage device (a SAN, NFS-mounted storage, etc), you lose 
 the data parallelism and resulting perfomance that makes Hadoop useful.  You 
 are, in effect, shooting yourself in the foot by doing this.
-<br><br>The only potential
-exception to this is if you use a parallel clustered filesystem (like Lustre)
-as the persistent storage device; the parallelism underneath that filesystem
-may allow you to recover some of the performance loss because it will store
-your HDFS blocks on different object storage targets.  However, other 
-bottlenecks and limitations also enter the picture.
+
+The only potential exception to this is if you use a parallel clustered
+filesystem (like Lustre) as the persistent storage device; the parallelism
+underneath that filesystem may allow you to recover some of the performance
+loss because it will store your HDFS blocks on different object storage
+targets.  However, other bottlenecks and limitations also enter the picture.
 {{%/alertbox%}}
 </div>
 

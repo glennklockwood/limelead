@@ -72,14 +72,22 @@ body {
     font-size:smaller;
 }
 
-.alert .glyphicon {
-    display:table-cell;
-    vertical-align: middle;
+.alertbox-icon {
+    display: table-cell;
+    vertical-align: top;
+    padding-top: 3px;
 }
-.alert p {
+.alertbox-content {
     padding-left: inherit;
     display: table-cell;
 }
+.alertbox-content p {
+    display: block;
+}
+.alertbox-content p:last-child {
+    margin-bottom: 0px;
+}
+
 .inset {
     margin: 1em 2em;
     border: 1px solid #bce8f1;
@@ -89,13 +97,12 @@ body {
     color:#d9edf7;
     background:#31708f;
     margin: 0;
-    padding:0.5em;
+    padding: 0.5em 15px;
 }
 .inset-content {
-    padding: 0.5em; 
     color: black;
+    padding: 0.5em 15px;
 }
-
 
 .main-page-header {
     margin: 10px auto 20px auto;

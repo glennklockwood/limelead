@@ -77,8 +77,8 @@ repository][my parallel r github repository].
 {{% alertbox info %}}
 This guide is adapted from a talk I give, and it assumes that you already
 know how to actually run R jobs on parallel computing systems.  I wrote a guide,
-[Running R on HPC Clusters][running r on hpc clusters] that goes through the
-basics of how to actually run these example codes.
+<a href="on-hpc.html">Running R on HPC Clusters</a>
+that goes through the basics of how to actually run these example codes.
 {{% /alertbox %}}
 </div>
 
@@ -626,7 +626,8 @@ by using some deterministic algorithm based on a seed value.  If the seed value
 is not explicitly defined to be different for every parallel invocation of your
 R script, you may run the risk of having every single copy of the R script use
 an identical series of random numbers and literally performing the same exact
-operations.<br><br>
+operations.
+
 There are a variety of options for _parallel random number generation_
 in R that are beyond the scope of this guide.  The reason I don't feel the need
 to dive into them here is because newer versions of R have gotten reasonably
