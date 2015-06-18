@@ -7,18 +7,40 @@ parentDirs: [ hpc-howtos ]
 
 ## Contents
 
-* Types of Thread Scheduling
-    * Compact Scheduling
-    * Round-Robin Scheduling
-    * Stupid Scheduling
-* Determine Current Thread-Core Map
-* Defining Affinity
-    * The Linux-Portable Way (taskset)
-    * The Other Linux-Portable Way (numactl)
-    * Using OpenMP Runtime Extensions
-    * getfreesocket
+* [1. Introduction](#1-introduction)
+* [2. Types of Thread Scheduling](#2-types-of-thread-scheduling)
+    * [2.1. Compact Scheduling](#2-1-compact-scheduling)
+    * [2.2. Round-Robin Scheduling](#2-2-round-robin-scheduling)
+    * [2.3. Stupid Scheduling](#2-3-stupid-scheduling)
+* [3. Defining Affinity](#3-defining-affinity)
+    * [3.1. The Linux-Portable Way (taskset)](#3-1-the-linux-portable-way-taskset)
+    * [3.2. The Other Linux-Portable Way (numactl)](#3-2-the-other-linux-portable-way-numactl)
+    * [3.3. Using OpenMP Runtime Extensions](#3-3-using-openmp-runtime-extensions)
+    * [3.4. getfreesocket](#3-4-getfreesocket)
 
-## Types of Thread Scheduling
+## 1. Introduction
+
+Although a compute node or workstation may appear to have 16 cores and 64 GB of
+DRAM, these resources are not uniformly accessible to your applications.  The
+best application performance is usually obtained by keeping your code's 
+parallel workers (e.g., threads or MPI processes) as close to the memory on
+which they are operating as possible.  While you might like to think that the
+Linux thread scheduler would do this automatically for you, the reality is that
+most HPC applications benefit greatly from a little bit of help in manually
+placing threads on different processor cores.
+
+To get an idea of what your multithreaded application is doing while it is 
+running, you can use the <code>ps</code> command.
+
+Assuming your executable is called <code>application.x</code>, you can easily
+see what cores each thread is using by issuing the following command in bash:
+
+<pre>$ <kbd>for i in $(pgrep application.x); do ps -mo pid,tid,fname,user,psr -p $i;done</kbd></pre>
+
+The PSR field is the OS identifier for the core each TID (thread id) is
+utilizing.
+
+## 2. Types of Thread Scheduling
 
 Certain types of unevenly loaded applications can experience serious 
 performance degradation caused by the Linux scheduler treating high-performance
@@ -29,38 +51,30 @@ These sorts of scheduling issues are best described with diagrams.  Let's
 assume we have compute nodes with two processor sockets, and each processor
 has four cores:
 
-<a href="node-arch.png">
-<img src="node-arch.png" 
-     alt="Architecture of a dual-processor, quad-core node" 
-     style="display:block; margin:1em auto; width:300px; height:auto; border:0"/>
-    </a>
+<div class="shortcode">
+{{< figure src="scheduling-topology.png" link="scheduling-topology.png" alt="topology of a dual-socket, quad-core node" >}}
+</div>
 
 When you run a multithreaded application with four threads (or even four 
 serial applications), Linux will _schedule_ those threads for execution
 by assigning each one to a CPU core.  Without being explicitly told how to do
 this scheduling, Linux may decide to
 
-<ol>
-<li><a href="#sched:compact">run thread0 to thread3 on core0 to core3 on socket0</a></li>
-<li><a href="#sched:rr">run thread0 and thread1 on core0 and core1 on socket0, and run thread2 and thread3 on socket1</a></li>
-<li><a href="#sched:stupid">run thread0 and thread1 on core0 only, run thread2 on core1, run thread3 on core2, and leave core3 completely unutilized</a></li>
-<li><a href="#sched:stupid">any number of other nonsensical allocations involving assigning multiple threads to a single core while other cores sit idle</a></li>
-</ol>
+1. run thread0 to thread3 on core0 to core3 on socket0
+2. run thread0 and thread1 on core0 and core1 on socket0, and run thread2 and thread3 on socket1
+3. run thread0 and thread1 on core0 only, run thread2 on core1, run thread3 on core2, and leave core3 completely unutilized
+4. any number of other nonsensical allocations involving assigning multiple threads to a single core while other cores sit idle
 
 It should be obvious that option #3 and #4 are very bad for performance, 
 but the fact is that Linux will happily schedule your multithreaded job (or
 multiple single-thread jobs) this way if your threads behave in a way that is 
 confusing to the operating system.
 
-<div style="display:block; float:right">
-<a href="node-arch-compact.png">
-<img src="node-arch-compact.png" 
-     alt="Compact scheduling" 
-     style="display:block; margin-left:0.5em; width:300px; height:auto; border:0"/>
-    </a>
+<div class="shortcode">
+{{< figure src="scheduling-compact.png" link="scheduling-compact.png" alt="compact scheduling" >}}
 </div>
 
-### Compact Scheduling
+### 2.1. Compact Scheduling
 
 Option #1 is often referred to as "compact" scheduling and is depicted in 
 the diagram to the right.  It keeps all of your threads running on a single 
@@ -74,32 +88,25 @@ owned by a different processor as quickly; this is phenomenon is called NUMA
 in the memory owned by one processor, it is often best to put all of your 
 threads on the processor who owns that memory.
 
-### Round-Robin Scheduling
+### 2.2. Round-Robin Scheduling
 
-<div style="display:block; float:left">
-<a href="node-arch-scatter.png">
-<img src="node-arch-scatter.png" 
-     alt="Scatter scheduling" 
-     style="display:block; margin-right:0.5em; width:300px; height:auto; border:0"/>
-    </a>
+<div class="shortcode">
+{{< figure src="scheduling-scatter.png" alt="scheduling-scatter.png" alt="scatter or round-robin scheduling" >}}
 </div>
-<p>Option #2 is called "scatter" or "round-robin"  scheduling and is ideal if 
+
+Option #2 is called "scatter" or "round-robin"  scheduling and is ideal if 
 your threads are largely independent of each other and don't need to access a 
 lot of memory that other threads need.  The benefit to round-robin thread 
 scheduling is that not all threads have to share the same memory channel and 
 cache, effectively doubling the memory bandwidth and cache sizes available to 
 your application.  The tradeoff is that memory latency becomes higher as 
 threads have to start accessing memory that might be owned by another 
-processor.</p>
+processor.
 
-### Stupid Scheduling
+### 2.3. Stupid Scheduling
 
-<div style="display:block; float:right">
-<a href="node-arch-bad.png">
-<img src="node-arch-bad.png" 
-     alt="Bad scheduling" 
-     style="display:block; margin-left:0.5em; width:300px; height:auto; border:0"/>
-    </a>
+<div class="shortcode">
+{{< figure src="scheduling-stupid.png" link="scheduling-stupid.png" alt="stupid scheduling" >}}
 </div>
 
 Option #3 and #4 are what I call "stupid" scheduling (see diagram to the 
@@ -119,30 +126,15 @@ CPU core.  This wouldn't be so bad, but the cost of moving a thread from one
 core to another requires _context switches_ which get very expensive 
 when done hundreds or thousands of times a minute.
 
-## Determine current thread-core map
+## 3. Defining affinity
 
-If your application (let's call it <code>application.x</code>) has already 
-been launched, you can easily see what cores each thread is using by issuing
-the following command in bash:
-
-<pre>
-$ <kbd>for i in $(pgrep application.x); do ps -mo pid,tid,fname,user,psr -p $i;done</kbd>
-</pre>
-
-The PSR field is the OS identifier for the core each TID (thread id) is
-utilizing.
-
-## Defining affinity
-
-### The Linux-Portable Way (<code>taskset</code>)
+### 3.1. The Linux-Portable Way (taskset)
 
 If you want to launch a job (e.g., <code>simulation.x</code>) on a 
 certain set of cores (e.g., <code>core0</code>, <code>core2</code>, 
 <code>core4</code>, and <code>core6</code>), issue
 
-<pre>
-$ <kbd>taskset -c 0,2,4,6 simulation.x</kbd>
-</pre>
+<pre>$ <kbd>taskset -c 0,2,4,6 simulation.x</kbd></pre>
 
 If your process is already running, you can define thread affinity while
 in flight.  It also lets you bind specific TIDs to specific processors at a
@@ -167,11 +159,11 @@ $ <kbd>taskset -p -c 4 21657</kbd>
 $ <kbd>taskset -p -c 6 21658</kbd>
 </pre>
 
-<p>This sort of scheduling will happen under certain conditions, so specifying
+This sort of scheduling will happen under certain conditions, so specifying
 a set of cpus to a set of threads without specifically assigning each thread
-to a physical core may not always behave optimally.</p>
+to a physical core may not always behave optimally.
 
-### The Other Linux-Portable Way (<code>numactl</code>)
+### 3.2. The Other Linux-Portable Way (numactl)
 
 The emerging standard for easily binding processes to processors on 
 Linux-based supercomputers is <code>numactl</code>.  It can operate on a 
@@ -187,28 +179,20 @@ in <code>numactl</code> parlance).
 Whereas if you wanted to bind a specific process to one processor socket with
 <code>taskset</code> you would have to
 
-<pre>
-$ <kbd>taskset -c 0,2,4,6 simulation.x</kbd>
-</pre>
+<pre>$ <kbd>taskset -c 0,2,4,6 simulation.x</kbd></pre>
 
 the same operation is greatly simplified with <code>numactl</code>:
 
-<pre>
-$ <kbd>numactl --cpunodebind=0 simulation.x</kbd>
-</pre>
+<pre>$ <kbd>numactl --cpunodebind=0 simulation.x</kbd></pre>
 
 If you want to also restrict <code>simulation.x</code>'s memory use to the
 numa pool associated with cpu node 0, you can do
 
-<pre>
-$ <kbd>numactl --cpunodebind=0 --membind=0 simulation.x</kbd>
-</pre>
+<pre>$ <kbd>numactl --cpunodebind=0 --membind=0 simulation.x</kbd></pre>
 
 or just
 
-<pre>
-$ <kbd>numactl -C 0 -N 0 simulation.x</kbd>
-</pre>
+<pre>$ <kbd>numactl -C 0 -N 0 simulation.x</kbd></pre>
 
 You can see what _cpu nodes_ and their corresponding _memory nodes_ are
 available on your system by using <kbd>numactl -H</kbd>:
@@ -233,16 +217,22 @@ let you change the CPU affinity of a process that is already running.
 
 An alternative syntax to <code>numactl -C</code> is something like
 
-<pre>
-$ <kbd>numactl -C +0,1,2,3 simulation.x</kbd>
-</pre>
+<pre>$ <kbd>numactl -C +0,1,2,3 simulation.x</kbd></pre>
 
 By prefixing your list of cores with a <code>+</code>, you can have numactl
 bind to <em>relative</em> cores.  When combined with cpusets (which are enabled
 by default for all jobs on Gordon), the above command will use the 0th, 1st,
 2nd, and 3rd core of the job's given cpuset instead of literally core 0,1,2,3.
 
-### Using OpenMP Runtime Extensions
+### 3.3. Using OpenMP Runtime Extensions
+
+<div class="shortcode">
+{{% alertbox info %}}
+[OpenMP 4.0](http://www.openmp.org/mp-documents/OpenMP4.0.0.pdf) now includes
+standardized controls for binding threads to cores.  I haven't caught up with
+these changes but I will document them here once I do.
+{{% /alertbox %}}
+</div>
 
 Multithreaded programs compiled with Intel Compilers can utilize [Intel's 
 Thread Affinity Interface][intel's thread affinity interface] for OpenMP
@@ -278,13 +268,13 @@ above would be:</p>
 
 <pre>export GOMP_CPU_AFFINITY='0,2,4,6'</pre>
 
-### getfreesocket
+
+### 3.4. getfreesocket
 
 I wrote a [small perl script called <code>getfreesocket</code>][getfreesocket]
 that uses <code>KMP_AFFINITY=explicit</code> (or <var>GOMP_CPU_AFFINITY</var>)
-and some probing of the Linux OS at runtime to intelligently bind SMP jobs to
-free processor sockets.  It should be invoked in a job script something like
-this:
+and some probing of the Linux OS at runtime to bind SMP jobs to free processor
+sockets.  It should be invoked in a job script something like this:
 
 <pre>
 #!/bin/bash
@@ -318,8 +308,8 @@ Molecular Science Laboratory</a>.  While <code>numactl</code> is an easier way
 to accomplish some of this, it still requires that you know what other processes
 are sharing your node and on what CPU cores they are running.  I've experienced
 problems with <a href="http://glennklockwood.blogspot.com/2012/07/braindead-thread-scheduling-in-linux.html">Linux's 
-braindead thread scheduling</a> so this <code>getfreesocket</code> intelligently
-finds completely unused sockets that can be fed into <code>taskset</code>,
+braindead thread scheduling</a> so this <code>getfreesocket</code> finds
+completely unused sockets that can be fed into <code>taskset</code>,
 <var>KMP_AFFINITY</var>, or <code>numactl</code>.
 
 This is not as great an issue if your resource manager supports launching
