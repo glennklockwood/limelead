@@ -1,0 +1,81 @@
+[
+    {
+        "model":        "Dell Inspiron 8100",
+        "processor":    "Pentium III M",
+        "clock":        "1129 MHz",
+        "cache":        "512 KB",
+        "mem":          "256 MB",
+        "mem_type":     "PC-133",
+        "mem_speed":    "1.1 GB/s",
+        "wall_secs":    3680,
+        "compiler":     "GNU GFortran 4.3",
+        "compile_flags": "-mtune=native -march=native -O3 -fdefault-real-8"
+    },
+    {
+        "model":        "Tyan MPX S2466",
+        "processor":    "Athlon MP 1900+",
+        "clock":        "1600 MHz",
+        "cache":        "256 KB",
+        "mem":          "1024 MB",
+        "mem_type":     "DDR-266",
+        "mem_speed":    "2.1 GB/s",
+        "wall_secs":    3660,
+        "compiler":     "PGI pgf477 6.1-2",
+        "compile_flags": "-Mr8 -r8 -Kieee -tp athlonxp -fastsse -O2 -Munroll=c:1 -Mnoframe -Mlre -Mvect=sse -Mscalarsse -Mcache_align -Mflushz"
+    },
+    {
+        "model":        "Dell OptiPlex GX260",
+        "processor":    "Pentium 4 (Northwood)",
+        "clock":        "1793 MHz",
+        "cache":        "512 KB",
+        "mem":          "1024 MB",
+        "mem_type":     "DDR-333",
+        "mem_speed":    "2.1 GB/s",
+        "wall_secs":    2170,
+        "compiler":     "Intel 11.1",
+        "compile_flags": "-ipo -O3 -static -xHost -fp-model precise -ftz -no-prec-div"
+    },
+    {
+        "model":        "Dell OptiPlex GX260",
+        "processor":    "Pentium 4 (Northwood)",
+        "clock":        "2391 MHz",
+        "cache":        "512 KB",
+        "mem":          "1024 MB",
+        "mem_type":     "DDR-333",
+        "mem_speed":    "2.1 GB/s",
+        "wall_secs":    1661,
+        "compiler":     "Intel 11.1",
+        "compile_flags": "-ipo -O3 -static -xHost -fp-model precise -ftz -no-prec-div"
+    },
+    {
+        "model":        "Gateway E-4650",
+        "processor":    "Pentium 4 (Northwood)",
+        "clock":        "2193 MHz",
+        "cache":        "512 KB",
+        "mem":          "1024 MB",
+        "mem_type":     "PC-800",
+        "mem_speed":    "3.2 GB/s",
+        "wall_secs":    1743,
+        "compiler":     "Intel 11.1",
+        "compile_flags": "-ipo -O3 -static -xHost -fp-model precise -ftz -no-prec-div"
+    },
+
+
+
+
+    {
+        "model":        "-",
+        "processor":    "Xeon E5 v3",
+        "core_ct":      14,
+        "clock":        "14&#215; 2493 MHz",
+        "cache":        "32+32 KB <br>256 KB <br>35 MB",
+        "mem":          "",
+        "mem_type":     "DDR4-2133",
+        "mem_speed":    "51 GB/s",
+        "_comment":     "51 GB/s reflects spec based on job placement",
+        "wall_secs":    152,
+        "compiler":     "Intel 13.0.1.117",
+        "compile_flags": "unknown"
+    }
+
+]

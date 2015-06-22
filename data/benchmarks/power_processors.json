@@ -1,0 +1,99 @@
+[
+    {
+        "model":        "IBM RS/6000 43p 150",
+        "processor":    "PowerPC 604e",
+        "clock":        "374 MHz",
+        "cache":        "32+32 KB <br>1024 KB",
+        "mem":          "512 MB",
+        "mem_type":     "PC-100",
+        "mem_speed":    "800 MB/s",
+        "wall_secs":    10889,
+        "compiler":     "XL Fortran 13.1",
+        "compile_flags": "-qautodbl=dbl4 -qdpc=e -qfloat-fltint -qarch=604 -qcache=auto -O5"
+    },
+    {
+        "model":        "Apple Power Mac G4",
+        "processor":    "PowerPC 7450",
+        "clock":        "733 MHz",
+        "cache":        "256 KB",
+        "mem":          "1024 MB",
+        "mem_type":     "PC-100",
+        "mem_speed":    "800 MB/s",
+        "wall_secs":    7291,
+        "compiler":     "GNU GFortran 4.4",
+        "compile_flags": "-O3 -mtune=7450 -mcpu=7450"
+    },
+    {
+        "model":        "Apple Power Mac G4",
+        "processor":    "PowerPC 7450",
+        "clock":        "933 MHz",
+        "cache":        "2048 KB",
+        "mem":          "1536 MB",
+        "mem_type":     "PC-100",
+        "mem_speed":    "800 MB/s",
+        "wall_secs":    4533,
+        "compiler":     "GNU GFortran 4.4",
+        "compile_flags": "-O3 -mtune=7450 -mcpu=7450"
+    },
+    {
+        "model":        "Apple Power Mac G5",
+        "processor":    "PowerPC 970",
+        "clock":        "1600 MHz",
+        "cache":        "512 KB",
+        "mem":          "1024 MB",
+        "mem_type":     "DDR2-400",
+        "mem_speed":    "3.2 GB/s",
+        "wall_secs":    2317,
+        "compiler":     "GNU GFortran 4.4",
+        "compile_flags": "-O3 -mtune=7450 -mcpu=7450"
+    },
+    {
+        "model":        "IBM Blue Gene/P",
+        "processor":    "PowerPC 450",
+        "clock":        "850 MHz",
+        "cache":        "32+32 KB <br>2 KB <br>8 MB",
+        "mem":          "2048 MB",
+        "mem_type":     "DDR2-840",
+        "mem_speed":    "13.6 GB/s",
+        "wall_secs":    3030,
+        "compiler":     "IBM XL Fortran 11.1",
+        "compile_flags": "-O5 -qautodbl=dbl4 -qdpc=e -qfloat-fltint -qarch=450d -qtune=450 -qcache=auto -qhot -qipa"
+    },
+    {
+        "model":        "IBM Blue Gene/P",
+        "processor":    "PowerPC 450",
+        "clock":        "4&#215; 850 MHz",
+        "cache":        "32+32 KB <br>2 KB <br>8 MB",
+        "mem":          "2048 MB",
+        "mem_type":     "DDR2-840",
+        "mem_speed":    "13.6 GB/s",
+        "wall_secs":    1720,
+        "compiler":     "IBM XL Fortran 11.1",
+        "compile_flags": "     -O5 -qautodbl=dbl4 -qdpc=e -qfloat=fltint -qarch=450d -qtune=450 -qcache=auto -qhot -qipa"
+
+    },
+    {
+        "model":        "IBM Power 550 Express",
+        "processor":    "POWER6",
+        "clock":        "4204 MHz",
+        "cache":        "64+64 KB <br>8 MB <br> 32 MB",
+        "mem":          "15479 MB",
+        "mem_type":     "DDR2-667",
+        "mem_speed":    "10.7 GB/s",
+        "wall_secs":    646,
+        "compiler":     "IBM XL Fortran 11.1",
+        "compile_flags": "-qautodbl=dbl4 -qdpc=e -qfloat-fltint -qarch=pwr6 -qcache=auto -O5"
+    },
+    {
+        "model":        "IBM Power 550 Express",
+        "processor":    "POWER6",
+        "clock":        "4&#15; 4204 MHz",
+        "cache":        "64+64 KB <br>8 MB <br> 32 MB",
+        "mem":          "15479 MB",
+        "mem_type":     "DDR2-667",
+        "mem_speed":    "10.7 GB/s",
+        "wall_secs":    414,
+        "compiler":     "IBM XL Fortran 11.1",
+        "compile_flags": "-qautodbl=dbl4 -qdpc=e -qfloat-fltint -qarch=pwr6 -qcache=auto -O5"
+    }
+]

@@ -1,0 +1,26 @@
+<table class="table table-striped table-condensed" style="font-size: 14px">
+    <thead>
+        <th>System</th>
+        <th>Processor</th>
+        <th>Clock</th>
+        <th>Cache</th>
+        <th>Memory</th>
+        <th>RAM Speed</th>
+        <th>Time (sec)</th>
+        <th>Compiler</th>
+    </thead>
+    <tbody>
+{{ range index $.Page.Site.Data.benchmarks (.Get 0 ) }}
+    <tr>
+    <td>{{ .model | safeHTML }}</td>
+    <td style="white-space:nowrap">{{ .processor | safeHTML }}</td>
+    <td style="white-space:nowrap">{{ .clock | safeHTML }}</td>
+    <td style="white-space:nowrap">{{ .cache | safeHTML }}</td>
+    <td>{{ .mem | safeHTML }} {{ .mem_type | safeHTML }}</td>
+    <td style="white-space:nowrap">{{ .mem_speed | safeHTML }}</td>
+    <td>{{ .wall_secs }}</td>
+    <td title="{{ .compile_flags }}">{{ .compiler | safeHTML }}</td>
+    </tr>
+{{ end }}
+    </tbody>
+</table>
