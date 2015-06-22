@@ -45,13 +45,64 @@ contents of this site.  My email address is listed above and at the bottom of
 every page, and I also am an active contributor in <code>#hpc</code> on <a 
 href="http://freenode.net/">freenode</a>.</p>
 
-<hr>
-
-<ul id="list">
-    {{ range .Data.Pages }}
-        {{ .Render "li" }}
-    {{ end }}
+<div class="main-page-index">
+<h2>Data-Intensive Computing</h2>
+<h3>Topics in Hadoop</h3>
+<ul>
+    <li><a href="data-intensive/hadoop/overview.html">Conceptual Overview of Map/Reduce and Hadoop</a></li>
+    <li><a href="data-intensive/hadoop/streaming.html">Writing Hadoop Applications in Python with Hadoop Streaming</a></li>
+    <li><a href="data-intensive/hadoop/parsing-vcfs.html">Parsing VCF Files with Hadoop Streaming</a></li>
+    <li><a href="data-intensive/hadoop/on-hpc.html">Running Hadoop on HPC Clusters</a></li>
 </ul>
+<h3>Topics in R</h3>
+<ul>
+    <li><a href="data-intensive/r/on-hpc.html">Using R on HPC Clusters</a></li>
+    <li><a href="data-intensive/r/parallel-options.html">Parallel Options for R</a></li>
+    <li><a href="https://github.com/glennklockwood/paraR">Code Samples for Parallel R</a></li>
+</ul>
+
+<h2>HPC Howtos</h2>
+<h3>For Users</h3>
+<ul>
+    <li><a href="hpc-howtos/common-problems.html">Common Problems on Supercomputers</a></li>
+    <li><a href="hpc-howtos/installing-without-root.html">Installing Software Without Root</a></li>
+    <li><a href="hpc-howtos/ssh-keys-on-windows.html">Configuring SSH Keys on Windows</a></li>
+    <li><a href="hpc-howtos/gaussian-on-linux-clusters.html">Using Gaussian on Linux Clusters</a></li>
+    <li><a href="http://glennklockwood.blogspot.com/2014/02/quantum-espresso-performance-benefits.html"><strong>Blog</strong>: Optimizing Quantum ESPRESSO builds</a></li>
+</ul>
+<h3>For Operators</h3>
+<ul>
+<li><a href="http://glennklockwood.blogspot.com/2013/04/quick-mpi-cluster-setup-on-amazon-ec2.html"><strong>Blog</strong>: Setting up a basic MPI cluster on Amazon EC2</a></li>
+</ul>
+
+<h2>Performance &amp; Benchmarks</h2>
+<ul>
+    <li><a href="http://glennklockwood.blogspot.com/2014/02/quantum-espresso-performance-benefits.html"><strong>Blog</strong>: BLAS, LAPACK, and ScaLAPACK Implementations</a></li>
+    <li><a href="http://glennklockwood.blogspot.com/2013/12/high-performance-virtualization-sr-iov.html"><strong>Blog</strong>: SR-IOV with Amazon's C3 Instances</a></li>
+    <li><a href="http://glennklockwood.blogspot.com/2013/12/high-performance-virtualization-sr-iov_14.html"><strong>Blog</strong>: SR-IOV with QDR InfiniBand</a></li>
+    <li><a href="http://glennklockwood.blogspot.com/2013/06/whats-killing-cloud-interconnect.html"><strong>Blog</strong>: IP over InfiniBand and IP over Ethernet</a></li>
+    <li><a href="http://glennklockwood.blogspot.com/2013/05/fdr-infiniband-vs-dual-rail-qdr.html"><strong>Blog</strong>: Dual-Rail QDR InfiniBand vs. FDR InfiniBand</a></li>
+    <li>Historical performance trends (1996-2015)</li>
+</ul>
+
+<h2>Miscellany</h2>
+
+<h3>Unix and Linux Howtos</h3>
+<ul>
+    <li>Create a wired Ethernet island on a wifi network with Raspberry Pi</li>
+    <li>Installing and configuring a CentOS 6 workstation</li>
+    <li>Installing and configuring a Solaris 10 server</li>
+    <li>Converting 520-byte block disks to 512-byte blocks (Solaris)</li>
+    <li>Configuring dmake (Solaris)</li>
+</ul>
+
+<h3>Personal</h3>
+<ul>
+    <li>A little about me</li>
+    <li>My old computer collection</li>
+</ul>
+
+</div>
 
 </div>
 
