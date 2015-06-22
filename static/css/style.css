@@ -176,6 +176,12 @@ body {
     margin: 0;
 }
 
+.main-page-index h2 {
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    border-bottom: 1px solid black;
+}
+
 /* pygments - linenos=table */
 tr div.highlight {
     margin-left: 0px;
@@ -196,6 +202,91 @@ tr div.linenodiv pre {
     border-width: 1px;
     margin-left: 0px;
     margin-right: -11px; /* compensate for hard-coded hugo styling */
+}
+
+/* for cv page */
+.cv-h2 {
+    font-size: 20px;
+    font-weight: bold;
+    padding: 5px 0px;
+    border-top: 1px solid black;
+    border-bottom: 2px solid black;
+}
+
+.cv-block {
+    margin-bottom: 0.75em;
+    margin-left: 20px;
+    line-height: 1.0;
+}
+
+.cv-block p {
+    font-size: 14px;
+    text-align: left;
+}
+.cv-head-container {
+    border-bottom: 1px solid black;
+    margin-bottom: 2px;
+    width: 100%;
+}
+.cv-head-left {
+    font-weight: bold;
+    display: inline-block;
+}
+.cv-head-left-container {
+    font-weight: bold;
+    display: inline-block;
+    border-bottom: 1px solid black;
+    margin-bottom: 2px;
+    width: 100%;
+}
+.cv-head-mid {
+    font-size: 14px;
+    font-weight: normal;
+    display: inline-block;
+}
+.cv-head-right {
+    font-size: 14px;
+    font-weight: normal;
+    display: inline-block;
+    float: right;
+}
+.cv-ed-thesis-title {
+    font-size: 18px;
+    display: inline-block;
+    font-style: oblique;
+    clear: both;
+}
+ul.cv-horizontal-list {
+    margin: 0;
+    padding: 0;
+    font-size: 14px;
+    clear: both;
+}
+.cv-horizontal-list > li { 
+    list-style: none;
+    display: inline-block;
+}
+.cv-horizontal-list > li:not(:last-child):after { 
+    content: " \2022 ";
+}
+
+ul.cv-vertical-list {
+    margin-left: 0px;
+    padding-left: 20px;
+    font-size: 14px;
+    line-height: 1.1;
+    clear: both;
+}
+.cv-vertical-list li {
+    padding-left: 0px;
+    margin-bottom: 4px;
+}
+
+.cv-ref-journal {
+    font-style: oblique;
+}
+.cv-ref-journal-vol {
+    font-weight: bold;
 }
 
 /* Bootstrap stuff */
