@@ -5,10 +5,11 @@
         <th>Clock</th>
         <th>Cache</th>
         <th>Memory</th>
-        <th>RAM Speed</th>
         <th>Time (sec)</th>
         <th>Compiler</th>
     </thead>
+    <!-- I'm no longer showing mem speed because it's invariably wrong in
+         numa architectures -->
     <tbody>
 {{ range index $.Page.Site.Data.benchmarks (.Get 0 ) }}
     <tr>
@@ -17,7 +18,6 @@
     <td style="white-space:nowrap">{{ .clock | safeHTML }}</td>
     <td style="white-space:nowrap">{{ .cache | safeHTML }}</td>
     <td>{{ .mem | safeHTML }} {{ .mem_type | safeHTML }}</td>
-    <td style="white-space:nowrap">{{ .mem_speed | safeHTML }}</td>
     <td>{{ .wall_secs }}</td>
     <td title="{{ .compile_flags }}">{{ .compiler | safeHTML }}</td>
     </tr>
