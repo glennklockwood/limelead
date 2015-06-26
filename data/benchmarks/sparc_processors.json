@@ -2,7 +2,7 @@
     {
         "model":        "Sun Ultra 10",
         "processor":    "UltraSPARC IIi",
-        "clock":        "360 MHz",
+        "clock":        "360",
         "cache":        "2048 KB",
         "mem":          "512 MB",
         "mem_type":     "EDO",
@@ -14,7 +14,7 @@
     {
         "model":        "Sun Enterprise 4500",
         "processor":    "UltraSPARC II",
-        "clock":        "400 MHz",
+        "clock":        "400",
         "cache":        "4096 KB",
         "mem":          "2048 MB",
         "mem_type":     "FPM",
@@ -26,7 +26,7 @@
     {
         "model":        "Sun Netra T1",
         "processor":    "UltraSPARC IIi",
-        "clock":        "440 MHz",
+        "clock":        "440",
         "cache":        "2048 KB",
         "mem":          "1024 MB",
         "mem_type":     "",
@@ -38,7 +38,7 @@
     {
         "model":        "Sun Ultra 60",
         "processor":    "UltraSPARC II",
-        "clock":        "360 MHz",
+        "clock":        "360",
         "cache":        "4096 KB",
         "mem":          "1024 MB",
         "mem_type":     "EDO",
@@ -50,7 +50,7 @@
     {
         "model":        "Sun Ultra 60",
         "processor":    "UltraSPARC II",
-        "clock":        "450 MHz",
+        "clock":        "450",
         "cache":        "4096 KB",
         "mem":          "2048 MB",
         "mem_type":     "EDO",
@@ -62,7 +62,7 @@
     {
         "model":        "Sun Blade 100",
         "processor":    "UltraSPARC IIe",
-        "clock":        "500 MHz",
+        "clock":        "500",
         "cache":        "256 KB",
         "mem":          "512 MB",
         "mem_type":     "PC-133",
@@ -74,7 +74,7 @@
     {
         "model":        "Sun Fire v100",
         "processor":    "UltraSPARC IIi",
-        "clock":        "548 MHz",
+        "clock":        "548",
         "cache":        "512 KB",
         "mem":          "2014 MB",
         "mem_type":     "PC-133",
@@ -86,7 +86,7 @@
     {
         "model":        "Sun Blade 150",
         "processor":    "UltraSPARC IIi",
-        "clock":        "550 MHz",
+        "clock":        "550",
         "cache":        "512 KB",
         "mem":          "512 MB",
         "mem_type":     "PC-133",
@@ -98,7 +98,7 @@
     {
         "model":        "Sun Blade 150",
         "processor":    "UltraSPARC IIi",
-        "clock":        "650 MHz",
+        "clock":        "650",
         "cache":        "512 KB",
         "mem":          "512 MB",
         "mem_type":     "PC-133",
@@ -110,7 +110,7 @@
     {
         "model":        "Sun Fire v210",
         "processor":    "UltraSPARC IIIi",
-        "clock":        "1002 MHz",
+        "clock":        "1002",
         "cache":        "32+64 KB <br>1024 KB",
         "mem":          "2014 MB",
         "mem_type":     "DDR-266",
@@ -122,7 +122,7 @@
     {
         "model":        "Sun Blade 1500 (Red)",
         "processor":    "UltraSPARC IIIi",
-        "clock":        "1062 MHz",
+        "clock":        "1062",
         "cache":        "32+64 KB <br>1024 KB",
         "mem":          "1024 MB",
         "mem_type":     "DDR-266",
@@ -134,7 +134,7 @@
     {
         "model":        "Sun Fire v240",
         "processor":    "UltraSPARC IIIi",
-        "clock":        "1503 MHz",
+        "clock":        "1503",
         "cache":        "32+64 KB <br>1024 KB",
         "mem":          "2048 MB",
         "mem_type":     "DDR-266",
@@ -146,7 +146,7 @@
     {
         "model":        "Sun Blade 1500 (Silver)",
         "processor":    "UltraSPARC IIIi",
-        "clock":        "1503 MHz",
+        "clock":        "1503",
         "cache":        "32+64 KB <br>1024 KB",
         "mem":          "2048 MB",
         "mem_type":     "DDR-266",
@@ -158,7 +158,7 @@
     {
         "model":        "Sun Blade 2500 (Silver)",
         "processor":    "UltraSPARC IIIi",
-        "clock":        "1600 MHz",
+        "clock":        "1600",
         "cache":        "1024 KB",
         "mem":          "12288 MB",
         "mem_type":     "DDR2-266",

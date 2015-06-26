@@ -2,7 +2,7 @@
     {
         "model":        "SGI O2",
         "processor":    "MIPS R5000",
-        "clock":        "180 MHz",
+        "clock":        "180",
         "cache":        "512 KB",
         "mem":          "192 MB",
         "mem_type":     "-",
@@ -14,7 +14,7 @@
     {
         "model":        "SGI O2",
         "processor":    "MIPS R10000",
-        "clock":        "195 MHz",
+        "clock":        "195",
         "cache":        "1024 KB",
         "mem":          "192 MB",
         "mem_type":     "-",
@@ -26,7 +26,7 @@
     {
         "model":        "SGI Indigo2",
         "processor":    "MIPS R10000",
-        "clock":        "195 MHz",
+        "clock":        "195",
         "cache":        "1024 KB",
         "mem":          "128 MB",
         "mem_type":     "-",
@@ -38,7 +38,7 @@
     {
         "model":        "SGI Octane",
         "processor":    "MIPS R10000",
-        "clock":        "225 MHz",
+        "clock":        "225",
         "cache":        "1024 KB",
         "mem":          "384 MB",
         "mem_type":     "-",
@@ -50,7 +50,7 @@
     {
         "model":        "SGI Fuel",
         "processor":    "MIPS R14000",
-        "clock":        "500 MHz",
+        "clock":        "500",
         "cache":        "2048 KB",
         "mem":          "2048 MB",
         "mem_type":     "-",
@@ -62,7 +62,7 @@
     {
         "model":        "SGI Fuel",
         "processor":    "MIPS R14000",
-        "clock":        "600 MHz",
+        "clock":        "600",
         "cache":        "4096 KB",
         "mem":          "1024 MB",
         "mem_type":     "-",

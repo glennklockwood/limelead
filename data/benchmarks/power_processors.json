@@ -2,7 +2,7 @@
     {
         "model":        "IBM RS/6000 43p 150",
         "processor":    "PowerPC 604e",
-        "clock":        "374 MHz",
+        "clock":        "374",
         "cache":        "32+32 KB <br>1024 KB",
         "mem":          "512 MB",
         "mem_type":     "PC-100",
@@ -14,7 +14,7 @@
     {
         "model":        "Apple Power Mac G4",
         "processor":    "PowerPC 7450",
-        "clock":        "733 MHz",
+        "clock":        "733",
         "cache":        "256 KB",
         "mem":          "1024 MB",
         "mem_type":     "PC-100",
@@ -26,7 +26,7 @@
     {
         "model":        "Apple Power Mac G4",
         "processor":    "PowerPC 7450",
-        "clock":        "933 MHz",
+        "clock":        "933",
         "cache":        "2048 KB",
         "mem":          "1536 MB",
         "mem_type":     "PC-100",
@@ -38,7 +38,7 @@
     {
         "model":        "Apple Power Mac G5",
         "processor":    "PowerPC 970",
-        "clock":        "1600 MHz",
+        "clock":        "1600",
         "cache":        "512 KB",
         "mem":          "1024 MB",
         "mem_type":     "DDR2-400",
@@ -50,7 +50,7 @@
     {
         "model":        "IBM Blue Gene/P",
         "processor":    "PowerPC 450",
-        "clock":        "850 MHz",
+        "clock":        "850",
         "cache":        "32+32 KB <br>2 KB <br>8 MB",
         "mem":          "2048 MB",
         "mem_type":     "DDR2-840",
@@ -62,7 +62,7 @@
     {
         "model":        "IBM Blue Gene/P",
         "processor":    "PowerPC 450",
-        "clock":        "4&#215; 850 MHz",
+        "clock":        "4&#215; 850",
         "cache":        "32+32 KB <br>2 KB <br>8 MB",
         "mem":          "2048 MB",
         "mem_type":     "DDR2-840",
@@ -75,7 +75,7 @@
     {
         "model":        "IBM Power 550 Express",
         "processor":    "POWER6",
-        "clock":        "4204 MHz",
+        "clock":        "4204",
         "cache":        "64+64 KB <br>8 MB <br> 32 MB",
         "mem":          "15479 MB",
         "mem_type":     "DDR2-667",
@@ -87,7 +87,7 @@
     {
         "model":        "IBM Power 550 Express",
         "processor":    "POWER6",
-        "clock":        "4&#15; 4204 MHz",
+        "clock":        "4&#15; 4204",
         "cache":        "64+64 KB <br>8 MB <br> 32 MB",
         "mem":          "15479 MB",
         "mem_type":     "DDR2-667",

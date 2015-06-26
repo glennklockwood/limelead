@@ -2,7 +2,7 @@
     {
         "model":        "HP C8000",
         "processor":    "PA-8800",
-        "clock":        "1000 MHz",
+        "clock":        "1000",
         "cache":        "768+768 KB <br>32768 MB",
         "mem":          "4096 MB",
         "mem_type":     "DDR2-266",

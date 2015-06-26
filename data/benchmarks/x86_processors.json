@@ -2,7 +2,7 @@
     {
         "model":        "Dell Inspiron 8100",
         "processor":    "Pentium III M",
-        "clock":        "1129 MHz",
+        "clock":        "1129",
         "cache":        "512 KB",
         "mem":          "256 MB",
         "mem_type":     "PC-133",
@@ -14,7 +14,7 @@
     {
         "model":        "Tyan MPX S2466",
         "processor":    "Athlon MP 1900+",
-        "clock":        "1600 MHz",
+        "clock":        "1600",
         "cache":        "256 KB",
         "mem":          "1024 MB",
         "mem_type":     "DDR-266",
@@ -26,7 +26,7 @@
     {
         "model":        "Dell OptiPlex GX260",
         "processor":    "Pentium 4 (Northwood)",
-        "clock":        "1793 MHz",
+        "clock":        "1793",
         "cache":        "512 KB",
         "mem":          "1024 MB",
         "mem_type":     "DDR-333",
@@ -38,7 +38,7 @@
     {
         "model":        "Dell OptiPlex GX260",
         "processor":    "Pentium 4 (Northwood)",
-        "clock":        "2391 MHz",
+        "clock":        "2391",
         "cache":        "512 KB",
         "mem":          "1024 MB",
         "mem_type":     "DDR-333",
@@ -50,7 +50,7 @@
     {
         "model":        "Gateway E-4650",
         "processor":    "Pentium 4 (Northwood)",
-        "clock":        "2193 MHz",
+        "clock":        "2193",
         "cache":        "512 KB",
         "mem":          "1024 MB",
         "mem_type":     "PC-800",
@@ -62,7 +62,7 @@
     {
         "model":        "Dell PowerEdge 2850",
         "processor":    "Xeon 2.8 (Nocona)",
-        "clock":        "2793 MHz",
+        "clock":        "2793",
         "cache":        "1024 KB",
         "mem":          "1024 MB",
         "mem_type":     "DDR2-400",
@@ -74,7 +74,7 @@
     {
         "model":        "-",
         "processor":    "Pentium D",
-        "clock":        "3200 MHz",
+        "clock":        "3200",
         "cache":        "2048 KB",
         "mem":          "2048 MB",
         "mem_type":     "-",
@@ -86,7 +86,7 @@
     {
         "model":        "Asus Z70va",
         "processor":    "Pentium M 760",
-        "clock":        "2000 MHz",
+        "clock":        "2000",
         "cache":        "2048 KB",
         "mem":          "1024 MB",
         "mem_type":     "-",
@@ -98,7 +98,7 @@
     {
         "model":        "Sun Fire X4100",
         "processor":    "Opteron 275",
-        "clock":        "2200 MHz",
+        "clock":        "2200",
         "cache":        "1024 KB",
         "mem":          "4096 MB",
         "mem_type":     "DDR-400",
@@ -111,7 +111,7 @@
     {
         "model":        "Sun Fire X2200 M2",
         "processor":    "Opteron 2214",
-        "clock":        "2211 MHz",
+        "clock":        "2211",
         "cache":        "2048 KB",
         "mem":          "4096 MB",
         "mem_type":     "DDR2-667",
@@ -123,7 +123,7 @@
     {
         "model":        "Sun Fire X2200 M2",
         "processor":    "Opteron 2376",
-        "clock":        "2300 MHz",
+        "clock":        "2300",
         "cache":        "2048 KB",
         "mem":          "4096 MB",
         "mem_type":     "DDR2-667",
@@ -133,11 +133,10 @@
         "hostname":     "engsoft",
         "compile_flags": "-O3 -mtune=amdfam10 -march=amdfam10 -fdefault-real-8 -static"
     },
-
     {
         "model":        "Supermicro",
         "processor":    "Opteron 2216",
-        "clock":        "2400 MHz",
+        "clock":        "2400",
         "cache":        "128+128 KB <br>1024 KB",
         "mem":          "4096 MB",
         "mem_type":     "DDR2-667",
@@ -150,7 +149,7 @@
     {
         "model":        "Supermicro X8DTT",
         "processor":    "Xeon X5560",
-        "clock":        "2800 MHz",
+        "clock":        "2800",
         "cache":        "8192 KB",
         "mem":          "12 GB",
         "mem_type":     "DDR3-1333",
@@ -163,7 +162,7 @@
     {
         "model":        "Dell",
         "processor":    "Core 2 Duo E6700",
-        "clock":        "2668 MHz",
+        "clock":        "2668",
         "cache":        "4096 KB",
         "mem":          "2048 MB",
         "mem_type":     "DDR2-667",
@@ -175,7 +174,7 @@
     {
         "model":        "Dell OptiPlex 760",
         "processor":    "Core 2 Duo E7500",
-        "clock":        "2926 MHz",
+        "clock":        "2926",
         "cache":        "3072 KB",
         "mem":          "2048 MB",
         "mem_type":     "DDR2-667",
@@ -187,7 +186,7 @@
     {
         "model":        "Dell OptiPlex 990",
         "processor":    "Core i7-2600",
-        "clock":        "3400 MHz",
+        "clock":        "3400",
         "cache":        "32+32 KB <br>256 KB <br>8MB",
         "mem":          "8 GB",
         "mem_type":     "DDR3-1333",
@@ -200,7 +199,7 @@
     {
         "model":        "HP dc7800p",
         "processor":    "Core 2 Duo E8400",
-        "clock":        "2993 MHz",
+        "clock":        "2993",
         "cache":        "6144 KB",
         "mem":          "3072 MB",
         "mem_type":     "DDR2-667",
@@ -212,7 +211,7 @@
     {
         "model":        "HP e9180f",
         "processor":    "Core i7 920",
-        "clock":        "2668 MHz",
+        "clock":        "2668",
         "cache":        "8192 KB",
         "mem":          "12 GB",
         "mem_type":     "DDR3-1333",
@@ -225,7 +224,7 @@
     {
         "model":        "HP ProLiant SL390s G7",
         "processor":    "Xeon X5672",
-        "clock":        "3200 MHz",
+        "clock":        "3200",
         "cache":        "12 MB",
         "mem":          "24 GB",
         "mem_type":     "DDR3-1333",
@@ -238,7 +237,7 @@
     {
         "model":        "HP ProLiant DL360 G7",
         "processor":    "Xeon X5672",
-        "clock":        "3200 MHz",
+        "clock":        "3200",
         "cache":        "12 MB",
         "mem":          "24 GB",
         "mem_type":     "DDR3-1333",
@@ -251,7 +250,7 @@
     {
         "model":        "-",
         "processor":    "Xeon X5650",
-        "clock":        "2668 MHz",
+        "clock":        "2668",
         "cache":        "12 MB",
         "mem":          "24 GB",
         "mem_type":     "DDR3-1333",
@@ -264,7 +263,7 @@
     {
         "model":        "-",
         "processor":    "Xeon X5680",
-        "clock":        "3334 MHz",
+        "clock":        "3334",
         "cache":        "12 MB",
         "mem":          "20 GB",
         "mem_type":     "DDR3-1333",
@@ -277,7 +276,7 @@
     {
         "model":        "-",
         "processor":    "Xeon W5590",
-        "clock":        "3334 MHz",
+        "clock":        "3334",
         "cache":        "8 MB",
         "mem":          "32 GB",
         "mem_type":     "DDR3-1333",
@@ -290,7 +289,7 @@
     {
         "model":        "Supermicro H8DGT",
         "processor":    "Opteron 6212",
-        "clock":        "2582 MHz",
+        "clock":        "2582",
         "cache":        "1&#215; (64+16 KB)<br>1&#215; 2 MB<br>1&#215; 8 MB",
         "mem":          "N/A",
         "mem_type":     "DDR3-1066",
@@ -304,7 +303,7 @@
     {
         "model":        "-",
         "processor":    "Opteron 6176",
-        "clock":        "2300 MHz",
+        "clock":        "2300",
         "cache":        "64+64 KB <br>512 KB <br>6 MB",
         "mem":          "64 GB",
         "mem_type":     "DDR3-1333",
@@ -317,7 +316,7 @@
     {
         "model":        "Supermicro SC818TQ-1400LPB",
         "processor":    "Opteron 6136",
-        "clock":        "2183 MHz",
+        "clock":        "2183",
         "cache":        "64+64 KB <br>512 KB <br>6 MB",
         "mem":          "64 GB",
         "mem_type":     "DDR3-1333",
@@ -330,7 +329,7 @@
     {
         "model":        "Supermicro SC818TQ-1400LPB",
         "processor":    "Opteron 6136",
-        "clock":        "2&#215; 2183 MHz",
+        "clock":        "2&#215; 2183",
         "cache":        "64+64 KB <br>512 KB <br>6 MB",
         "mem":          "64 GB",
         "mem_type":     "DDR3-1333",
@@ -344,7 +343,7 @@
     {
         "model":        "Supermicro SC818TQ-1400LPB",
         "processor":    "Opteron 6136",
-        "clock":        "4&#215; 2183 MHz",
+        "clock":        "4&#215; 2183",
         "cache":        "64+64 KB <br>512 KB <br>6 MB",
         "mem":          "64 GB",
         "mem_type":     "DDR3-1333",
@@ -358,7 +357,7 @@
     {
         "model":        "Supermicro SC818TQ-1400LPB",
         "processor":    "Opteron 6136",
-        "clock":        "8&#215; 2183 MHz",
+        "clock":        "8&#215; 2183",
         "cache":        "64+64 KB <br>512 KB <br>6 MB",
         "mem":          "64 GB",
         "mem_type":     "DDR3-1333",
@@ -369,13 +368,10 @@
         "_comment":     "470 with mopt",
         "compile_flags": "-Mr8 -r8 -Kieee -tp istanbul-64 -fastsse -Mipa=fast,inline,vestigial -Minform=inform -Minfo=all -Bstatic -lacml"
     },
-
-
-
     {
         "model":        "Appro gB222X",
         "processor":    "Xeon E5530",
-        "clock":        "2400 MHz",
+        "clock":        "2400",
         "cache":        "32+32 KB <br>256 KB <br> 8 MB",
         "mem":          "49152 MB",
         "mem_type":     "DDR3-800",
@@ -387,7 +383,7 @@
     {
         "model":        "Appro gB222X",
         "processor":    "Xeon E5530",
-        "clock":        "2&#215; 2400 MHz",
+        "clock":        "2&#215; 2400",
         "cache":        "32+32 KB <br>256 KB <br> 8 MB",
         "mem":          "49152 MB",
         "mem_type":     "DDR3-800",
@@ -399,7 +395,7 @@
     {
         "model":        "Appro gB222X",
         "processor":    "Xeon E5530",
-        "clock":        "4&#215; 2400 MHz",
+        "clock":        "4&#215; 2400",
         "cache":        "32+32 KB <br>256 KB <br> 8 MB",
         "mem":          "49152 MB",
         "mem_type":     "DDR3-800",
@@ -411,7 +407,7 @@
     {
         "model":        "Appro gB222X",
         "processor":    "Xeon E5530",
-        "clock":        "8&#215; 2400 MHz",
+        "clock":        "8&#215; 2400",
         "cache":        "32+32 KB <br>256 KB <br> 8 MB",
         "mem":          "49152 MB",
         "mem_type":     "DDR3-800",
@@ -423,7 +419,7 @@
     {
         "model":        "HP ProLiant SL230s G8",
         "processor":    "Xeon E5-2660",
-        "clock":        "2989 MHz",
+        "clock":        "2989",
         "clock_turbo?": true,
         "cache":        "32+32 KB<br>256 KB<br>20 MB",
         "mem":          "",
@@ -437,7 +433,7 @@
     {
         "model":        "HP ProLiant SL230s G8",
         "processor":    "Xeon E5-2660",
-        "clock":        "2&#215; 2194 MHz",
+        "clock":        "2&#215; 2194",
         "clock_turbo?": true,
         "cache":        "32+32 KB<br>256 KB<br>20 MB",
         "mem":          "",
@@ -451,7 +447,7 @@
     {
         "model":        "HP ProLiant SL230s G8",
         "processor":    "Xeon E5-2660",
-        "clock":        "4&#215; 2194 MHz",
+        "clock":        "4&#215; 2194",
         "clock_turbo?": true,
         "cache":        "32+32 KB<br>256 KB<br>20 MB",
         "mem":          "",
@@ -465,7 +461,7 @@
     {
         "model":        "HP ProLiant SL230s G8",
         "processor":    "Xeon E5-2660",
-        "clock":        "8&#215; 2194 MHz",
+        "clock":        "8&#215; 2194",
         "clock_turbo?": true,
         "cache":        "32+32 KB<br>256 KB<br>20 MB",
         "mem":          "",
@@ -479,7 +475,7 @@
     {
         "model":        "HP ProLiant SL230s G8",
         "processor":    "Xeon E5-2660",
-        "clock":        "16&#215; 2194 MHz",
+        "clock":        "16&#215; 2194",
         "clock_turbo?": true,
         "cache":        "32+32 KB<br>256 KB<br>20 MB",
         "mem":          "",
@@ -490,15 +486,81 @@
         "hostname":     "tscc node",
         "compile_flags": "-real-size 64 -ipo -O3 -static -xAVX -fp-model precise -ftz -prec-div -prec-sqrt -vec-report"
     },
-
-
-
-
+    {
+        "model":        "Appro gB512X",
+        "processor":    "Xeon E5-2670",
+        "clock":        "2600",
+        "clock_turbo?": false,
+        "cache":        "32+32 KB<br>256 KB<br>20 MB",
+        "mem":          "64 GB",
+        "mem_type":     "DDR3-1333",
+        "mem_speed":    "42.7 GB/s",
+        "wall_secs":    292,
+        "compiler":     "Intel 12.1.0",
+        "hostname":     "gordon login node",
+        "compile_flags": "-real-size 64 -ipo -O3 -static -xHost -fp-model precise -ftz -prec-div -prec-sqrt"
+    },
+    {
+        "model":        "Appro gB512X",
+        "processor":    "Xeon E5-2670",
+        "clock":        "4&#215; 2600",
+        "clock_turbo?": false,
+        "cache":        "32+32 KB<br>256 KB<br>20 MB",
+        "mem":          "64 GB",
+        "mem_type":     "DDR3-1333",
+        "mem_speed":    "42.7 GB/s",
+        "wall_secs":    175,
+        "compiler":     "Intel 12.1.0",
+        "hostname":     "gordon login node",
+        "compile_flags": "-real-size 64 -ipo -O3 -static -xHost -fp-model precise -ftz -prec-div -prec-sqrt"
+    },
+    {
+        "model":        "Appro gB512X",
+        "processor":    "Xeon E5-2670",
+        "clock":        "8&#215; 2600",
+        "clock_turbo?": false,
+        "cache":        "32+32 KB<br>256 KB<br>20 MB",
+        "mem":          "64 GB",
+        "mem_type":     "DDR3-1333",
+        "mem_speed":    "42.7 GB/s",
+        "wall_secs":    164,
+        "compiler":     "Intel 12.1.0",
+        "hostname":     "gordon login node",
+        "compile_flags": "-real-size 64 -ipo -O3 -static -xHost -fp-model precise -ftz -prec-div -prec-sqrt"
+    },
+    {
+        "model":        "Dell PowerEdge C8220X",
+        "processor":    "Xeon Phi SE10P",
+        "clock":        "16&#215; 1095",
+        "clock_turbo?": false,
+        "cache":        "32+32 KB<br>512 KB",
+        "mem":          "8 GB",
+        "mem_type":     "GDDR5",
+        "mem_speed":    "352 GB/s",
+        "wall_secs":    1589,
+        "compiler":     "Intel 13.0.1.117",
+        "hostname":     "gordon login node",
+        "compile_flags": "-real-size 64 -ipo -O3 -static -xHost -fp-model precise -ftz -prec-div -prec-sqrt"
+    },
+    {
+        "model":        "Dell PowerEdge C8220X",
+        "processor":    "Xeon Phi SE10P",
+        "clock":        "32&#215; 1095",
+        "clock_turbo?": false,
+        "cache":        "32+32 KB<br>512 KB",
+        "mem":          "8 GB",
+        "mem_type":     "GDDR5",
+        "mem_speed":    "352 GB/s",
+        "wall_secs":    1479,
+        "compiler":     "Intel 13.0.1.117",
+        "hostname":     "gordon login node",
+        "compile_flags": "-real-size 64 -ipo -O3 -static -xHost -fp-model precise -ftz -prec-div -prec-sqrt"
+    },
     {
         "model":        "-",
         "processor":    "Xeon E5 v3",
         "core_ct":      14,
-        "clock":        "14&#215; 2493 MHz",
+        "clock":        "14&#215; 2493",
         "cache":        "32+32 KB <br>256 KB <br>35 MB",
         "mem":          "",
         "mem_type":     "DDR4-2133",
@@ -508,5 +570,4 @@
         "compiler":     "Intel 13.0.1.117",
         "compile_flags": "unknown"
     }
-
 ]

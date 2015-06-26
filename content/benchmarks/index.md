@@ -37,7 +37,7 @@ sensible set of optimization options.
 {{< processor-benchmark-table "power_processors" >}}
 </div>
 
-## PA-RSIC Processors
+## PA-RISC Processors
 
 <div class="shortcode">
 {{< processor-benchmark-table "parisc_processors" >}}

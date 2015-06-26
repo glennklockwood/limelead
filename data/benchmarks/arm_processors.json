@@ -2,7 +2,7 @@
     {
         "model":        "Raspberry Pi Model B",
         "processor":    "ARM1176JZF-S",
-        "clock":        "700 MHz",
+        "clock":        "700",
         "cache":        "32+32 KB",
         "mem":          "512 MB",
         "mem_type":     "mDDR2",
