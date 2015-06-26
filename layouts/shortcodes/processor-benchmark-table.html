@@ -17,7 +17,7 @@
     <td style="white-space:nowrap">{{ .processor | safeHTML }}</td>
     <td style="white-space:nowrap">{{ .clock | safeHTML }}</td>
     <td style="white-space:nowrap">{{ .cache | safeHTML }}</td>
-    <td>{{ .mem | safeHTML }} {{ .mem_type | safeHTML }}</td>
+    <td>{{ .mem_type | safeHTML }}</td>
     <td>{{ .wall_secs }}</td>
     <td title="{{ .compile_flags }}">{{ .compiler | safeHTML }}</td>
     </tr>
