@@ -611,19 +611,5 @@
         "compiler":     "Intel 13.0.1.117",
         "hostname":     "gordon login node",
         "compile_flags": "-real-size 64 -ipo -O3 -static -xHost -fp-model precise -ftz -prec-div -prec-sqrt"
-    },
-    {
-        "model":        "-",
-        "processor":    "Xeon E5 v3",
-        "core_ct":      14,
-        "clock":        "14&#215; 2493",
-        "cache":        "32+32 KB <br>256 KB <br>35 MB",
-        "mem":          "",
-        "mem_type":     "DDR4-2133",
-        "mem_speed":    "51 GB/s",
-        "_comment":     "51 GB/s reflects spec based on job placement",
-        "wall_secs":    152,
-        "compiler":     "Intel 13.0.1.117",
-        "compile_flags": "unknown"
     }
 ]
