@@ -1,0 +1,46 @@
+/cv.php                             /cv.html
+/expertise.php                      -
+/index.php                          /index.html
+/index_old.php                      -
+/auth.php                           -
+/sa/dmake.php                       
+/sa/rpi-wifi-bridge.php
+/sa/block520.php                    
+/sa/index.php                       
+/sa/install-solaris.php
+/sa/install-el6.php                 
+/about.php                          -
+/bs/index.php                       -
+/comp/hadoop-vcfparse.php           /data-intensive/hadoop/parsing-vcfs.html
+/comp/ultrasparc.php                -
+/comp/faq-new.php                   -
+/comp/R.php                         /data-intensive/r/on-hpc.html
+/comp/mapreduce.php                 
+/comp/index.php                     /data-intensive/index.html
+/comp/powerbrief.php                
+/comp/tbb.php                       -
+/comp/hadoopstreaming.php           /data-intensive/hadoop/streaming.html
+/comp/installing.php                /hpc-howtos/installing-without-root.html
+/comp/scsi.php                      
+/comp/ddt.php                       -
+/comp/test.php                      -
+/comp/ssh.php                       /hpc-howtos/ssh-keys-on-windows.html
+/comp/paraR.php                     /data-intensive/r/parallel-options.html
+/comp/gordon-arch.php               -
+/comp/hadoopcluster.php             /data-intensive/hadoop/on-hpc.html
+/comp/lammps-reax.php               -
+/comp/faq.php                       /hpc-howtos/common-problems.html
+/comp/affinity.php                  
+/comp/joblist/jobs.php              -
+/comp/joblist/util.php              -
+/comp/joblist/job-short.php         -
+/comp/gaussian.php                  /hpc-howtos/gaussian-on-linux-clusters.html
+/comp/benchmarks.php                /benchmarks/index.html
+/di/R-hpc.php                       /data-intensive/r/on-hpc.html
+/di/hadoop-streaming.php            /data-intensive/hadoop/streaming.html
+/di/hadoop-vcfparse.php             /data-intensive/hadoop/parsing-vcfs.html
+/di/index.php                       /data-intensive/index.html
+/di/hadoop-hpc.php                  /data-intensive/hadoop/on-hpc.html
+/di/R-para.php                      /data-intensive/r/parallel-options.html
+/di/hadoop-deploy.php               /data-intensive/hadoop/on-hpc.html
+/di/hadoop-overview.php             /data-intensive/hadoop/overview.html
