@@ -3,5 +3,6 @@
     "hadoop"         : "Hadoop",
     "hpc-howtos"     : "HPC Howtos",
     "r"              : "R",
-    "benchmarks"     : "Benchmarks"
+    "benchmarks"     : "Benchmarks",
+    "sysadmin-howtos": "Sysadmin Howtos"
 }
