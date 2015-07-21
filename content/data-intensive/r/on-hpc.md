@@ -3,6 +3,7 @@ date: "2014-02-07T00:00:00-07:00"
 draft: false
 title: "Using R on HPC Clusters"
 shortTitle: "R on HPC"
+last_mod: "August 14, 2013"
 parentdirs: [ 'data-intensive', 'r' ]
 ---
 

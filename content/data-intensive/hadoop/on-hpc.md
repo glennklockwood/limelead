@@ -3,6 +3,7 @@ date: "2014-06-28T00:00:00-07:00"
 draft: false
 title: "Running Hadoop on HPC Clusters"
 shortTitle: "Hadoop on HPC"
+last_mod: "June 28, 2014"
 parentdirs: [ 'data-intensive', 'hadoop' ]
 ---
 

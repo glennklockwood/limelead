@@ -2,6 +2,7 @@
 title: Using Gaussian on Linux Clusters
 shortTitle: Gaussian on Linux
 date: 2013-11-13T00:00:00-07:00
+last_mod: "November 13, 2013"
 template: page.jade
 parentDirs: [ hpc-howtos ]
 ---

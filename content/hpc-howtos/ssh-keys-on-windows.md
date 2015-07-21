@@ -2,7 +2,7 @@
 title: Configuring SSH Keys on Windows
 shortTitle: SSH Keys on Windows
 date: 2013-09-17T00:00:00-07:00
-template: page.jade
+last_mod: "September 17, 2013"
 parentDirs: [ hpc-howtos ]
 ---
 

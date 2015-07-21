@@ -3,6 +3,7 @@ date: "2014-06-28T00:00:00-07:00"
 draft: false
 title: "Writing Hadoop Applications in Python with Hadoop Streaming"
 shortTitle: "Hadoop Streaming with Python"
+last_mod: "June 28, 2014"
 parentdirs: [ 'data-intensive', 'hadoop' ]
 ---
 

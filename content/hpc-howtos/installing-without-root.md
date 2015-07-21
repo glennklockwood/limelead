@@ -2,7 +2,7 @@
 title: Installing Software Without Root
 shortTitle: Installing Without Root
 date: 2014-04-22T00:00:00-07:00
-template: page.jade
+last_mod: "April 22, 2014"
 parentDirs: [ hpc-howtos ]
 ---
 

@@ -2,6 +2,7 @@
 date: "2015-05-22T10:30:00-07:00"
 draft: false
 title: "Topics in Data-Intensive Computing"
+last_mod: "May 22, 2015"
 parentdirs: [ 'data-intensive' ]
 ---
 

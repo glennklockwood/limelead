@@ -3,6 +3,7 @@ date: "2015-06-17T00:00:00-07:00"
 draft: false
 title: "Hadoop"
 shortTitle: "Hadoop"
+last_mod: "June 17, 2015"
 parentdirs: [ 'data-intensive' ]
 ---
 

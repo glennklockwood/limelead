@@ -3,6 +3,7 @@ date: "2013-08-14T00:00:00-07:00"
 draft: false
 title: "Alternative Forms of Parallelism"
 shortTitle: "Alternative Forms of Parallelism"
+last_mod: "August 14, 2013"
 parentdirs: [ 'data-intensive', 'r' ]
 ---
 

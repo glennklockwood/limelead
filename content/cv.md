@@ -2,6 +2,7 @@
 date: "2015-06-18T10:30:00-07:00"
 draft: false
 title: "Cirriculum Vitae"
+last_mod: "June 18, 2015"
 parentdirs: [ ]
 ---
 
@@ -65,7 +66,7 @@ operations communities.
 
 <div class="cv-block">
     <div class="cv-head-container">
-        <div class="cv-head-left">HPC Operations &amp; Integration Lead,</div>
+        <div class="cv-head-left">HPC Operations &amp; Integration,</div>
         <div class="cv-head-mid">10X Genomics, Inc.</div>
         <div class="cv-head-right">July 2014 - Present</div>
     </div>

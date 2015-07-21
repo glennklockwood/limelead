@@ -2,6 +2,7 @@
 title: Managing Process Affinity in Linux
 shortTitle: Process Affinity
 date: 2014-06-28T00:00:00-07:00
+last_mod: "June 28, 2014"
 parentDirs: [ hpc-howtos ]
 ---
 

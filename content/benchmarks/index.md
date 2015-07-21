@@ -1,7 +1,7 @@
 ---
 title: Benchmarks
 date: 2015-06-21T00:00:00-07:00
-parentDirs: [ benchmarks ]
+last_mod: "June 21, 2015"
 ---
 
 The specific benchmark used was a molecular dynamics simulation which involved
