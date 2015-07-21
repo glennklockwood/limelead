@@ -9,4 +9,4 @@ title: "Sysadmin Howtos"
 * Installing and configuring a CentOS 6 workstation
 * Installing and configuring a Solaris 10 server
 * Converting 520-byte block disks to 512-byte blocks (Solaris)
-* Configuring dmake (Solaris)
+* [Configuring dmake (Solaris)](configuring-dmake.html)
