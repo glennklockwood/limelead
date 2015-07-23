@@ -16,7 +16,7 @@ body {
 .content-box {
     margin: 1em auto;
     background-color: rgba( 255,255,255,0.8 );
-    padding: 1.2em 2em;
+    padding: 1.0em 2em;
     border: 1px solid black;
     max-width: 800px;
 }
