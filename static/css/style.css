@@ -16,7 +16,7 @@ body {
 .content-box {
     margin: 1em auto;
     background-color: rgba( 255,255,255,0.8 );
-    padding: 1.0em 2em;
+    padding: 1.2em 2em;
     border: 1px solid black;
     max-width: 800px;
 }
@@ -52,7 +52,7 @@ body {
 .content pre {
     word-wrap: normal;
     overflow: auto;
-    margin: 1em 0em 1em 2em;
+    margin: 1.2em 0em 1.2em 32px;
 }
 .content samp, code, kbd, var {
     font-family: monospace;
@@ -64,11 +64,11 @@ body {
     box-shadow: inherit;
 }
 .content figure {
-    margin: 1em 0em;
+    margin: 1.2em 0em;
 }
 
 .alert {
-    margin: 1em 2em;
+    margin: 1.2em 2em;
     font-size:smaller;
 }
 
@@ -89,7 +89,7 @@ body {
 }
 
 .inset {
-    margin: 1em 2em;
+    margin: 1.2em 2em;
     border: 1px solid #bce8f1;
     padding: 0;
 }
@@ -167,7 +167,11 @@ body {
 /* pygments */
 
 .highlight {
-    margin: 1em 0em 1em 2em;
+    margin: 1.2em 0em 1.2em 32px;
+}
+
+.gist-file {
+    margin: 1.2em 0em 1.2em 32px;
 }
 
 .highlight pre {
