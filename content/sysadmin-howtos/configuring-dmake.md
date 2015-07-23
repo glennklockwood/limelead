@@ -1,8 +1,8 @@
 ---
-date: "2014-06-28T00:00:00-07:00"
+date: "2009-10-17T21:50:38-05:00"
 draft: false
 title: "Configuring dmake"
-last_mod: "June 28, 2014"
+last_mod: "October 17, 2009"
 parentdirs: [ 'sysadmin-howtos' ]
 ---
 

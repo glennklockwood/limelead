@@ -1,8 +1,7 @@
 ---
-date: "2014-06-28T00:00:00-07:00"
-draft: true
+date: "2010-11-05T16:56:44-05:00"
 title: "Configuring a Solaris 10 Server"
-last_mod: "June 28, 2014"
+last_mod: "March 29, 2012"
 parentdirs: [ 'sysadmin-howtos' ]
 ---
 
