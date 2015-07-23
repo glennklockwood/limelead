@@ -26,23 +26,24 @@ downloaded to `herring` and `chrysalis` having a pair of blank disks.
 
 ## Outline
 
-* [Setting up the install server](#)
-* [Initiating the install](#)
-* [Switching from serial to SSH](#)
-* [Using stronger cryptography](#)
-* [Configuring home directories](#)
-    * [Without autofs](#)
-    * [With autofs](#)
-    * [Adding a non-root user](#)
-* [Configuring some core system services](#)
-    * [Configuring ipfilter](#)
-    * [Managing logs](#)
-    * [Configuring NTP](#)
-    * [Setting up patching system](#)
-* [Setting up system software](#)
-* [User rc dotfiles](#)
-    * [.bashrc](#)
-    * [.vimrc](#)
+* [Setting up the install server](#setting-up-the-install-server)
+* [Initiating the install](#initiating-the-install)
+* [Switching from serial to SSH](#switching-from-serial-to-ssh)
+* [Using stronger cryptography](#using-stronger-cryptography)
+* [Adding new users](#adding-new-users)
+    * [No autofs](#no-autofs)
+    * [With autofs](#with-autofs)
+    * [Adding a non-root user](#adding-a-non-root-user)
+* [Configuring some core system services](#configuring-some-core-system-services)
+    * [Configuring IPfilter](#configuring-ipfilter)
+    * [Managing logs](#managing-logs)
+    * [Configuring the NTP client](#configuring-the-ntp-client)
+    * [Setting up the patching system](#setting-up-the-patching-system)
+* [Setting up system software](#setting-up-system-software)
+* [User PATHs](#user-paths)
+* [User rc dotfiles](#user-rc-dotfiles)
+    * [.bashrc](#bashrc)
+    * [.vimrc](#vimrc)
 
 ## Setting up the install server
 
@@ -386,7 +387,7 @@ Or if you want to do it the old-fashioned way, edit `/etc/dfs/dfstab` and add a
 similar line.  For mounting local volumes via autofs though, enabling NFS isn't
 necessary.
 
-### Adding a Non-Root User
+### Adding a non-root user
 
 Now to add the first user:
 
@@ -469,7 +470,7 @@ one in `/etc/ipf/ipf.conf`:
 pass out quick from any to any keep state
 block in quick proto tcp with short
 
-### Handle connections over the external interface (bge0) ######################
+### Handle connections over the external interface (bge0)
 pass in quick on bge0 from chrysalis to any keep state
 
 ### Handle SSH coming in from the outside -- only allow connections from Rutgers
@@ -589,7 +590,7 @@ servers][nist ntp pool].  Once configured, enable NTP with <kbd>svcadm enable
 ntp</kbd> and, after a few seconds, verify that all is well using 
 <kbd>ntpq -p</kbd>.
 
-### Setting up patching system
+### Setting up the patching system
 
 <div class="shortcode">{{% alertbox "danger" %}}
 As of December 2010, I've been having trouble using the command-line setup for
