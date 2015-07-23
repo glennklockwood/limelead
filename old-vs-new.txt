@@ -3,12 +3,12 @@
 /index.php                          http://www.glennklockwood.com/index.html
 /index_old.php                      -
 /auth.php                           -
-/sa/dmake.php                       
-/sa/rpi-wifi-bridge.php             http://www.glennklockwood.com/sysadmin-howtos/rpi-wifi-island.md
-/sa/block520.php                    
+/sa/dmake.php                       http://www.glennklockwood.com/sysadmin-howtos/configuring-dmake.html
+/sa/rpi-wifi-bridge.php             http://www.glennklockwood.com/sysadmin-howtos/rpi-wifi-island.html
+/sa/block520.php                    http://www.glennklockwood.com/sysadmin-howtos/converting-blocksize-on-solaris.html
 /sa/index.php                       http://www.glennklockwood.com/sysadmin-howtos/index.html
-/sa/install-solaris.php             
-/sa/install-el6.php                 
+/sa/install-solaris.php             http://www.glennklockwood.com/sysadmin-howtos/configuring-solaris10.html
+/sa/install-el6.php                 -
 /about.php                          -
 /bs/index.php                       -
 /comp/hadoop-vcfparse.php           http://www.glennklockwood.com/data-intensive/hadoop/parsing-vcfs.html
@@ -17,11 +17,11 @@
 /comp/R.php                         http://www.glennklockwood.com/data-intensive/r/on-hpc.html
 /comp/mapreduce.php                 
 /comp/index.php                     http://www.glennklockwood.com/data-intensive/index.html
-/comp/powerbrief.php                
+/comp/powerbrief.php                http://www.glennklockwood.com/benchmarks/power-consumption.html
 /comp/tbb.php                       -
 /comp/hadoopstreaming.php           http://www.glennklockwood.com/data-intensive/hadoop/streaming.html
 /comp/installing.php                http://www.glennklockwood.com/hpc-howtos/installing-without-root.html
-/comp/scsi.php                      
+/comp/scsi.php                      -
 /comp/ddt.php                       -
 /comp/test.php                      -
 /comp/ssh.php                       http://www.glennklockwood.com/hpc-howtos/ssh-keys-on-windows.html
