@@ -1,6 +1,6 @@
 ---
 date: "2011-01-23T00:00:00-05:00"
-draft: true
+draft: false
 title: "Power Consumption"
 last_mod: "January 23, 2011"
 parentdirs: [ 'benchmarks' ]
