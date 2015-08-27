@@ -66,9 +66,21 @@ operations communities.
 
 <div class="cv-block">
     <div class="cv-head-container">
+        <div class="cv-head-left">Advanced Technologies,</div>
+        <div class="cv-head-mid">NERSC/LBL</div>
+        <div class="cv-head-right">August 2015 - Present</div>
+    </div>
+    <ul class="cv-vertical-list">
+        <li>Evaluation and co-design of burst buffer implementations</li>
+        <li>Ongoing workload analysis of production parallel file systems</li>
+    </ul>
+</div>
+
+<div class="cv-block">
+    <div class="cv-head-container">
         <div class="cv-head-left">HPC Operations &amp; Integration,</div>
         <div class="cv-head-mid">10X Genomics, Inc.</div>
-        <div class="cv-head-right">July 2014 - Present</div>
+        <div class="cv-head-right">July 2014 - August 2015</div>
     </div>
     <ul class="cv-vertical-list">
         <li>Configured, integrated, and managed all R&amp;D cyberinfrastructure (1200-core cluster, 700 TB of NetApp; Illumina HiSeq/NextSeq/MiSeq)</li>
@@ -162,6 +174,13 @@ operations communities.
 </div>
 
 <h2 class="cv-h2">Publications</h2>
+
+<div class="cv-block">
+    <div class="cv-head-left-container" style="border:0">Storage utilization in the long tail of science</div>
+    <p>G. K. Lockwood, R. Wagner, and M. Tatineni.
+       <span class="cv-ref-journal">Proceedings of the 2015 Annual Conference on Extreme Science and Engineering Discovery Environment - XSEDE'15</span>
+       (2015).</p>
+</div>
 
 <div class="cv-block">
     <div class="cv-head-left-container" style="border:0">Lifetimes of excess protons at the water-silica interface</div>

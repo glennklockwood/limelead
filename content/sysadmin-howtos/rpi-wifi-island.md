@@ -2,7 +2,7 @@
 date: "2014-06-28T00:00:00-07:00"
 draft: false
 title: "Configuring Raspberry Pi as a Wireless-to-Wired Ethernet Island"
-last_mod: "June 28, 2014"
+last_mod: "August 26, 2014"
 parentdirs: [ 'sysadmin-howtos' ]
 ---
 
@@ -25,6 +25,10 @@ necessary configuration details below.
 A [much more comprehensive writeup on this concept has been developed by Robin
 Newman][robin's guide], so if this guide is unclear, I highly recommend
 checking out Robin's guide.
+
+Ben Low also pointed out a handy tutorial that gives a much more sophisticated
+treatment of this approach using [Proxy ARP][proxy arp guide] that is a good thing to check out
+if this configuration is not good enough.
 
 `/etc/network/interfaces` should look something like this.  If you couldn't
 tell, this is Raspbian (a Debian-derived distribution)
@@ -118,3 +122,4 @@ and then doing <kbd>sysctl --system</kbd>.
 
 <!-- References -->
 [robin's guide]: http://rbnrpi.wordpress.com/wifi-to-ethernet-adapter-for-an-ethernet-ready-tv/
+[proxy arp guide]: https://wiki.debian.org/BridgeNetworkConnectionsProxyArp
