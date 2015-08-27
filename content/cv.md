@@ -327,7 +327,7 @@ operations communities.
 <div class="cv-block">
   <div class="cv-head-left-container" style="font-weight: normal; border: 0;"><a href="http://insidehpc.com/2015/01/glenn-lockwood-on-the-nsf-future-directions-interim-report/"> Glenn Lockwood on the NSF Future Directions Interim Report</a>,
   <div class="cv-head-mid">insideHPC</div>
-  <div class="cv-head-right">January 2014</div></div>
+  <div class="cv-head-right">January 2015</div></div>
 </div>
 
 <div class="cv-block">
