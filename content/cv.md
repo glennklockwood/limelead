@@ -2,7 +2,7 @@
 date: "2015-06-18T10:30:00-07:00"
 draft: false
 title: "Cirriculum Vitae"
-last_mod: "June 18, 2015"
+last_mod: "August 26, 2015"
 parentdirs: [ ]
 ---
 
