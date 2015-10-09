@@ -10,5 +10,6 @@ parentdirs: [ 'data-intensive' ]
 This section contains the following sections:
 
 * [Conceptual Overview of Map-Reduce and Hadoop](overview.html)
-* [Running Hadoop on HPC Clusters](on-hpc.html)
+* [Writing Hadoop Applications in Python with Hadoop Streaming](streaming.html)
 * [Parsing VCF Files with Hadoop Streaming](parsing-vcfs.html)
+* [Running Hadoop on HPC Clusters](on-hpc.html)
