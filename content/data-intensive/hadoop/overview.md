@@ -3,7 +3,7 @@ date: "2014-06-28T00:00:00-07:00"
 draft: false
 title: "Conceptual Overview of Map-Reduce and Hadoop"
 shortTitle: Overview of Hadoop
-last_mod: "June 28, 2014"
+last_mod: "October 9, 2015"
 parentdirs: [ 'data-intensive', 'hadoop' ]
 ---
 
@@ -317,4 +317,4 @@ problem (counting the number of times each word appears in a text) with actual
 code written in Python.
 
 <!-- References -->
-[hadoop streaming guide]: hadoop-streaming.html
+[hadoop streaming guide]: streaming.html
