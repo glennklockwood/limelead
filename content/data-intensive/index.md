@@ -6,8 +6,6 @@ last_mod: "May 22, 2015"
 parentdirs: [ 'data-intensive' ]
 ---
 
-## Introduction
-
 Data-intensive computing has emerged as an area of intense interest in
 high-performance computing as the rate at which data is now being produced
 (and stored) has begun to outstrip our capacity to analyze it. By definition,
@@ -41,3 +39,10 @@ each tutorial page.
 - [Using R on HPC Clusters](r/on-hpc.html)
 - [Parallel Options for R](r/parallel-options.html)
 - [Code Samples for Parallel R](https://github.com/glennklockwood/paraR)
+
+## Topics in Storage
+
+In addition to demonstrating the tools that aid in data-driven analysis, I've
+also started documenting some key storage technologies:
+
+- [Principles of Object Storage](storage/object-storage.html)
