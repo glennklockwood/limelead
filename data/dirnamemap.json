@@ -4,5 +4,6 @@
     "hpc-howtos"     : "HPC Howtos",
     "r"              : "R",
     "benchmarks"     : "Benchmarks",
-    "sysadmin-howtos": "Sysadmin Howtos"
+    "sysadmin-howtos": "Sysadmin Howtos",
+    "personal"       : "Personal"
 }
