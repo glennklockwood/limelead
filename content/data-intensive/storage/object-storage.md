@@ -82,6 +82,10 @@ the database layer.  This database layer (called "[gateway][DDN gateways]" or
 front-end interface to users and typically maintains the map of an object ID
 to user-friendly metadata like an object name, access permissions, and so on.
 
+<div class="shortcode">
+{{< figure src="object-store-schematic.png" link="object-store-schematic.png" alt="schematic of object storage with gateway layer" caption="Model object storage system.  Gateway servers may have a variety of features.  For example, CIFS/NFS gateways may stage data to a local disk to facilitate file modifications, and S3 gateways are usually clustered for high-availability.  Some features (basic object metadata and ACLs) may also be integrated on each object storage node itself, and some advanced features may be layered on top of a gateway interface such as S3." >}}
+</div>
+
 This separation of the object store from the user-facing access interface brings
 some powerful features with it.  For example, an object store may have a 
 gateway that provides an S3-compatible interface with user accounting,
