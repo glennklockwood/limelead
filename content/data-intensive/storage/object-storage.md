@@ -3,7 +3,7 @@ date: "2015-10-21T20:45:00-07:00"
 draft: false
 title: "Principles of Object Storage"
 shortTitle: "Object Storage"
-last_mod: "October 21, 2015"
+last_mod: "October 24, 2015"
 parentdirs: [ 'data-intensive', 'storage' ]
 ---
 
