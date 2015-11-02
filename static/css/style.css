@@ -53,6 +53,24 @@ body {
     font-weight: bolder;
 }
 
+.content-box h2 {
+    margin-top: 1em;
+    margin-bottom: 0.5em;
+    border-bottom: 1px solid black;
+}
+
+.content-box h3, h4, h5 {
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.content-box h1, h2, h3, h4, h5 > a:hover, a:visited, a:link, a:active {
+    text-decoration: none;
+}
+
+.content-box h4, h5 {
+    margin-bottom: 5px;
+}
+
 
 .content {
     font-size: 18px;

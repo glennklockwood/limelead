@@ -3,7 +3,7 @@ date: "2015-10-21T20:45:00-07:00"
 draft: false
 title: "Principles of Object Storage"
 shortTitle: "Object Storage"
-last_mod: "October 24, 2015"
+last_mod: "November 2, 2015"
 parentdirs: [ 'data-intensive', 'storage' ]
 ---
 
@@ -111,22 +111,147 @@ usability, but this flexibility is afforded by building atop object-based
 
 ## Object Storage Implementations
 
-This section is not written yet, but I hope to illustrate some specific
-engineering components of object storage implementations.
+_This section is very incomplete, but I hope to illustrate some specific
+engineering components of object storage implementations._
 
-I will first illustrate the simplicity of a basic object store using [Ian
-Kirker's ShellStore][shellstore], which is a remarkably concise (albeit
-insane) implementation of an object store.
+Although the principles of object storage are reasonably simple, there are
+various ways in which specific object store products differ.  In particular,
+the way data moves when a PUT or GET request is received can vary to provide
+different _resiliency_, _scalability_, and _performance_.  
 
-I would then like to discuss the practical implementation of several
-interesting commercial object stores including 
-[DDN WOS][DDN WOS],
-[OpenStack Swift][OpenStack Swift], 
-[NetApp's StorageGRID][NetApp StorageGRID], and
-[RedHat/Inktank Ceph][RedHat Ceph].  
+### ShellStore: the simplest example
 
-Finally, I would like to briefly discuss [iRODS][iRODS], which provides the
-gateway layer of an object store without the object store underneath.
+In this section, I hope to illustrate the simplicity of a basic object store
+using [Ian Kirker's ShellStore][shellstore], which is a remarkably concise
+(albeit insane) implementation of an object store.
+
+Its beauty is that it demonstrates the basic ins and outs of how an object
+store works using simple bash.
+
+### [DDN WOS][DDN WOS]
+
+WOS was built to be a high-performance, scalable object store targeted at the
+high-performance storage market.  Because it was built from the ground up, its
+design is very simple and sensible, and it reflects the benefit of learning from
+earlier object storage products' design flaws.  The simplicity of WOS also
+makes it a great model for illustrating how object stores in general work.  With
+that being said though, it is used by a number of very large companies (for
+example, [Siri] is said to be living on WOS) and has a number of notable
+features:
+
+- it clearly separates back-end object storage servers and front-end gateways,
+  and the API providing access to the back-end is dead simple and accessible
+  via C++, Python, Java, and raw REST
+- objects are stored directly on block devices without a file-based layer
+  like ext3 interposed.  DDN markets this as "NoFS"
+- erasure coding is supported as a first-class feature, although the code rate
+  is fixed.  Tuning durability with erasure coding has to be done with
+  multi-site erasure coding.
+- **searchable object metadata** is built into the backend, so not only can you
+  tag objects, you can retrieve objects based on queries.  This is pretty 
+  major--most object stores do not provide a way to search for objects based on
+  their metadata
+- active data scrubbing occurs on the backend; most other object stores assume
+  that data integrity is verified by something underneath the object storage
+  system
+- S3 gateway service is built on top of Apache HBase
+- NFS gateways scale out to eight servers, each with local disk-based write
+  cache and global coherency via save-on-close
+
+Until I get a chance to write more about the DDN WOS architecture, there are [a
+few slides that cover the general WOS architecture][DDN WOS architecture slides]
+available.
+
+### [OpenStack Swift][OpenStack Swift]
+
+OpenStack Swift is one of the first major open-source implementations of an
+enterprise-grade object store.  It is what lives behind many private clouds
+today, but its age has resulted in many sub-optimal design decisions being
+baked in.  Notably,
+
+- it stores objects in block file systems like ext3, and it relies heavily on
+  file system features (specifically, xattrs) to store metadata
+- its backend database of object mappings and locations are stored in .gz files
+  which are replicated to all storage and proxy nodes
+- _container_ and _account_ servers store a subset of object metadata (their
+  container and account attributes) in replicated sqlite databases
+- it is missing important core features such as erasure coding
+
+Until I write up my own interpretation of the Swift architecture, you are
+welcome to read the official [OpenStack Swift architecture][OpenStack Swift architecture]
+documentation.
+
+### [RedHat/Inktank Ceph][RedHat Ceph]
+
+Ceph uses a deterministic hash that allows clients to communicate directly with
+object storage servers without having to hit a centralized lookup server.
+
+Until I write up a more detailed explanation, I recommend reading the official
+[Ceph architecture documentation][Ceph architecture documentation].
+
+### [Scality RING][Scality RING]
+
+I don't actually know much of anything about Scality RING, but it's an object
+storage platform that is [rapidly breaking into the HPC realm][Scality Platform article] and will be a [new
+tier of storage supporting Los Alamos National Labs' Trinity system][Scality/LANL PR].  A number of people
+suggested I should include it here as well, so it sounds like I need to learn
+how Scality does what it does.  When I do, I will fill out this section.
+
+Of note, Scality RING is a software-only product (like Swift and Ceph, unlike
+DDN WOS) that will live on whatever whitebox hardware you want.  It has all of
+the standard gateway interfaces (S3, NFS/CIFS, and REST), erasure coding, and
+a scalable design.
+
+Until I learn more about the guts of Scality, the best I can provide is this
+[Scality RING slide deck][Scality slide deck] that touches on some architectural
+detail and refers to specific patents.
+
+### Other Products
+
+There are a few more object storage platforms that are worth note, but they are
+less relevant to the HPC industry because of their target verticals or a few key
+design points.  They reflect some interesting architectural decisions, but I may
+ultimately drop this section to narrow the focus of this page.
+
+#### [NetApp StorageGRID][NetApp StorageGRID]
+
+NetApp's StorageGRID object storage platform comes from its [acquisition of 
+Bycast][Bycast acquisition PR], and StorageGRID is primarily used in the medical
+records business.  NetApp doesn't talk about StorageGRID much and, from what I
+can tell, there isn't much to note other than it uses Cassandra as its proxy
+database for tracking object indices.
+
+I have some notes from a NetApp briefing on StorageGRID, so I will look them
+over and expand this section if there's anything interesting.  If not, this
+section might disappear in the future.
+
+#### [Cleversafe][Cleversafe]
+
+Cleversafe is an object storage platform that targets the enterprise market and
+boasts extreme durability.  They sell a software-only product like Scality, but
+the buy-in is quite peculiar; specifically, Cleversafe clusters cannot be scaled
+out easily, as you must buy all of your object storage nodes (sliceStors) up
+front.  Instead, you have to buy partially populated storage nodes and add
+capacity by scaling each one up; when all nodes are scaled, you then have to
+buy a new cluster.  Of course, this is fine for organizations that scale in
+units of entire racks, but less practical outside of top-end HPC centers.
+
+Cleversafe is not as feature-complete as other object storage platforms; they
+provide several REST interfaces ("accessers") including S3, Swift, and HDFS,
+but NFS/CIFS-based access must come from a third party on top of S3/Swift.
+
+### [iRODS][iRODS] - object storage without the objects or storage
+
+[iRODS][iRODS] which provides the gateway layer of an object store without the
+object store underneath.  It is worth mentioning here because it can turn a
+collection of file systems into something that looks more like an object store
+by stripping away the POSIX compliance in favor of a more flexible and 
+metadata-oriented interface.  However, iRODS is designed for data management,
+not high-performance.
+
+I will include more information about iRODS as time permits.  Until then, 
+[TACC's user guide for its iRODS system][iRODS at TACC] will give you a very
+concise idea of what iRODS allows you to do.
 
 <!-- References -->
 [Instagram]: http://instagram-engineering.tumblr.com/post/13649370142/what-powers-instagram-hundreds-of-instances
@@ -135,8 +260,19 @@ gateway layer of an object store without the object store underneath.
 [DDN gateways]: http://www.ddn.com/pdfs/WOS3_Access_datasheet.pdf
 [Swift proxies]: http://docs.openstack.org/developer/swift/overview_architecture.html#proxy-server
 [DDN WOS]: http://www.ddn.com/products/object-storage-web-object-scaler-wos/
+[DDN WOS architecture slides]: https://hpcuserforum.com/presentations/santafe2014/Mike-Vildibill-DDN-WOS.pdf
 [shellstore]: https://github.com/ikirker/shellstore
 [OpenStack Swift]: http://docs.openstack.org/developer/swift/
+[OpenStack Swift architecture]: http://docs.openstack.org/developer/swift/overview_architecture.html
 [NetApp StorageGRID]: http://www.netapp.com/us/products/storage-software/storagegrid/
 [RedHat Ceph]: https://www.redhat.com/en/technologies/storage/ceph
+[Ceph architecture documentation]: http://docs.ceph.com/docs/v0.78/architecture/
 [iRODS]: http://irods.org/
+[iRODS at TACC]: https://portal.tacc.utexas.edu/software/irods
+[Siri]: http://www.apple.com/ios/siri/
+[Bycast acquisition PR]: http://www.netapp.com/us/company/news/press-releases/news-rel-20100407-bycast.aspx
+[Scality RING]: http://www.scality.com/ring-technology/
+[Scality Platform article]: http://www.nextplatform.com/2015/06/29/pushing-the-limits-on-object-store/
+[Scality/LANL PR]: http://www.scality.com/scality-ring-selected-by-los-alamos-national-laboratory/
+[Scality slide deck]: http://opcode.org/scality/Scality.Ring.Technology.pdf
+[Cleversafe]: https://www.cleversafe.com/platform/
