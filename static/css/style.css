@@ -63,7 +63,18 @@ body {
     border-bottom: 1px solid rgba(0,0,0,0.1);
 }
 
-.content-box h1, h2, h3, h4, h5 > a:hover, a:visited, a:link, a:active {
+.content-box h1 > a:hover,
+             h2 > a:hover,
+             h3 > a:hover,
+             h1 > a:visited,
+             h2 > a:visited,
+             h3 > a:visited,
+             h1 > a:link,
+             h2 > a:link,
+             h3 > a:link,
+             h1 > a:active,
+             h2 > a:active,
+             h3 > a:active {
     text-decoration: none;
 }
 
