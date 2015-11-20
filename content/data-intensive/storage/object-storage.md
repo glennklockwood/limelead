@@ -3,7 +3,7 @@ date: "2015-10-21T20:45:00-07:00"
 draft: false
 title: "Principles of Object Storage"
 shortTitle: "Object Storage"
-last_mod: "November 2, 2015"
+last_mod: "November 19, 2015"
 parentdirs: [ 'data-intensive', 'storage' ]
 ---
 
@@ -199,8 +199,11 @@ how Scality does what it does.  When I do, I will fill out this section.
 
 Of note, Scality RING is a software-only product (like Swift and Ceph, unlike
 DDN WOS) that will live on whatever whitebox hardware you want.  It has all of
-the standard gateway interfaces (S3, NFS/CIFS, and REST), erasure coding, and
-a scalable design.
+the standard gateway interfaces (S3, NFS/CIFS, and REST, called "connectors"),
+erasure coding, and a scalable design that seems to center on a deterministic
+hash which maps data to a specific storage node within the cluster.  Storage
+nodes are all peers, and any storage node can answer requests for data living
+on any other storage node via back-end peer-to-peer transfers.
 
 Until I learn more about the guts of Scality, the best I can provide is this
 [Scality RING slide deck][Scality slide deck] that touches on some architectural
