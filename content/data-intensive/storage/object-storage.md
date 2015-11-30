@@ -3,7 +3,7 @@ date: "2015-10-21T20:45:00-07:00"
 draft: false
 title: "Principles of Object Storage"
 shortTitle: "Object Storage"
-last_mod: "November 19, 2015"
+last_mod: "November 30, 2015"
 parentdirs: [ 'data-intensive', 'storage' ]
 ---
 
@@ -33,8 +33,9 @@ This simplicity gives way to a few extremely important restrictions on what you
 can do with an object store:
 
 * PUT creates a new object and fills it with data.  
-  * There is no way to modify data within an existing object as a result, so
-    all objects within an object store are said to be _immutable_.
+  * There is no way to modify data within an existing object (or "modify in
+    place") as a result, so all objects within an object store are said to be
+    _immutable_.
   * When a new object is created, the object store returns its unique object
     id.  This is usually a UUID that has no intrinsic meaning like a filename
     would.
@@ -61,6 +62,10 @@ This combination of lock-free data access and deterministic mapping of data to
 physical locations makes I/O performance extremely scalable, as there are no
 intrinsic bottleneck when many compute nodes are accessing data across object
 storage servers.
+
+Note that many object storage implementations treat object immutability with
+some flexibility; for example, append-only access modes still eliminate many of
+the locking bottlenecks while improving the utility of the storage.
 
 ## The Limitations of Object Storage
 
