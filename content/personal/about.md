@@ -11,20 +11,21 @@ parentdirs: [ 'personal' ]
 I was born in Hawaii and moved to the mainland when I was quite young.  I grew
 up in the suburbs of central New Jersey, just off of 8A on the turnpike.  After
 completing high school, I attended the [School of Engineering at Rutgers
-University][ru engineering] where I majored in ceramic engineering and spent a year and change
-doing research using molecular simulation at the [Interfacial Molecular Science
-Lab][imsl].  I graduated in the final class of ceramic engineers at Rutgers; the
-program was replaced by one in materials science and engineering in the
-following year.
+University][ru engineering] where I majored in ceramic engineering and spent a
+year and change doing research using molecular simulation at the [Interfacial
+Molecular Science Lab][imsl].  I graduated in the final class of ceramic
+engineers at Rutgers; the program was replaced by one in materials science and
+engineering in the following year.
 
 Ceramic science is a fascinating one, but a field trip to a local glass factory
 in my final year as an undergraduate made me realize that I really did not want
 to be an engineer when I grew up.  To defer having to go out into the real world
 to make a living, I opted to go to graduate school instead and enrolled in the
-materials engineering program at [Lehigh University] in Bethlehem, Pennsylvania.
+materials engineering program at Lehigh University in Bethlehem, Pennsylvania.
 My hope was to become an electron microscopist, as Lehigh had some of the 
 world's most [sophisticated aberration-corrected scanning transmission electron
-microscopes][camn] at the time (supercomputers of the microscope world, in a sense).
+microscopes][camn] at the time (supercomputers of the microscope world, in a
+sense).
 
 Those plans did not pan out, and after a semester in Pennsylvania, I returned to
 Rutgers to continue doing research with molecular dynamics simulations.
@@ -39,41 +40,44 @@ to consider HPC as a career rather than a mere hobby.
 
 During graduate school I also married my wife (and spent two months doing
 research out of her father's tractor shop on the Canadian prairie--an
-interesting experience!).  When I finally completed [my dissertation][my dissertation], I made the
-decision to change careers and pursue my interest in HPC full-time.  And, since
-I had also forced my wife to live with me in [suburban New Jersey][highland park] for four years,
-I looked for jobs in places that were most un-like suburban New Jersey.  Much
-to my great fortune, the [San Diego Supercomputer Center][sdsc] had an open position in
-user services, and I was able to trick them into thinking I knew enough about
-HPC to be employable.
+interesting experience!).  When I finally completed [my
+dissertation][my dissertation], I made the decision to change careers and
+pursue my interest in HPC full-time.  And, since I had also forced my wife to
+live with me in [suburban New Jersey][highland park] for four years, I looked
+for jobs in places that were most un-like suburban New Jersey.  Much to my
+great fortune, the [San Diego Supercomputer Center][sdsc] had an open position
+in user services, and I was able to trick them into thinking I knew enough
+about HPC to be employable.
 
 SDSC provided me with access to the resources, expertise, and support to develop
 a strong foundation in high-performance computing, and my role in user services
 put me in a position to solve challenging issues in a variety of scientific
-domains.  Most notably, the next-generation sequencing industry (largely centered
-in San Diego) began growing into the realm of HPC at that time, and my
-understanding of the intricacies of [SDSC's exotic data-intensive supercomputer][gordon]
-led me to a number of [consulting projects in sequencing][janssen slides].
+domains.  Most notably, the next-generation sequencing industry (largely
+centered in San Diego) began growing into the realm of HPC at that time, and my
+understanding of the intricacies of [SDSC's exotic data-intensive
+supercomputer][gordon] led me to a number of [consulting projects in
+sequencing][janssen slides].
 
-My [analyses of the computational requirements demanded by DNA sequencing][sequencing cost blog] caught
-the attention of a few companies who were technologically ahead of the curve.
-I was eventually extended a unique opportunity to join an [early-stage sequencing
-startup][10xtech] that was developing a revolutionary new product, and my desire to
-experience the startup life and be a part of such a [rapidly growing industry]
-lured me away from SDSC.
+My [analyses of the computational requirements demanded by DNA
+sequencing][sequencing cost blog] caught the attention of a few companies who
+were technologically ahead of the curve.  I was eventually extended a unique
+opportunity to join an [early-stage sequencing startup][10xtech] that was
+developing a revolutionary new product, and my desire to experience the startup
+life and be a part of such a rapidly growing industry lured me away from SDSC.
 
-After eighteen months in San Diego, I moved up to Oakland and joined 10X
-Genomics as a DevOps Engineer (a job which I had no idea how to do).  My job
-involved running a small cluster, maintaining a couple hundred terabytes of
-storage, and integrating 10X's software product with HPC infrastructure and
-cutting-edge DNA sequencers.  My heart never left supercomputing though, and
-shortly after my one-year anniversary at 10X, I returned to the world of
-supercomputing at the [National Energy Research Scientific Computing Center][nersc]
-(NERSC) at the [Lawrence Berkeley National Laboratory][lbl.gov] (LBL).
+After eighteen months in San Diego, I moved up to Oakland and joined [10X 
+Genomics][10x genomics] as a DevOps Engineer (a job which I had no idea how to
+do).  My job involved running a small cluster, maintaining a couple hundred
+terabytes of storage, and integrating 10X's software product with HPC
+infrastructure and cutting-edge DNA sequencers.  My heart never left
+supercomputing though, and shortly after my one-year anniversary at 10X, I
+returned to the world of supercomputing at the [National Energy Research
+Scientific Computing Center][nersc] (NERSC) at the [Lawrence Berkeley National
+Laboratory][lbl.gov] (LBL).
 
-Now at NERSC, I am a part of the [Advanced Technologies Group][nersc atg] where I try to
-envision what the future of supercomputing will have to be to meet the needs
-of scientists.
+Now at NERSC, I am a part of the [Advanced Technologies Group][nersc atg] where
+I try to envision what the future of supercomputing will have to be to meet the
+needs of scientists.
 
 [ru engineering]: http://soe.rutgers.edu
 [imsl]: http://glass.rutgers.edu/
@@ -90,3 +94,4 @@ of scientists.
 [nersc]: http://www.nersc.gov/
 [lbl.gov]: http://www.lbl.gov/
 [nersc atg]: http://www.nersc.gov/about/groups/advanced-technologies-group/
+[10x genomics]: http://www.10xgenomics.com/
