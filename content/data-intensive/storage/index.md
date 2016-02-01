@@ -8,3 +8,4 @@ parentdirs: [ 'data-intensive' ]
 ---
 
 * [Principles of Object Storage](object-storage.html)
+* [Principles of Non-volatile RAM](nvram.html)

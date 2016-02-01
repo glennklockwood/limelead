@@ -46,3 +46,4 @@ In addition to demonstrating the tools that aid in data-driven analysis, I've
 also started documenting some key storage technologies:
 
 - [Principles of Object Storage](storage/object-storage.html)
+- [Principles of Non-volatile RAM](storage/nvram.html)
