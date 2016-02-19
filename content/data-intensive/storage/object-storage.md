@@ -3,7 +3,7 @@ date: "2015-10-21T20:45:00-07:00"
 draft: false
 title: "Principles of Object Storage"
 shortTitle: "Object Storage"
-last_mod: "November 30, 2015"
+last_mod: "February 18, 2016"
 parentdirs: [ 'data-intensive', 'storage' ]
 ---
 
@@ -188,11 +188,33 @@ documentation.
 
 ### [RedHat/Inktank Ceph][RedHat Ceph]
 
-Ceph uses a deterministic hash that allows clients to communicate directly with
-object storage servers without having to hit a centralized lookup server.
+Ceph uses a deterministic hash (called CRUSH) that allows clients to communicate
+directly with object storage servers without having to look up the location of
+an object for each read or write.  A general schematic of data flow looks like
+this:
 
-Until I write up a more detailed explanation, I recommend reading the official
-[Ceph architecture documentation][Ceph architecture documentation].
+<div class="shortcode">
+{{< figure src="ceph-data-flow.png" link="ceph-data-flow.png" alt="schematic of Ceph data flow" caption="Basic Ceph data flow" >}}
+</div>
+
+Objects are mapped to _placement groups_ using a simple hash function.
+Placement groups (PGs) are logical abstractions that map to object storage
+daemons (which own collections of physical disk) via the CRUSH hash.  CRUSH is
+unique in that it allows additional OSDs to be added without having to rebuild
+the entire object-PG-OSD map structure; only a fraction of placement groups
+need to be remapped to newly added OSDs, enabling very flexible scalability
+and resilience.
+
+Placement groups own object durability policies, and with the CRUSH algorithm,
+are what allow objects to be physically replicated and geographically
+distributed across multiple OSDs.
+
+Until I write up a more detailed explanation, here are a few good resources for
+finding out more about Ceph's architecture:
+
+* The official [Ceph architecture documentation][Ceph architecture documentation]
+* "[Building an organic block storage service at CERN with Ceph][CHEP2013 Ceph paper]," a paper presented at CHEP2013
+* "[RADOS: a scalable, reliable storage service for petabyte-scale storage clusters][PDSW07 RADOS paper]," a paper describing the object storage platform that lives underneath Ceph (RADOS) from PDSW'07
 
 ### [Scality RING][Scality RING]
 
@@ -284,3 +306,5 @@ concise idea of what iRODS allows you to do.
 [Scality/LANL PR]: http://www.scality.com/scality-ring-selected-by-los-alamos-national-laboratory/
 [Scality slide deck]: http://opcode.org/scality/Scality.Ring.Technology.pdf
 [Cleversafe]: https://www.cleversafe.com/platform/
+[CHEP2013 Ceph paper]: http://dx.doi.org/10.1088/1742-6596/513/4/042047
+[PDSW07 RADOS paper]: http://dx.doi.org/10.1145/1374596.1374606
