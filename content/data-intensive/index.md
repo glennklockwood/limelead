@@ -47,3 +47,4 @@ also started documenting some key storage technologies:
 
 - [Principles of Object Storage](storage/object-storage.html)
 - [Principles of Non-volatile RAM](storage/nvram.html)
+- [I/O Forwarding for Extreme-Scale Systems](storage/io-forwarding.html)

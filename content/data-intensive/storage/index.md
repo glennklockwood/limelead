@@ -9,3 +9,4 @@ parentdirs: [ 'data-intensive' ]
 
 * [Principles of Object Storage](object-storage.html)
 * [Principles of Non-volatile RAM](nvram.html)
+* [I/O Forwarding for Extreme-Scale Systems](io-forwarding.html)
