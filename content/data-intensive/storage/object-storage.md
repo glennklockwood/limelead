@@ -3,7 +3,7 @@ date: "2015-10-21T20:45:00-07:00"
 draft: false
 title: "Principles of Object Storage"
 shortTitle: "Object Storage"
-last_mod: "February 18, 2016"
+last_mod: "May 5, 2016"
 parentdirs: [ 'data-intensive', 'storage' ]
 ---
 
@@ -263,12 +263,22 @@ the buy-in is quite peculiar; specifically, Cleversafe clusters cannot be scaled
 out easily, as you must buy all of your object storage nodes (sliceStors) up
 front.  Instead, you have to buy partially populated storage nodes and add
 capacity by scaling each one up; when all nodes are scaled, you then have to
-buy a new cluster.  Of course, this is fine for organizations that scale in
-units of entire racks, but less practical outside of top-end HPC centers.
+buy a new cluster.
 
-Cleversafe is not as feature-complete as other object storage platforms; they
-provide several REST interfaces ("accessers") including S3, Swift, and HDFS,
-but NFS/CIFS-based access must come from a third party on top of S3/Swift.
+Of course, this is fine for organizations that scale in units of entire racks,
+but less practical outside of top-end HPC centers.  Indeed, notable customers
+of Cleversafe include Shutterfly, which spoke about [their experiences with 190 PB of Cleversafe][Shutterfly MSST slides] object storage at MSST 2016.
+
+Cleversafe is not as feature-complete as other object storage platforms the
+last time I got a briefing; they provide several REST interfaces ("accessers")
+including S3, Swift, and HDFS, but NFS/CIFS-based access must come from a third
+party on top of S3/Swift.  Again, large enterprises often write their own
+software to speak S3, so this is less of an impediment at scale.
+
+## Peripheral Technologies
+
+The following technologies, while not strictly object storage platforms, are
+complementary to or representative of the spirit of object stores.
 
 ### [iRODS][iRODS] - object storage without the objects or storage
 
@@ -282,6 +292,36 @@ not high-performance.
 I will include more information about iRODS as time permits.  Until then, 
 [TACC's user guide for its iRODS system][iRODS at TACC] will give you a very
 concise idea of what iRODS allows you to do.
+
+### [MarFS][MarFS] - a POSIX-ish interface to object storage
+
+MarFS is a framework, developed at Los Alamos National Laboratory, that provides
+an interface to object storage that includes many familiar POSIX operations.
+Unlike a gateway that sits in front of an object store, MarFS provides this
+interface directly on client nodes and transparently translates POSIX
+operations into the API calls understood by the underlying object store.  It is
+designed to be lightweight, modular, and scalable, and in many ways, it
+accomplishes what, for example, the `llite` client does in terms of mapping
+POSIX calls issued on a storage client to calls understood by the underlying
+object-based Lustre data representation.
+
+The current implementation in use at LANL uses a GPFS file system to store the
+metadata that a regular POSIX file system would present to its users.  Instead
+of storing the data on GPFS as well, all of the files on this index system are
+stubs--they contain no data, but they have the ownership, permissions, and other
+POSIX attributes of the objects they represent.  The data itself lives in an
+object store (provided by Scality, in the LANL implementation), and the MarFS
+FUSE daemon on each storage client uses the GPFS index file system to connect
+POSIX I/O calls with the data living in object storage.
+
+Because it connects storage clients directly to the object store rather than
+acting as a gateway, MarFS only provides a subset of POSIX I/O operations.
+Notably, because the underlying data are stored as immutable objects, MarFS
+does not allow users to overwrite data that already exists.
+
+I gleaned most of the above description of MarFS from public presentations and
+follow-up discussion with the creators of MarFS.  I recommend looking at a
+[MarFS presentation given at MSST 2016][MarFS MSST slides] for more details.
 
 <!-- References -->
 [Instagram]: http://instagram-engineering.tumblr.com/post/13649370142/what-powers-instagram-hundreds-of-instances
@@ -308,3 +348,6 @@ concise idea of what iRODS allows you to do.
 [Cleversafe]: https://www.cleversafe.com/platform/
 [CHEP2013 Ceph paper]: http://dx.doi.org/10.1088/1742-6596/513/4/042047
 [PDSW07 RADOS paper]: http://dx.doi.org/10.1145/1374596.1374606
+[Shutterfly MSST slides]: http://storageconference.us/2016/Presentations/MikeKugler.pdf
+[MarFS]: https://github.com/mar-file-system/marfs
+[MarFS MSST slides]: http://storageconference.us/2016/Presentations/DavidBonnie.pdf
