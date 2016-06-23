@@ -3,7 +3,7 @@ date: "2016-03-21T10:39:00-07:00"
 draft: false
 title: "I/O Forwarding for Extreme-Scale Systems"
 shortTitle: "I/O Forwarding"
-last_mod: "March 21, 2016"
+last_mod: "May 6, 2016"
 parentdirs: [ 'data-intensive', 'storage' ]
 ---
 
@@ -26,8 +26,8 @@ increasingly large compute and storage platforms.  The premise of I/O forwarding
 is to insert a layer between the _computing_ subsystem (the compute nodes) and
 the _storage_ subystem (Lustre, GPFS, etc) that shields the storage subsystem
 from the full force of the parallel I/O that may be coming from the computing
-subsystem.  It does this by multiplexing the I/O requests from many compute nodes
-into a single stream of requests to the parallel file system.
+subsystem.  It does this by multiplexing the I/O requests from many compute
+nodes into a smaller stream of requests to the parallel file system.
 
 ## Implementations
 
@@ -57,6 +57,29 @@ successful, promising, and interesting I/O forwarding systems include
   - [diod][diod site] is an implementation of a v9fs/9p server that includes
     extensions to [facilitate I/O forwarding][llnl tr-609233].
 
+## Relevant Transport Protocols
+
+I/O forwarding ultimately relies on an underlying network transport layer 
+to move I/O requests from client nodes to the back-end storage servers, and the
+routing that may be enabled by these network transport layers may themselves
+behave like I/O forwarders.
+
+- Lustre LNET is the transport layer used by Lustre, and LNET routers typically
+  forward I/O requests from many Lustre clients to a much smaller group of
+  Lustre object storage servers (OSSes).  Incidentally, Cray DVS (see above)
+  uses LNET for its transport, but does not use LNET's routing capabilities.
+- [Mercury][mercury] is an emerging transport protocol for high-performance
+  computing that competes with (or plans to supercede) LNET and DVS.
+  - Mercury actually replaces Lustre's RPC protocol, where Lustre RPCs are what
+    are actually carried by LNET.  However Mercury includes its own network
+    abstraction layer which can be used instead of LNET.
+  - Mercury itself does not include an I/O forwarding system, but I/O forwarding
+    can be built on top of Mercury.  For example, 
+    - IOFSL (see above) can use Mercury instead of its original BMI protocol
+    - [Mercury POSIX] is a project built on top of Mercury that performs POSIX
+      I/O function shipping
+- [BMI][bmi] is the network transport layer used in PVFS2.
+
 ## Additional Information
 
 Other interesting links:
@@ -66,6 +89,7 @@ Other interesting links:
 - [I/O Forwarding for Linux Clusters][diod io forwarding slides] - an early slide deck from LLNL describing diod as an I/O forwarder 
 - [I/O Forwarding on Livermore Computing Commodity Linux Clusters][llnl tr-609233] - a really nice review of I/O forwarding principles and design goals.  Unfortunately incomplete, but still very useful.
 - [v9fs: Plan 9 Resource Sharing for Linux][candid v9fs kdoc] - a more candid version of the v9fs man page for Linux that discusses its history and benefits over NFS and CIFS
+- [Mercury paper in IEEE Cluster (2013)][mercury ieee paper] - the paper presenting Mercury and its design
 
 [bgp ciod paper]: http://dx.doi.org/10.1109/SC.2010.8
 [iofsl site]: http://www.mcs.anl.gov/research/projects/iofsl/
@@ -79,3 +103,7 @@ Other interesting links:
 [9p2000.L paper]: https://www.usenix.org/legacy/events/usenix05/tech/freenix/hensbergen.html
 [diod site]: https://github.com/chaos/diod
 [diod io forwarding slides]: diod.googlecode.com/svn/wiki/garlick-iscr-2011-aug.pdf
+[mercury]: https://mercury-hpc.github.io
+[mercury ieee paper]: http://dx.doi.org/10.1109/CLUSTER.2013.6702617
+[Mercury POSIX]: https://wiki.hpdd.intel.com/display/PUB/Fast+Forward+Storage+and+IO+Program+Documents?preview=/12127153/16843337/M6.1_PosixFunctionShipping-Demo-v3.pdf
+[BMI]: http://dx.doi.org/10.1109/IPDPS.2005.128
