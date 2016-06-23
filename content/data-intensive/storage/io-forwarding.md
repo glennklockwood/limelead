@@ -41,7 +41,7 @@ successful, promising, and interesting I/O forwarding systems include
   [paper describing the Blue Gene I/O forwarder][bgp ciod paper] was presented
   at SC'10.
 - [IOFSL][iofsl site] - An implementation developed by the I/O wizards at
-  Argonne whose genesis (as I understand it) is in ZIOD, which was an 
+  Argonne whose genesis (as I understand it) is in ZOID, which was an 
   open-source reimplementation of Blue Gene's CIOD.  Currently more of an
   experimental/research platform.
 - [Cray Data Virtualization Service (DVS)][cray dvs] - a Linux VFS driver that
