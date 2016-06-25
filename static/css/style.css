@@ -44,6 +44,49 @@ body {
     margin-right: auto;
 }
 
+/* bootstrap tables */
+.content-box table {
+  width: auto !important;
+  max-width: 100%;
+  margin: 20px auto;
+  background-color: #fff;
+  border: 1px solid #ddd;
+}
+.content-box table > thead > tr > th {
+  text-align: inherit;
+}
+.content-box table > thead > tr > th,
+.content-box table > tbody > tr > th,
+.content-box table > tfoot > tr > th,
+.content-box table > thead > tr > td,
+.content-box table > tbody > tr > td,
+.content-box table > tfoot > tr > td {
+  line-height: 1.42857143;
+  vertical-align: top;
+  border: 1px solid #ddd;
+  border-bottom-width: 2px;
+  padding: 5px;
+}
+.content-box table > thead > tr > th {
+  vertical-align: bottom;
+  border-bottom: 2px solid #ddd;
+  background-color: rgba(34,35,67,0.25);
+}
+.content-box table > caption + thead > tr:first-child > th,
+.content-box table > colgroup + thead > tr:first-child > th,
+.content-box table > thead:first-child > tr:first-child > th,
+.content-box table > caption + thead > tr:first-child > td,
+.content-box table > colgroup + thead > tr:first-child > td,
+.content-box table > thead:first-child > tr:first-child > td {
+  border-top: 0;
+}
+.content-box table > tbody + tbody {
+  border-top: 2px solid #ddd;
+}
+.content-box table > tbody > tr:nth-child(odd) {
+  background-color: #f9f9f9;
+}
+
 .content-box figcaption > p {
     text-align: center;
     margin-top: 0.6em;

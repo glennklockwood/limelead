@@ -1,10 +1,11 @@
 {
-    "data-intensive" : "Data-Intensive Computing",
-    "hadoop"         : "Hadoop",
-    "hpc-howtos"     : "HPC Howtos",
-    "r"              : "R",
-    "benchmarks"     : "Benchmarks",
-    "sysadmin-howtos": "Sysadmin Howtos",
-    "personal"       : "Personal",
-    "storage"        : "Storage"
+    "data-intensive"    : "Data-Intensive Computing",
+    "hadoop"            : "Hadoop",
+    "hpc-howtos"        : "HPC Howtos",
+    "r"                 : "R",
+    "benchmarks"        : "Benchmarks",
+    "sysadmin-howtos"   : "Sysadmin Howtos",
+    "personal"          : "Personal",
+    "storage"           : "Storage",
+    "materials-science" : "Materials Science"
 }
