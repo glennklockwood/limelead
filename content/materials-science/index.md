@@ -1,7 +1,7 @@
 ---
 date: "2006-10-10T00:00:00-05:00"
 draft: false
-last_mod: "June 24, 2016"
+last_mod: "June 25, 2016"
 title: "Materials Science"
 ---
 
@@ -12,9 +12,9 @@ here they are.
 
 - [Statistical Design using Orthogonal Arrays](statistical-design.html)
 - [Overview of Glasses](overview-glasses.html)
-- Overview of Metals
-- Overview of Alumina
-- Overview of Silicon Carbide
-- Overview of Silicon Nitride
-- Overview of Zirconia
+- [Overview of Metals](metals.html)
+- [Overview of Alumina](alumina.html)
+- [Overview of Silicon Carbide](silicon-carbide.html)
+- [Overview of Silicon Nitride](silicon-nitride.html)
+- [Overview of Zirconia](zirconia.html)
 - [Glass Compositions](glass-compositions.html)
