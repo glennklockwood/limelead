@@ -57,9 +57,11 @@ and was taken from a good [slide deck on IOFSL][iofsl architecture] presented
 in 2010.
 
 It relies on the interface provided by [libsysio][libsysio], originally a
-component in the Catamount kernel, to translate POSIX I/O calls to
-filesystem-specific API calls (e.g., liblustre or libpvfs) or a function
-shipping interface.
+component in the Catamount kernel, to provide a POSIX-like view of a forwarded
+file system to an application.  Behind the scenes, sysio translates POSIX I/O
+calls to filesystem-specific API calls (e.g., liblustre or libpvfs) or a
+user-space function shipping mechanism.  The [IOFSL paper (Ali et al, 
+2009)][iofsl paper] provides a great deal of detail on how it all operates.
 
 IOFSL was more of an experimental/research platform than a production tool and
 is no longer funded or developed to my knowledge.
@@ -132,6 +134,7 @@ behave like I/O forwarders.
 [bgp ciod paper]: http://dx.doi.org/10.1109/SC.2010.8
 [iofsl site]: http://www.mcs.anl.gov/research/projects/iofsl/
 [iofsl architecture]: http://www.mcs.anl.gov/research/projects/iofsl/pubs/fastos10-slides.pdf
+[iofsl paper]: http://dx.doi.org/10.1109/CLUSTR.2009.5289188
 [nfs-ganesha 9p site]: https://github.com/nfs-ganesha/nfs-ganesha/wiki/9p
 [nfs-ganesha ibm slides]: http://events.linuxfoundation.org/sites/events/files/slides/Collab14_nfsGanesha.pdf
 [nfs-ganesha io forwarding]: https://eofs.gsi.de/fileadmin/lad2014/slides/18_Gregoire_Pichon_LAD2014_IOProxies_over_Lustre.pdf
