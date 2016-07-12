@@ -350,4 +350,4 @@ follow-up discussion with the creators of MarFS.  I recommend looking at a
 [PDSW07 RADOS paper]: http://dx.doi.org/10.1145/1374596.1374606
 [Shutterfly MSST slides]: http://storageconference.us/2016/Presentations/MikeKugler.pdf
 [MarFS]: https://github.com/mar-file-system/marfs
-[MarFS MSST slides]: http://storageconference.us/2016/Presentations/DavidBonnie.pdf
+[MarFS MSST slides]: http://storageconference.us/2016/Slides/DavidBonnie.pdf
