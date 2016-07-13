@@ -209,6 +209,13 @@ Placement groups own object durability policies, and with the CRUSH algorithm,
 are what allow objects to be physically replicated and geographically
 distributed across multiple OSDs.
 
+Ceph implements its durability policies on the server side, so that a client
+that PUTs or GETs an object only talks to a single OSD.  Once an object is PUT
+on an OSD, that OSD is in charge of replicating it to other OSDs, or
+performing the sharding, erasure coding, and distribution of coded shards. 
+Intel has posted [a good description (with diagrams) on Ceph's replication and
+erasure coding data paths][Ceph EC data paths].
+
 Until I write up a more detailed explanation, here are a few good resources for
 finding out more about Ceph's architecture:
 
@@ -337,6 +344,7 @@ follow-up discussion with the creators of MarFS.  I recommend looking at a
 [NetApp StorageGRID]: http://www.netapp.com/us/products/storage-software/storagegrid/
 [RedHat Ceph]: https://www.redhat.com/en/technologies/storage/ceph
 [Ceph architecture documentation]: http://docs.ceph.com/docs/v0.78/architecture/
+[Ceph EC data paths]: https://software.intel.com/en-us/blogs/2015/04/06/ceph-erasure-coding-introduction
 [iRODS]: http://irods.org/
 [iRODS at TACC]: https://portal.tacc.utexas.edu/software/irods
 [Siri]: http://www.apple.com/ios/siri/
