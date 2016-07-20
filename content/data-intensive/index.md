@@ -33,6 +33,8 @@ each tutorial page.
 - [Writing Hadoop Applications in Python with Hadoop Streaming](hadoop/streaming.html)
 - [Parsing VCF Files with Hadoop Streaming](hadoop/parsing-vcfs.html)
 - [Running Hadoop on HPC Clusters](hadoop/on-hpc.html)
+- [**Slides**: Hadoop Streaming: Programming Hadoop without Java](http://www.slideshare.net/glennklockwood/hadoop-streaming-29230982)
+- [**Slides**: Introduction to Spark](http://www.slideshare.net/glennklockwood/introduction-to-spark-41788747)
 
 ## Topics in R
 
