@@ -9,8 +9,8 @@ a.noul:hover    { text-decoration: underline; }
 a img { border-width:0; }
 
 body {
-    font-family: serif;
     background-image: url('/tile250-5d.gif');
+    font-family: "Open Sans", Helvetica, Arial, sans-serif;
 }
 
 .content-box {
@@ -33,6 +33,7 @@ body {
 .content-box code {
     color: inherit;
     background-color: inherit;
+    font-size: inherit;
 }
 .content-box p {
     text-align: justify;
@@ -128,7 +129,7 @@ body {
 
 .content {
     font-size: 18px;
-    line-height: 1.3;
+    line-height: 1.5;
 }
 
 .content pre {
