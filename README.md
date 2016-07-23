@@ -1,4 +1,5 @@
-Todo
-====
+This is the source for my personal website.  It is compiled using [Hugo][hugo],
+for better or for worse, and relies on the `deploy.sh` script included in the
+top level to perform various post-html-rendering cleanup.
 
-3. data-intensive/hadoop/index.md and data-intesnive/r/index.md
+[hugo]: https://gohugo.io/ 
