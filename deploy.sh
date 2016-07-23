@@ -122,11 +122,19 @@ fi
 echo "Recompiling html from markdown"
 hugo
 
+### Fix the last update times since Hugo can't do this sensibly
 for md_file in $(find ${REPO_HOME}/content/ -type f -name \*.md); do
     fix_update_time "$md_file"
 done
 fix_update_time "GLOBAL"
 
+### God only knows where the empty 404.html that Hugo generates is coming from.
+### Replace it with the one I made.
+if [ -f "${REPO_HOME}/public/_404.html" ]; then
+    mv "${REPO_HOME}/public/_404.html" "${REPO_HOME}/public/404.html"
+fi
+
+### Clean up the duplicate x.html and x/index.html files that Hugo makes
 clean_redundant_htmls
 
 echo "Deploying html"
