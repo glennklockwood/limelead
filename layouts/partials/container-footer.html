@@ -2,17 +2,7 @@
         <div class="content-box">
             <div class="row">
                 <div class="col-sm-8">
-                    Last modified 
-                    {{ if .Params.last_mod }}
-                    {{ .Params.last_mod }}
-                    {{ else }}
-                    <script type="text/javascript">
-                        //<![CDATA[
-                        var x = new Date(document.lastModified);
-                        document.write( x.toLocaleString() );
-                        //]]>
-                    </script>
-                    {{ end }}
+                    Last modified {{ if .Params.last_mod }}{{ .Params.last_mod }}{{ else }}July 22, 2016{{ end }}
                 </div>
                 <div class="col-sm-4 pull-right text-right">
                     <script type="text/javascript">
