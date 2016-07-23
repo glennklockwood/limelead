@@ -1,5 +1,5 @@
         
-        {{ $.Scratch.Set "linkurl" $.Site.BaseUrl }}
+        {{ $.Scratch.Set "linkurl" $.Site.BaseURL }}
         <div class="content-box page-header">
             <h1>{{ .Title }}</h1>
             <hr>
@@ -17,7 +17,7 @@
                             </li>
                         {{ end }}
                     {{ else }}
-                        <li>{{ .Url }}</li>
+                        <li>{{ .URL }}</li>
                     {{ end }}
                     {{ if isset .Params "shorttitle" }}
                     <li>{{ .Params.shorttitle }}</li>
