@@ -475,3 +475,8 @@ ul.cv-vertical-list {
 .breadcrumb li {
     font-size: 16px;
 }
+
+.gist .blob-wrapper.data {
+   max-height: 300px;
+   overflow: auto;
+}
