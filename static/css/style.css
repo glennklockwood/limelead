@@ -21,10 +21,6 @@ body {
     max-width: 800px;
 }
 
-.content-box img {
-    max-width: 400px;
-}
-
 .content-box hr {
     border-color: #777;
     border-style: solid none;
@@ -40,9 +36,14 @@ body {
 }
 
 .content-box img {
+    max-width: 400px;
     display: block;
     margin-left: auto;
     margin-right: auto;
+}
+
+.width-100 img {
+    max-width: 100%;
 }
 
 /* bootstrap tables */
