@@ -92,6 +92,43 @@ them.
 
 ### 1. Identifying the different transistor modes
 
+Transistors can operate in one of three modes as discussed above:
+
+Mode       | Criteria | Behavior
+-----------|----------|---------
+Saturation | V<sub>base</sub> &gt; V<sub>collector</sub><br>V<sub>base</sub> &gt; V<sub>emitter</sub> | Behaves like closed switch
+Active     | V<sub>collector</sub> &gt; V<sub>base</sub> &gt; V<sub>emitter</sub> | V<sub>emitter</sub> proportional to V<sub>base</sub>
+Cutoff     | V<sub>base</sub> &lt; V<sub>collector</sub><br>V<sub>base</sub> &lt; V<sub>emitter</sub> | Behaves like open switch
+
+On our plot of measured data, these modes are laid out as shown:
+
+<div class="shortcode">
+{{< figure src="2n2222-voltage-plot-modes.png" link="2n2222-voltage-plot-modes.png" alt="Vbase, Vcollector, and Vemitter in different transistor modes"  class="width-100" >}}
+</div>
+
+And indeed, we can see that
+
+- in cutoff mode, the collector remains at a constant, high voltage while the
+  emitter remains at a constant low voltage
+- in saturation mode, the collector is at the _same_ voltage as the emitter
+  and acts like a short circuit
+- in active mode, the collector-emitter voltage difference decreases as the
+  base voltage increases
+
+### 2. Identifying the threshold voltage
+
+One _practical_ aspect of how transistors work is the voltage range where it
+_should_ be in active mode, but the transistor is still behaving as if it is in
+cutoff mode--that is, V<sub>base</sub> &gt; V<sub>emitter</sub> but the
+transistor is still actually not passing any current.  In our measured data,
+this is happening between V<sub>base</sub> values of 0.6 V and 1.2 V.
+
+I don't know that this region has a formal name, but it turns out that when the
+difference between V<sub>base</sub> and V<sub>emitter</sub> is below 0.6 V, the
+transistor behaves as if it was still in cutoff mode.  This V<sub>BE</sub> &lt;
+0.6 V criteria is an intrinsic property of the transistor; even if
+V<sub>collector</sub> is 5 V (or higher), this threshold of 0.6 V remains
+constant.
 
 [mk152 blog]: https://glennklockwood.blogspot.com/2016/10/learning-electronics-with-roulette.html
 [sparkfun transistor page]: https://learn.sparkfun.com/tutorials/transistors#operation-modes
