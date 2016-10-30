@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 #
 #  Script for cleaning up the mess that Hugo makes and deploying it
 #
