@@ -10,6 +10,7 @@ with [Raspberry Pi][].
 
 - [Using the MAX7219CNG LED display driver](max7219.html)
 - [**Blog**: Learning electronics with Velleman MK152 and Raspberry Pi](https://glennklockwood.blogspot.com/2016/10/learning-electronics-with-roulette.html)
-- [Experimenting with transistors and Raspberry Pi](transistors.html)
+- [Understanding bipolar junction transistors](bipolar-junction-transistors.html)
+- [Experimenting with digipots and ADCs](digipots.html)
 
 [Raspberry Pi]: http://www.raspberrypi.org/
