@@ -194,7 +194,7 @@ To apply the experimentation technique that we used to characterize NPN
 transistors on PNP transistors, there there are a few changes we should make to
 our test circuit:
 
-1. We have to replace the NPN 2N2222 with a PNP 2N2907, and _reverse the
+1. We have to replace the NPN 2N2222 with a PNP 2N2907 and _reverse the
    polarity_ so that the emitter is at a higher voltage than the collector.
 2. `R1` should be connected _after_ `R2` now.  In our NPN test circuit, `R1`'s
    job was to pull up the voltage on the low side of the transistor so that we
