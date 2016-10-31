@@ -4,6 +4,14 @@
 #
 REPO_HOME="$(git rev-parse --show-toplevel)"
 
+### The sed that ships with macOS doesn't work well
+if which gsed >/dev/null; then
+    SED=gsed
+    echo "Using gsed instead of sed"
+else
+    SED=sed
+fi
+
 ###
 ### The master recipe for building this website
 ###
@@ -103,7 +111,7 @@ function fix_update_time {
         local html_file="${REPO_HOME}/public/index.html"
         local last_update="$(git log | grep -m1 '^Date:')"
     else
-        local html_file="$(sed -e 's#'"${REPO_HOME}"'/content/#'"${REPO_HOME}"'/public/#' -e 's#\.md$#.html#' <<< "$md_file")"
+        local html_file="$($SED -e 's#'"${REPO_HOME}"'/content/#'"${REPO_HOME}"'/public/#' -e 's#\.md$#.html#' <<< "$md_file")"
         local last_update="$(git log "$md_file" | grep -m1 '^Date:')"
     fi
     if [ ! -f "$html_file" ]; then
@@ -118,7 +126,7 @@ function fix_update_time {
     fi
 #   local new_update=$(awk '{ printf( "%s %s, %s at %s\n", "'$month'", $4, $6, $5 )}' <<< "$last_update")
     local new_update=$(awk '{ printf( "%s/%s/%s at %s\n", "'$month'", $4, $6, $5 )}' <<< "$last_update")
-    sed -i 's#^ *Last modified.*$#Last modified '"$new_update"'#' $html_file
+    $SED -i 's#^ *Last modified.*$#Last modified '"$new_update"'#' $html_file
     local ecode=$?
     if [ $ecode -eq 0 ]; then
         echo "Updated last modified time of $html_file to $new_update"
