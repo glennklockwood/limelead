@@ -46,7 +46,7 @@ But just having these relationships and a few equations weren't enough to help
 me understand how I could use these transistors in actual circuits.  So for the
 sake of developing my own understanding of transistors (specifically, bipolar
 junction transistors, or BJTs), I set up some tests to characterize the behavior
-of a [2N222 NPN transistor][].
+of a [2N2222 NPN transistor][].
 
 ## Building a test circuit
 
@@ -96,7 +96,7 @@ potentiometer to set V<sub>base</sub> to values ranging from 0 to 3.3 V in 0.1 V
 and measuring the other voltages gives us the following:
 
 <div class="shortcode">
-{{< figure src="2n2222-voltage-plot.png" link="2n2222-voltage-plot.png" alt="Voltage at the collector, base, and emitter as base is changed"  class="width-100" >}}
+{{< figure src="2n2222-voltage-plot.png" link="2n2222-voltage-plot.png" alt="Voltage at the collector, base, and emitter as base is changed" >}}
 </div>
 
 There is a lot of interesting data in this diagram, so let's look at a few
@@ -104,7 +104,7 @@ things it tells us about NPN transistors.
 
 ### 1. Identifying the different transistor modes
 
-As discussed above, transistors can operate in one of three modes:
+As discussed above, NPN transistors can operate in one of three modes:
 
 Mode       | Criteria | Behavior
 -----------|----------|---------
@@ -115,7 +115,7 @@ Cutoff     | V<sub>base</sub> &lt; V<sub>collector</sub><br>V<sub>base</sub> &lt
 On our plot of measured data, these modes are laid out as shown:
 
 <div class="shortcode">
-{{< figure src="2n2222-voltage-plot-modes.png" link="2n2222-voltage-plot-modes.png" alt="Vbase, Vcollector, and Vemitter in different transistor modes"  class="width-100" >}}
+{{< figure src="2n2222-voltage-plot-modes.png" link="2n2222-voltage-plot-modes.png" alt="Vbase, Vcollector, and Vemitter in different transistor modes" class="width-100" >}}
 </div>
 
 And indeed, we can see that
@@ -146,7 +146,7 @@ transistor is still actually not passing any current.  In our measured data,
 this is happening between V<sub>base</sub> values of 0.6 V and 1.2 V:
 
 <div class="shortcode">
-{{< figure src="2n2222-voltage-plot-threshold.png" link="2n2222-voltage-plot-threshold.png" alt="Treshold voltage in the transistor active mode region"  class="width-100" >}}
+{{< figure src="2n2222-voltage-plot-threshold.png" link="2n2222-voltage-plot-threshold.png" alt="Treshold voltage in the transistor active mode region" >}}
 </div>
 
 This minimum voltage to get any conductivity is called the _cut-in voltage_.
@@ -165,14 +165,85 @@ in a 3.3 V circuit might not always work as desired--you've only got 0.7 V to
 play with ahead of the collector after the 2.0 V drop from the LED and this
 0.6 V cut-in voltage.
 
+## Characterizing PNP transistors
+
+PNP transistors can operate in one of three modes:
+
+Mode       | Criteria | Behavior
+-----------|----------|---------
+Saturation | V<sub>base</sub> &lt; V<sub>collector</sub><br>V<sub>base</sub> &lt; V<sub>emitter</sub> | Behaves like closed switch
+Active     | V<sub>emitter</sub> &gt; V<sub>base</sub> &gt; V<sub>collector</sub> | V<sub>emitter</sub> proportional to V<sub>base</sub>
+Cutoff     | V<sub>base</sub> &gt; V<sub>collector</sub><br>V<sub>base</sub> &gt; V<sub>emitter</sub> | Behaves like open switch
+
+which, when compared to the table for NPN transistors, represents almost the
+entire opposite of NPN modes.  And if we plug a PNP resistor (like a 2N2907)
+into our test circuit and run the experiment, we get very strange results:
+
+<div class="shortcode">
+{{< figure src="2n2907-voltage-plot-naive.png" link="2n2907-voltage-plot-naive.png" alt="Voltage at the collector, base, and emitter as base is changed on a PNP transistor" >}}
+</div>
+
+According to the above table, just about the entire range we tested winds up
+being in a fourth mode which is called **reverse-active mode**, where
+V<sub>emitter</sub> &lt; V<sub>base</sub> &lt; V<sub>collector</sub>.  This
+happens because the _current flows from the emitter to the collector_ in PNP
+transistors.
+
+So, there are a few changes we should make to our test circuit to see all three
+transistor modes for this 2N2907:
+
+1. We have to replace the NPN 2N2222 with a PNP 2N2907, and _reverse the
+   polarity_ so that the emitter is at a higher voltage than the collector.
+2. `R1` should be connected _after_ `R2` now.  In our NPN test circuit, `R1`'s
+   job was to pull up the voltage on the low side of the transistor so that we
+   could observe cutoff mode where V<sub>base</sub> was lower than
+   V<sub>emitter</sub>.  In this PNP test circuit, cutoff mode will be observed
+   when V<sub>base</sub> is higher than V<sub>emitter</sub>, so moving `R1` will
+   pull down V<sub>emitter</sub> from our +3.3 V source.
+3. `R2` should be replaced with a lower resistance so that we can observe
+   saturation mode.  In the NPN test circuit, `R2`'s job was to pull
+   V<sub>collector</sub> down below V<sub>base</sub>, where V<sub>base</sub>
+   was governed (in part) by `R3`.  Saturation mode in this PNP case requires
+   that V<sub>emitter</sub> be _higher_ than V<sub>base</sub> (again, governed
+   in part by `R3`), so `R2` should not be larger than `R3`.
+
+Applying these three changes results in a circuit that looks like this:
+
+<div class="shortcode">
+{{< figure src="2n2907-experiment-circuit-taps.png" link="2n2907-experiment-circuit-taps.png" alt="Transistor and potentiometer test circuit diagram for PNP transistor" >}}
+</div>
+
+Note that because the emitter and collector are physically reversed, we must
+take care not to forget which transistor lead we are measuring with our
+multimeter!
+
+This PNP transistor test circuit demonstrates the following relationships
+between V<sub>collector</sub>, V<sub>base</sub>, and V<sub>emitter</sub>:
+
+<div class="shortcode">
+{{< figure src="2n2907-voltage-plot.png" link="2n2907-voltage-plot.png" alt="Voltage at the collector, base, and emitter as base is changed on a PNP transistor" >}}
+</div>
+
+At a glance, this may look quite different from the NPN transistor voltage plot
+from the previous section.  However, if you look at it upside down, you may be
+able to see how similar PNP and NPN transistors are.  All of the same modes
+are present, as is the cut-in voltage:
+
+<div class="shortcode">
+{{< figure src="2n2907-voltage-plot-modes.png" link="2n2907-voltage-plot-modes.png" alt="Voltage at the collector, base, and emitter as base is changed on a PNP transistor" class="width-100" >}}
+</div>
+
+The only difference, as any textbook will tell you, is that PNP transistors
+are "on" when the base voltage is low.
+
 ## Next steps
 
-This experiment was elucidating but very tedious to carry out with a mechanical
-potentiometer and a handheld multimeter.  To perform this sort of
-characterization on more elaborate circuits such as logic gates, we really need
-a more efficient way of varying voltage and taking measurements.  To this end,
-I've written on a page on [how to use a digital potentiometer (digipot) and an
-analog-digital converter (ADC) along with Raspberry Pi to automate these
+These experiments are elucidating, but they are also very tedious to carry out
+with a mechanical potentiometer and a handheld multimeter.  To perform this
+sort of characterization on more elaborate circuits such as logic gates, we
+need a more efficient way of varying voltage and taking measurements.  To this
+end, I've written on a page on [how to use a digital potentiometer (digipot)
+and an analog-digital converter (ADC) along with Raspberry Pi to automate these
 experiments][my digipot page].
 
 [mk152 blog]: https://glennklockwood.blogspot.com/2016/10/learning-electronics-with-roulette.html
