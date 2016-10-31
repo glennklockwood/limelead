@@ -14,6 +14,7 @@ parentdirs: [ "electronics" ]
 - [Experimenting with the test circuit](#experimenting-with-the-test-circuit)
     - [Identifying the different transistor modes](#1-identifying-the-different-transistor-modes)
     - [Identifying the threshold voltage](#2-identifying-the-threshold-voltage)
+- [Characterizing PNP transistors](#characterizing-pnp-transistors)
 - [Next steps](#next-steps)
 
 ## Introduction
@@ -177,20 +178,21 @@ Cutoff     | V<sub>base</sub> &gt; V<sub>collector</sub><br>V<sub>base</sub> &gt
 
 which, when compared to the table for NPN transistors, represents almost the
 entire opposite of NPN modes.  And if we plug a PNP resistor (like a 2N2907)
-into our test circuit and run the experiment, we get very strange results:
+into our test circuit as-is and run the experiment, we get very strange results:
 
 <div class="shortcode">
 {{< figure src="2n2907-voltage-plot-naive.png" link="2n2907-voltage-plot-naive.png" alt="Voltage at the collector, base, and emitter as base is changed on a PNP transistor" >}}
 </div>
 
-According to the above table, just about the entire range we tested winds up
-being in a fourth mode which is called **reverse-active mode**, where
-V<sub>emitter</sub> &lt; V<sub>base</sub> &lt; V<sub>collector</sub>.  This
-happens because the _current flows from the emitter to the collector_ in PNP
-transistors.
+According to the above table, just about all values of V<sub>base</sub> we
+tested is occurring in a fourth mode which is called **reverse-active mode**,
+where V<sub>emitter</sub> &lt; V<sub>base</sub> &lt; V<sub>collector</sub>.
+This happens because the _current flows from the emitter to the collector_ in PNP
+transistors; we've just run our PNP transistor backwards!
 
-So, there are a few changes we should make to our test circuit to see all three
-transistor modes for this 2N2907:
+To apply the experimentation technique that we used to characterize NPN
+transistors on PNP transistors, there there are a few changes we should make to
+our test circuit:
 
 1. We have to replace the NPN 2N2222 with a PNP 2N2907, and _reverse the
    polarity_ so that the emitter is at a higher voltage than the collector.
