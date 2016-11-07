@@ -12,5 +12,6 @@ with [Raspberry Pi][].
 - [**Blog**: Learning electronics with Velleman MK152 and Raspberry Pi](https://glennklockwood.blogspot.com/2016/10/learning-electronics-with-roulette.html)
 - [Understanding bipolar junction transistors](bipolar-junction-transistors.html)
 - [Experimenting with digipots and ADCs](digipots.html)
+- [Programming the HD44780 LCD display driver with Raspberry Pi](hd44780-lcd-display.html)
 
 [Raspberry Pi]: http://www.raspberrypi.org/
