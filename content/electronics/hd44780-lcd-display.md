@@ -12,7 +12,6 @@ parentdirs: [ "electronics" ]
 - [Introduction](#introduction)
 - [Basic physical interface](#basic-physical-interface)
 - [Basic command structure](#basic-command-structure)
-- [Available commands](#available-commands)
 - [Initialization](#initialization)
     - [The magical reset sequence](#the-magical-reset-sequence)
     - [Configuring the "function set" options](#configuring-the-function-set-options)
@@ -21,6 +20,7 @@ parentdirs: [ "electronics" ]
     - [Configuring the "entry mode set" options](#configuring-the-entry-mode-set-options)
 - [Writing a message](#writing-a-message)
 - [Setting the cursor position](#setting-the-cursor-position)
+- [Other commands](#other-commands)
 - [Further experimenting](#further-experimenting)
 
 
@@ -50,8 +50,9 @@ notes I took while getting there.
 
 ## Basic physical interface
 
-The HD44780 display that I bought had sixteen interface pins; five provided
-power, ground, and contrast control, and eleven were used to program the device:
+The HD44780 display that I bought and used has sixteen interface pins; five
+provide power, ground, and contrast control, and eleven are used to program
+the device:
 
 <div class="shortcode">
 {{< figure src="hd44780-wiring.jpg" link="hd44780-wiring.jpg" alt="HD44780 wiring example" >}}
@@ -81,14 +82,21 @@ The HD44780 provides a parallel I/O interface where pins `D0` - `D7`, `RW`, and
 tell the controller to read the state of all pins and act on them.  The most
 important pins are
 
-- `RS`, which indicates if you are sending a command (0) or updating the display (1)
-- `RW`, which indicates if you want to use `D0`-`D7` to write (0) or read (1).  Most guides just keep this pin grounded (always write, never read) but you can use the memory on the display controller to write and read arbitrary data if you want.
+- `RS`, which indicates if you are sending a command (0) or updating the display
+  (1)
+- `RW`, which indicates if you want to use `D0`-`D7` to write (0) or read (1).
+  Most guides just keep this pin grounded (always write, never read) but you
+  can use the memory on the display controller to write and read arbitrary
+  data if you want.
 - `D0`-`D7` are used to encode the command you wish to issue to the controller
-- `E` (or `EN`) is used to tell the controller to either read the state of the aforementioned pins and act (when `RS` is low), or populate them with the state saved on the controller (when `RS` is high)
+- `E` (or `EN`) is used to tell the controller to either read the state of the
+  aforementioned pins and act (when `RS` is low), or populate them with the
+  state saved on the controller (when `RS` is high)
 
 The controller takes time to actually process commands whenever `EN` is pulsed,
-so pulsing `EN` too quickly can cause major problems.  It follows that commands
-should not be issued less than a millisecond apart.
+so **pulsing `EN` too quickly can cause major problems**.  It follows that
+commands should not be issued less than a millisecond apart--or longer, if
+you are using a high-capacitance bypass capacitor.
 
 The HD44780 controller supports both an 8-bit interface, where all eight `D`
 pins are used simultaneously to issue an 8-bit command, as well as a 4-bit
@@ -98,50 +106,89 @@ from the four least significant bits.
 
 When operating in 4-bit mode, the process to issue a command is
 
-1. Set `RS` to high ("char mode") or low (not char mode)
-2. set `D4`, `D5`, `D6`, `D7` to the 4th, 3rd, 2nd, and 1st most significant
+1. Set `RS` to high (which means we want to display the data we are sending over
+   the `D` pins) or low (we are sending a command to the chip)
+2. Set `D4`, `D5`, `D6`, `D7` to the 4th, 3rd, 2nd, and 1st most significant
    bits
-3. Pulse the `EN` pin by setting it
-   1. Low
-   2. Waiting a microsecond (> 450 ns); may need to be longer depending on your
-      bypass capacitor's capacitance
-   3. High
-   4. Waiting a microsecond (> 450 ns)
-   5. Low
-   6. Wait 37 microsecond; commands can take 37 &mu;s to execute, per Table 6
-      in [the datasheet][]
+3. Pulse the `EN` pin by setting it low, high, then low
 4. Set the `D4`, `D5`, `D6`, and `D7` to the least significant bit, 2nd least,
    3rd, and 4th
 5. Pulse the `EN` pin
 
+Programmatically, a function that issues a command might look like
+
+<div class="shortcode">
+{{< highlight python >}}
+def write8_4bitmode(command, rs_value):
+    GPIO.output(PIN_RS, rs_value)
+
+    time.sleep(1e-3)
+
+    GPIO.output(PIN_D[4], GPIO.HIGH if ((command >> 4) & 1) > 0 else GPIO.LOW)
+    GPIO.output(PIN_D[5], GPIO.HIGH if ((command >> 5) & 1) > 0 else GPIO.LOW)
+    GPIO.output(PIN_D[6], GPIO.HIGH if ((command >> 6) & 1) > 0 else GPIO.LOW)
+    GPIO.output(PIN_D[7], GPIO.HIGH if ((command >> 7) & 1) > 0 else GPIO.LOW)
+    clock_pulse()
+
+    GPIO.output(PIN_D[4], GPIO.HIGH if ((command >> 0) & 1) > 0 else GPIO.LOW)
+    GPIO.output(PIN_D[5], GPIO.HIGH if ((command >> 1) & 1) > 0 else GPIO.LOW)
+    GPIO.output(PIN_D[6], GPIO.HIGH if ((command >> 2) & 1) > 0 else GPIO.LOW)
+    GPIO.output(PIN_D[7], GPIO.HIGH if ((command >> 3) & 1) > 0 else GPIO.LOW)
+    clock_pulse()
+{{< /highlight >}}
+</div>
+
+Pulsing the clock (`EN`) is not entirely straightforward, because the `EN` pin
+is triggered by a rising edge, but cannot be pulsed too quickly since the
+command it triggers takes dozens of microseconds to complete.  The process
+looks like
+
+1. Pull `EN` low
+2. Waiting a microsecond (> 450 ns); may need to be longer depending on your
+   bypass capacitor's capacitance
+3. Pull `EN` high
+4. Waiting a microsecond (> 450 ns)
+5. Pull `EN` low
+6. Wait 37 microsecond; commands can take 37 &mu;s to execute, per Table 6
+   in [the datasheet][]
+
+The `clock_pulse()` function may look something like
+
+<div class="shortcode">
+{{< highlight python >}}
+def pulse_clock(delay=1e-3):
+    time.sleep(delay)
+    GPIO.output(PIN_EN, GPIO.HIGH)
+    time.sleep(delay)
+    GPIO.output(PIN_EN, GPIO.LOW)
+    time.sleep(delay)
+{{< /highlight >}}
+</div>
+
+where the `delay` is critical to ensure that successive commands are not lost
+due to excessively high frequency.
+
 When using 8-bit mode and pins `D0`-`D7` are all wired, the command sequence
-is a little simpler:
+is a little simpler.  The corresponding code would look like
 
-1. Set `RS` to high ("char mode") or low (not char mode)
-2. Set `D0` - `D7`.  `D0` is the least significant bit, and `D7` is the most
-   significant
-3. Pulse the `EN` pin as above
+<div class="shortcode">
+{{< highlight python >}}
+def write8_8bitmode(command, rs_value):
+    GPIO.output(PIN_RS, rs_value)
 
-## Available Commands
+    time.sleep(1e-3)
 
-Table 6 in [the datasheet][] describes the available commands.  The command
-being sent is a function of the highest-order bit:
-
-- `00000001` = clear display
-- `0000001-` = reset the cursor position to 0
-- `000001a1` = set cursor move direction (a)
-- `00001abc` = display on/off (a), cursor on/off (b), position character (c???)
-- `0001ab--` = move cursor (a) and shift display (b)(?)
-- `001abc--` = set interface length (a), number of lines (b), font (c)
-    - a = 1 for 8-bit, 0 for 4-bit
-    - b = 1 for 2 lines, 0 for 1 line
-    - c = 1 for 5x10 dots, 0 for 5x8 dots
-- `01000000` = set CGRAM address (6 bits)
-- `10000000` = set display position (DDRAM address; 7 bits)
-
-Some of these commands are required to initialize the chip and get it to a point
-where it will display the characters you want it to.  Such commands are detailed
-in the following section.
+    GPIO.output(PIN_D[0], GPIO.HIGH if ((command >> 0) & 1) > 0 else GPIO.LOW)
+    GPIO.output(PIN_D[1], GPIO.HIGH if ((command >> 1) & 1) > 0 else GPIO.LOW)
+    GPIO.output(PIN_D[2], GPIO.HIGH if ((command >> 2) & 1) > 0 else GPIO.LOW)
+    GPIO.output(PIN_D[3], GPIO.HIGH if ((command >> 3) & 1) > 0 else GPIO.LOW)
+    GPIO.output(PIN_D[4], GPIO.HIGH if ((command >> 4) & 1) > 0 else GPIO.LOW)
+    GPIO.output(PIN_D[5], GPIO.HIGH if ((command >> 5) & 1) > 0 else GPIO.LOW)
+    GPIO.output(PIN_D[6], GPIO.HIGH if ((command >> 6) & 1) > 0 else GPIO.LOW)
+    GPIO.output(PIN_D[7], GPIO.HIGH if ((command >> 7) & 1) > 0 else GPIO.LOW)
+    pulse_clock()
+{{< /highlight >}}
+</div>
 
 ## Initialization
 
@@ -166,12 +213,41 @@ although they do explicitly define behavior that may otherwise cause your chip
 and display to behave unpredictably.  In addition, steps #3 to #5 can be
 executed in any order.
 
+An example of the code that would initialize the chip in 4-bit mode would look
+like this:
+
+<div class="shortcode">
+{{< highlight python >}}
+def init_4bitmode():
+    ### initialization magic sequence
+    write4(int("0011", 2))
+    write4(int("0011", 2))
+    write4(int("0011", 2))
+    write4(int("0010", 2))
+
+    ### send the "function set" command to configure display dimensions
+    write8_4bitmode(int("00101100",2), rs_value=GPIO.LOW)
+
+    ### send the "display on/off control" command (1000) to power on the
+    ### display (0100), enable cursor (0010), and enable cursor blink (0001)
+    write8_4bitmode(int("00001111",2), rs_value=GPIO.LOW)
+
+    ### clear the display
+    write8_4bitmode(int("00000001",2), rs_value=GPIO.LOW)
+
+    ### send the "entry mode set" command to set left-to-right printing (110)
+    write8_4bitmode(int("00000110",2), rs_value=GPIO.LOW)
+{{< /highlight >}}
+</div>
+
+The following sections provide more detail about the steps in this process.
+
 ### The magical reset sequence
 
 To reset or initialize the chip:
 
-- Enter `00110000` _three_ times in a row to reset into 8-bit mode
-- Enter `00110000` _three_ times in a row followed by `0010000` _once_ to reset
+- Enter `0011----` _three_ times in a row to reset into 8-bit mode
+- Enter `0011----` _three_ times in a row followed by `0010----` _once_ to reset
   into 4-bit mode
 
 Specifically, this involves
@@ -184,10 +260,76 @@ Specifically, this involves
    is triggered on the rising edge), then lowering it again
 4. Repeating #2 and #3 the requisite number of additional times
 
-Pins `D0` through `D3` can be left floating for this sequence, and if using the
-four-bit interface, `D0` through `D3` can be left floating forever.  However if
-the 8-bit interface is in use, `D0` to `D3` must be used for subsequent
-commands.
+Note that this sequence simply leaves the low-order bits floating:
+
+<div class="shortcode">
+{{< highlight python >}}
+def write4(value):
+    """
+    special function to send only the four highest-order bits; low-order bits
+    remain floating
+    """
+    GPIO.output(PIN_RS, GPIO.LOW)
+
+    time.sleep(1e-3)
+
+    GPIO.output(PIN_D[4], GPIO.HIGH if ((value >> 0) & 1) > 0 else GPIO.LOW)
+    GPIO.output(PIN_D[5], GPIO.HIGH if ((value >> 1) & 1) > 0 else GPIO.LOW)
+    GPIO.output(PIN_D[6], GPIO.HIGH if ((value >> 2) & 1) > 0 else GPIO.LOW)
+    GPIO.output(PIN_D[7], GPIO.HIGH if ((value >> 3) & 1) > 0 else GPIO.LOW)
+    pulse_clock()
+{{< /highlight >}}
+</div>
+
+This magic reset sequence is the only time this 4-bit write is ever used.  And
+in fact, it is not strictly necessary to use a special 4-bit write function;
+the magic reset sequence to initialize 4-bit mode is actually designed in a
+way that allows you to issue two 8-bit commands in 4-bit mode to emulate the
+same sequence.  That is,
+
+<div class="shortcode">
+{{< highlight python >}}
+def init_4bitmode():
+    """
+    initialize chip into 4-bit interface mode using a special 4-bit write
+    function
+    """
+    write4(int("0011", 2))
+    write4(int("0011", 2))
+    write4(int("0011", 2))
+    write4(int("0010", 2))
+{{< /highlight >}}
+</div>
+
+is functionally identical to
+
+<div class="shortcode">
+{{< highlight python >}}
+def init_4bitmode():
+    """
+    initialize chip into 4-bit interface mode using 8-bit sequences written
+    in 4-bit mode
+    """
+    write8_4bitmode(int("00110011", 2))
+    write8_4bitmode(int("00110010", 2))
+{{< /highlight >}}
+</div>
+
+When initializing into 8-bit mode, you can simply issue regular 8-bit writes
+using `D0` through `D7`:
+
+<div class="shortcode">
+{{< highlight python >}}
+def init_8bitmode():
+    """initialize chip into 8-bit interface mode"""
+    write8_8bitmode(int("00110000", 2))
+    write8_8bitmode(int("00110000", 2))
+    write8_8bitmode(int("00110000", 2))
+{{< /highlight >}}
+</div>
+
+In this case, the low-order bits (`D0` - `D3`) are "don't care" bits and can
+have any value.
 
 ### Configuring the "function set" options
 
@@ -205,6 +347,15 @@ where
 - `N` = 1 for a two-line display; = 0 for a one-line display
 - `F` = 1 to use the 5x10 dot character set; = 0 for the 5x8 dot character set
 
+A reasonable command may be
+
+<div class="shortcode">
+{{< highlight python >}}
+    ### send the "function set" command to configure display dimensions
+    write8_4bitmode(int("00101100",2), rs_value=GPIO.LOW)
+{{< /highlight >}}
+</div>
+
 ### Configuring "display on/off control" options
 
 The "display on/off control" command has the following form:
@@ -221,6 +372,16 @@ where
   for production use.
 - `B` = 1 makes the cursor blink; = 0 makes the cursor not blink
 
+A reasonable command may be
+
+<div class="shortcode">
+{{< highlight python >}}
+    ### send the "display on/off control" command (1000) to power on the
+    ### display (100), enable cursor (010), and enable cursor blink (001)
+    write8_4bitmode(int("00001111",2), rs_value=GPIO.LOW)
+{{< /highlight >}}
+</div>
+
 Although not strictly required to get the chip to a usable state, the chip does
 default to a state where the display is off (`00001000`).  Thus, the display
 won't actually show anything until you explicitly issue this command and set the
@@ -236,7 +397,14 @@ all others set to zero:
 0     | 0    | 0    | 0    | 0    | 0    | 0    | 1   
 
 This also resets the cursor position to the first register so that subsequent
-characters are printed to the freshly cleared screen.
+characters are printed to the freshly cleared screen.  It would appear as
+
+<div class="shortcode">
+{{< highlight python >}}
+    ### clear the display
+    write8_4bitmode(int("00000001",2), rs_value=GPIO.LOW)
+{{< /highlight >}}
+</div>
 
 This is not strictly necessary to get the chip to a usable state, but it does
 make life easier.
@@ -256,14 +424,33 @@ where
 - `S` = 1 shifts the display along with the above cursor movement; = 0 does
   not shift the display
 
-I've found that issuing this command is not strictly required to initialize
-the chip though.
+A reasonable command would be
+
+<div class="shortcode">
+{{< highlight python >}}
+    ### send the "entry mode set" command to set left-to-right printing (110)
+    write8_4bitmode(int("00000110",2), rs_value=GPIO.LOW)
+{{< /highlight >}}
+</div>
+
+Issuing this command is not strictly required to initialize the chip though.
 
 ## Writing a message
 
 Write one character at a time by pulling `RS` high and then sending the 8-bit
 ASCII representation of the character via `D0` through `D7`.  Pulsing `EN` then
-displays this character on the LCD display and moves the cursor (position where
+displays this character on the LCD display:
+
+<div class="shortcode">
+{{< highlight python >}}
+def printmsg(msg):
+    """write the message one character at a time"""
+    for c in msg:
+        write8_4bitmode(ord(c), rs_value=GPIO.HIGH)
+{{< /highlight >}}
+</div>
+
+Printing a character on the display also moves the cursor (position where
 the next character will appear) over.
 
 It is worth pointing out that the HD44780 chip is capable of driving an LCD
@@ -293,6 +480,24 @@ where `ADD` bits encode the position (1-40 for the first row, 41-80 for the
 second).  Enabling the cursor makes it a lot easier to experiment with this
 command, and recall that on a 2x16 LCD display, characters 17-40 are not
 visible.
+
+## Other commands
+
+Table 6 in [the datasheet][] describes all of the available commands.  The
+command being sent is a function of the highest-order bit:
+
+- `00000001` = clear display
+- `0000001-` = reset the cursor position to 0
+- `000001a1` = set cursor move direction (a)
+- `00001abc` = display on/off (a), cursor on/off (b), cursor blinking on/off (c)
+- `0001ab--` = when new characters are displayed, move cursor (a=0) or shift
+   the whole screen (a=1), and move/shift to the right (b=1) or left (b=0)
+- `001abc--` = set interface length (a), number of lines (b), font (c)
+    - a = 1 for 8-bit, 0 for 4-bit
+    - b = 1 for 2 lines, 0 for 1 line
+    - c = 1 for 5x10 dots, 0 for 5x8 dots
+- `01000000` = set CGRAM address (6 bits)
+- `10000000` = set display position (DDRAM address; 7 bits)
 
 ## Further experimenting
 
