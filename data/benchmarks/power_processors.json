@@ -87,7 +87,7 @@
     {
         "model":        "IBM Power 550 Express",
         "processor":    "POWER6",
-        "clock":        "4&#15; 4204",
+        "clock":        "4&#215; 4204",
         "cache":        "64+64 KB <br>8 MB <br> 32 MB",
         "mem":          "15479 MB",
         "mem_type":     "DDR2-667",
