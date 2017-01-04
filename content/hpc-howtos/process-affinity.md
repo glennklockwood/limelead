@@ -17,7 +17,8 @@ parentDirs: [ hpc-howtos ]
     * [3.1. The Linux-Portable Way (taskset)](#3-1-the-linux-portable-way-taskset)
     * [3.2. The Other Linux-Portable Way (numactl)](#3-2-the-other-linux-portable-way-numactl)
     * [3.3. Using OpenMP Runtime Extensions](#3-3-using-openmp-runtime-extensions)
-    * [3.4. getfreesocket](#3-4-getfreesocket)
+    * [3.4. Using OpenMP 4.0 Runtime Controls](#3-4-using-openmp-4-0-runtime-controls)
+    * [3.5. getfreesocket](#3-5-getfreesocket)
 
 ## 1. Introduction
 
@@ -129,6 +130,14 @@ when done hundreds or thousands of times a minute.
 
 ## 3. Defining affinity
 
+There are several ways to specify how you want your threads to be bound to
+cores.
+
+- **If your application uses pthreads directly**, you will have to use the
+  "Linux-portable" methods (taskset or numactl) described below.
+- **If your application uses OpenMP**, you can use the OpenMP runtime controls which
+  are generally a lot nicer and more powerful.
+
 ### 3.1. The Linux-Portable Way (taskset)
 
 If you want to launch a job (e.g., <code>simulation.x</code>) on a 
@@ -225,15 +234,7 @@ bind to <em>relative</em> cores.  When combined with cpusets (which are enabled
 by default for all jobs on Gordon), the above command will use the 0th, 1st,
 2nd, and 3rd core of the job's given cpuset instead of literally core 0,1,2,3.
 
-### 3.3. Using OpenMP Runtime Extensions
-
-<div class="shortcode">
-{{% alertbox info %}}
-[OpenMP 4.0](http://www.openmp.org/mp-documents/OpenMP4.0.0.pdf) now includes
-standardized controls for binding threads to cores.  I haven't caught up with
-these changes but I will document them here once I do.
-{{% /alertbox %}}
-</div>
+### 3.3. Using Non-Standard OpenMP Runtime Extensions
 
 Multithreaded programs compiled with Intel Compilers can utilize [Intel's 
 Thread Affinity Interface][intel's thread affinity interface] for OpenMP
@@ -269,8 +270,62 @@ above would be:</p>
 
 <pre>export GOMP_CPU_AFFINITY='0,2,4,6'</pre>
 
+### 3.4. Using OpenMP 4.0 Runtime Controls
 
-### 3.4. getfreesocket
+Because `KMP_AFFINITY` and `GOMP_CPU_AFFINITY` turn out to be essential for
+good performance in OpenMP applications, the OpenMP 4.0 standard introduced
+a few environment variables to accomplish the same effect in a portable,
+standardized way:
+
+- `OMP_PROC_BIND` allows you to specify that you want to prevent threads from
+  migrating between cores, and optionally, the binding strategy you wish to use
+- `OMP_PLACES` allows you specify a more explicit binding strategy
+
+Specifically, `OMP_PROC_BIND` can be set to one of the following values:
+
+- `true` - don't prescribe a specific binding strategy, but when a thread is
+  launched on a core, don't ever let it migrate to another core
+- `spread` - Evenly spread threads across all sockets and cores.  This is the
+  same as `KMP_AFFINITY=scatter` above.
+- `close` - Fill up one socket with threads before allocating threads to other
+  sockets.  This is the same as `KMP_AFFINITY=compact`
+
+The `OMP_PLACES` environment variable allows you to specify groups of cores on
+which you'd like your threads to be bound.  This allows you to run an OpenMP
+application on only a subset of the processor cores available.  For example,
+
+- `OMP_PLACES='sockets(1)'` - only allow the application to run on the cores
+  provided by a single CPU socket
+- `OMP_PLACES='cores(4)'` - only allow the application to run on the hardware
+  threads provided by four CPU cores.  If each CPU core has multiple hardware
+  threads (e.g., Intel HyperThreading), the application can still use all of
+  the hyperthreads on all of the cores.
+- `OMP_PLACES='threads(16)'` - only allow the application to run on sixteen
+  hardware threads
+
+You can also use `OMP_PLACES` to achieve the same effect as
+`KMP_AFFINITY=explicit`.  For example,
+
+- `OMP_PLACES='{0},{2},{4},{6}'` will allow OpenMP threads to run on cores 0, 2,
+  4, and 6.
+- `OMP_PLACES='{0,1},{2,3},{4,5},{6,7}'` will allow OpenMP threads to bind to
+  four distinct places, where each place consists of two cores.  OpenMP threads
+  will then be able to migrate between the two cores in each place, but not
+  between places.
+
+There are more options and details than what I've listed, and NERSC has a good
+explanation of how to use [OpenMP 4.0 Thread Affinity
+Controls][nersc's openmp4 page].  However, the easiest way to get a handle on
+exactly what these options do on your nodes is to experiment with them.  Here
+is a very simple OpenMP script that reports on how threads are allocated
+to different cores that is very helpful to this end:
+
+<script src="https://gist.github.com/glennklockwood/79262be4403c341b858deff1f94fa9b8.js"></script>
+
+Try building it and running it with different values of `OMP_PROC_BIND` and 
+`OMP_PLACES`.
+
+### 3.5. getfreesocket
 
 I wrote a [small perl script called <code>getfreesocket</code>][getfreesocket]
 that uses <code>KMP_AFFINITY=explicit</code> (or <var>GOMP_CPU_AFFINITY</var>)
@@ -323,4 +378,5 @@ or <var>GOMP_CPU_AFFINITY</var> may remain necessary.
 <!-- references -->
 [intel's thread affinity interface]: http://software.intel.com/sites/products/documentation/studio/composer/en-us/2011Update/compiler_c/optaps/common/optaps_openmp_thread_affinity.htm
 [intel's processor enueration tool]: http://software.intel.com/en-us/articles/intel-64-architecture-processor-topology-enumeration
+[nersc's openmp4 page]: https://www.nersc.gov/users/software/programming-models/openmp/process-and-thread-affinity/
 [getfreesocket]: https://github.com/glennklockwood/sdsc/blob/master/getfreesocket
