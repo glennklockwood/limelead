@@ -22,9 +22,38 @@
         "mem_type":     "LPDDR2",
         "mem_speed":    "3.2 GB/s",
         "_mem_speed_comment": "400 MHz LPDDR2 (800 MT/sec) at 32-bit bus width; STREAM gives 2.2 GB/sec peak",
+        "wall_secs":    2531,
+        "compiler":     "GNU GFortran 4.9.2",
+        "compile_flags": "-mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8",
+        "_comment" :    "1463 / 1489 / 1569 / 1939 sec with reordering @ 1, 2, 3, and 4 threads"
+    },
+    {
+        "model":        "Raspberry Pi 3",
+        "processor":    "ARM Cortex-A53",
+        "clock":        "2&#215; 1200",
+        "cache":        "32+32 KB",
+        "mem":          "1024 MB",
+        "mem_type":     "LPDDR2",
+        "mem_speed":    "3.2 GB/s",
+        "_mem_speed_comment": "400 MHz LPDDR2 (800 MT/sec) at 32-bit bus width; STREAM gives 2.2 GB/sec peak",
+        "wall_secs":    2427,
+        "compiler":     "GNU GFortran 4.9.2",
+        "compile_flags": "-mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8",
+        "_comment" :    "1463 / 1489 / 1569 / 1939 sec with reordering @ 1, 2, 3, and 4 threads"
+    },
+    {
+        "model":        "Raspberry Pi 3",
+        "processor":    "ARM Cortex-A53",
+        "clock":        "4&#215; 1200",
+        "cache":        "32+32 KB",
+        "mem":          "1024 MB",
+        "mem_type":     "LPDDR2",
+        "mem_speed":    "3.2 GB/s",
+        "_mem_speed_comment": "400 MHz LPDDR2 (800 MT/sec) at 32-bit bus width; STREAM gives 2.2 GB/sec peak",
         "wall_secs":    2508,
         "compiler":     "GNU GFortran 4.9.2",
         "compile_flags": "-mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8",
-        "_comment" :    "1463 / 1489 / 1569 / 1938 sec with reordering @ 1, 2, 3, and 4 threads"
+        "_comment" :    "1463 / 1489 / 1569 / 1939 sec with reordering @ 1, 2, 3, and 4 threads"
     }
+
 ]
