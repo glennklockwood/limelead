@@ -11,13 +11,16 @@ radial cutoff distance was 5.5 Å. All of the data was able to fit into the
 physical RAM of each system, resulting in no swapping. However, the simulation
 code used tabulates the potentials and forces rather than recalculating them
 at each time step, making the performance depend heavily on memory performance
-in addition to floating point arithmetic.
+(latency and bandwidth) and the cache hierarchy in addition to floating point
+arithmetic.
 
 All binaries were compiled with optimizations for the platform on which the
 benchmark was being run, including any special SIMD instruction sets that the
 compiler could generate on its own. There are differences in the optimizations
 performed by the compilers, but I've tried to use each compiler's most
-sensible set of optimization options.
+sensible set of optimization options.  To see the exact options I used for
+each benchmark, in addition to a plethora of other metadata, you can view the
+raw data used to generate this page in [my website's git repository].
 
 ## SPARC Processors
 
@@ -55,3 +58,4 @@ sensible set of optimization options.
 {{< processor-benchmark-table "x86_processors" >}}
 </div>
 
+[my website's git repository]: https://github.com/glennklockwood/limelead/tree/master/data/benchmarks
