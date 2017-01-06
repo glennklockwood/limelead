@@ -98,34 +98,39 @@ function check_clean_index {
 ### Update 'Last updated' times
 ###
 function fix_update_time {
-    declare -A months
-    months=( [Jan]="January"    [Feb]="February"    [Mar]="March"
-             [Apr]="April"      [May]="May"         [Jun]="June"
-             [Jul]="July"       [Aug]="August"      [Sep]="September"
-             [Oct]="October"    [Nov]="November"    [Dec]="December" )
-    months=( [Jan]="1"  [Feb]="2"  [Mar]="3"  [Apr]="4"  [May]="5"  [Jun]="6"
-             [Jul]="7"  [Aug]="8"  [Sep]="9"  [Oct]="10" [Nov]="11" [Dec]="12" )
-
     local md_file="$1"
     if [ "$md_file" == "GLOBAL" ]; then
         local html_file="${REPO_HOME}/public/index.html"
-        local last_update="$(git log | grep -m1 '^Date:')"
+        local last_update="$(git log | awk '/^Date:/ { print $4, $3, $6, $5, $7; exit }')"
+        last_update="$(date -d "$last_update" +%s)"
     else
         local html_file="$($SED -e 's#'"${REPO_HOME}"'/content/#'"${REPO_HOME}"'/public/#' -e 's#\.md$#.html#' <<< "$md_file")"
-        local last_update="$(git log "$md_file" | grep -m1 '^Date:')"
+        local last_update="$(git log "$md_file" | awk '/^Date:/ { print $4, $3, $6, $5, $7; exit }')"
+        last_update="$(date -d "$last_update" +%s)"
     fi
     if [ ! -f "$html_file" ]; then
         echo "Warning: $html_file not found (from $md_file)" >&2
         exit 1
     fi
 
-    local month_abbr="$(awk '{print $3}' <<< $last_update)"
-    local month="${months[$month_abbr]}"
-    if [ -z "$month" ]; then
-        month="$month_abbr"
+    ### for the benchmarks page, we should look at all the jsons that feed into
+    ### it and find the newest one to reflect the correct update time
+    if [[ "$html_file" =~ public/benchmarks/index.html$ ]]; then
+        ### this is really gnarly--the while loop's side effects get abandoned
+        ### due to the fact that they happen in a subshell, so we need to
+        ### communicate out our final value at the end
+        last_update=$(
+            git log ${REPO_HOME}/data/benchmarks | awk '/^Date:/ { print $4, $3, $6, $5, $7 }' | while read date_str; do
+                update_time="$(date -d "$date_str" +%s)"
+                if [ $update_time -gt $last_update ]; then
+                    last_update="$update_time"
+                fi
+                echo "$last_update"
+            done | tail -n1
+        )
     fi
-#   local new_update=$(awk '{ printf( "%s %s, %s at %s\n", "'$month'", $4, $6, $5 )}' <<< "$last_update")
-    local new_update=$(awk '{ printf( "%s/%s/%s at %s\n", "'$month'", $4, $6, $5 )}' <<< "$last_update")
+
+    local new_update=$(date -d "@${last_update}" +"%-m/%-d/%Y at %-I:%M %p %Z")
     $SED -i 's#^ *Last modified.*$#Last modified '"$new_update"'#' $html_file
     local ecode=$?
     if [ $ecode -eq 0 ]; then
