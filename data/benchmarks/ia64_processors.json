@@ -10,5 +10,17 @@
         "wall_secs":    1304,
         "compiler":     "HP F90 3.4",
         "compile_flags": "+r8 -R8 -ip -ipo +DO11.31 +DSitanium2 +Odynopt"
+    },
+    {
+        "model":        "HP rx2600",
+        "processor":    "Itanium 2 900",
+        "clock":        "2&#215; 900",
+        "cache":        "16+16 KB<br>256 KB<br>1.5 MB",
+        "mem":          "4096 MB",
+        "mem_type":     "DDR-266",
+        "mem_speed":    "4.25 GB/s",
+        "wall_secs":    1235,
+        "compiler":     "HP F90 3.4",
+        "compile_flags": "+r8 -R8 -ip -ipo +DO11.31 +DSitanium2 +Odynopt"
     }
 ]
