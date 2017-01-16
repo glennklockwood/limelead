@@ -46,6 +46,12 @@ raw data used to generate this page in [my website's git repository].
 {{< processor-benchmark-table "parisc_processors" >}}
 </div>
 
+## Itanium Processors
+
+<div class="shortcode">
+{{< processor-benchmark-table "ia64_processors" >}}
+</div>
+
 ## ARM Processors
 
 <div class="shortcode">
