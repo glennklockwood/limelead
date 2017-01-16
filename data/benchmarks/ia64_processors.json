@@ -7,9 +7,11 @@
         "mem":          "4096 MB",
         "mem_type":     "DDR-266",
         "mem_speed":    "4.25 GB/s",
-        "wall_secs":    1304,
+        "wall_secs":    1294,
         "compiler":     "HP F90 3.4",
-        "compile_flags": "+r8 -R8 -ip -ipo +DO11.31 +DSitanium2 +Odynopt"
+        "compile_flags": "+r8 -R8 -O4 -ip -ipo +DO11.31 +DSitanium2 +Odynopt +DD64",
+        "hostname":     "pulsar",
+        "_comment":     "1212 sec with memreorder"
     },
     {
         "model":        "HP rx2600",
@@ -19,8 +21,10 @@
         "mem":          "4096 MB",
         "mem_type":     "DDR-266",
         "mem_speed":    "4.25 GB/s",
-        "wall_secs":    1235,
+        "wall_secs":    1094,
         "compiler":     "HP F90 3.4",
-        "compile_flags": "+r8 -R8 -ip -ipo +DO11.31 +DSitanium2 +Odynopt"
+        "compile_flags": "+r8 -R8 -O4 -ip -ipo +DO11.31 +DSitanium2 +Odynopt +DD64",
+        "hostname":     "pulsar",
+        "_comment":     "986 sec with memreorder"
     }
 ]
