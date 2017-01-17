@@ -192,6 +192,17 @@ measurements were taken with a [P3 Kill-a-Watt P4400][killawatt page].
     </tr>
 
     <tr>
+        <td>HP C8000
+        <br>PA-8800</td>
+        <td>1&#215;1000 MHz</td>
+        <td>8&#215;1024 MB DDR-266 ECC</td>
+        <td>Fujitsu MAT3147NP Ultra320/10k<br/>
+            DVD ATA</td>
+        <td>ATI FireGL X3-256MB</td>
+        <td>256 W</td>
+    </tr>
+
+    <tr>
         <td>Sun Blade 2500
         <br>UltraSPARC IIIi</td>
         <td>2&#215;1600MHz</td>
