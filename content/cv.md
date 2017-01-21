@@ -10,16 +10,15 @@ parentdirs: [ ]
 
 Computational scientist with extensive experience in all aspects of operational
 high-performance computing.  Formal education in materials science with a
-specialty in molecular dynamics and implementing memory-efficient algorithms.
-Extensive, hands-on experience in system administration, application support,
-debugging, performance diagnostics, parallel application development, system
-and user documentation, and education, outreach, and training.  Also involved
-in workload characterization at job, system, and grid scales to provide
-analytical insight into future systems design to meet the current and future
-needs of users.
+specialty in molecular dynamics.  Extensive, hands-on experience in system
+administration, application support, debugging, performance analysis, parallel
+application development, system and user documentation, and education, outreach,
+and training.  Deep specific expertise in extreme-scale parallel I/O, parallel
+file system architectures, I/O middleware, and future I/O technologies and
+architectures.
 
 Fundamentally driven by philosophy that HPC must be usable by users to be
-useful. Active participant in user engagement, classroom and written training,
+useful.  Active participant in user engagement, classroom and written training,
 community outreach, and collaboration with the global HPC user, vendor, and
 operations communities.
 
@@ -71,8 +70,9 @@ operations communities.
         <div class="cv-head-right">August 2015 - Present</div>
     </div>
     <ul class="cv-vertical-list">
+        <li>Performance analysis of parallel file systems</li>
         <li>Evaluation and co-design of burst buffer implementations</li>
-        <li>Ongoing workload analysis of production parallel file systems</li>
+        <li>Analysis of future I/O subsystems design and architecture</li>
     </ul>
 </div>
 
@@ -120,25 +120,43 @@ operations communities.
 <h2 class="cv-h2">Technical Presentations</h2>
 
 <div class="cv-block">
-    <div class="cv-head-left-container" style="border:0;">Data-Intensive Computing at the San Diego Supercomputer Center
+    <div class="cv-head-left-container" style="border:0;">MarFS and the role of object storage in HPC
+        <div class="cv-head-right">July 2016</div></div>
+    <p>Presented in the <em>Data Seminar Series</em> at Lawrence Berkeley National Laboratory.  Berkeley, CA.</p>
+</div>
+
+<div class="cv-block">
+    <div class="cv-head-left-container" style="border:0;">Understanding I/O performance on burst buffers through holistic I/O characterization
+        <div class="cv-head-right">May 2016</div></div>
+    <p>Presented in the <em>MCS Seminar Series</em> at Argonne National Laboratory.  Lemont, IL.</p>
+</div>
+
+<div class="cv-block">
+    <div class="cv-head-left-container" style="border:0;">Developing a holistic understanding of I/O workloads on future architectures
+        <div class="cv-head-right">April 2016</div></div>
+    <p>Presented at the <em>17th SIAM Conference on Parallel Processing (SIAM PP'16)</em>.  Paris, FR.</p>
+</div>
+
+<div class="cv-block">
+    <div class="cv-head-left-container" style="border:0;">Tools and techniques towards a holistic understanding of I/O demands at NERSC
+        <div class="cv-head-right">November 2015</div></div>
+    <p>Presented at the <em>Analyzing Parallel I/O BOF</em> at SC'15.  Austin, TX.</p>
+</div>
+
+<div class="cv-block">
+    <div class="cv-head-left-container" style="border:0;">Data-intensive computing at the San Diego Supercomputer Center
         <div class="cv-head-right">June 2014</div></div>
     <p>Invited presentation at the <em>Joint Facilities User Forum on Data-Intensive Computing</em>, sponsored by US Department of Energy.  Oakland, CA.</p>
 </div>
 
 <div class="cv-block">
-    <div class="cv-head-left-container" style="border:0">Hadoop: Real-World vs. Hype
+    <div class="cv-head-left-container" style="border:0">Hadoop: real-world vs. hype
         <div class="cv-head-right">May 2014</div></div>
     <p>Invited panelist at <em>Leverage BIGDATA'14</em>, sponsored by HPCwire/Tabor Communications.  Carlsbad, CA.</p>
 </div>
 
 <div class="cv-block">
-    <div class="cv-head-left-container" style="border:0">Understanding the Challenges in Large-Scale Data Analysis
-        <div class="cv-head-right">April 2014</div></div>
-    <p>Presented at <em>Are you ready for the HPC Storage and Big Data deluge?</em>, sponsored by Dell.  La Jolla, CA.</p>
-</div>
-
-<div class="cv-block">
-    <div class="cv-head-left-container" style="border:0">Understanding the Challenges in Large-Scale Genomic Analysis
+    <div class="cv-head-left-container" style="border:0">Understanding the challenges in large-scale genomic analysis
         <div class="cv-head-right">April 2014</div></div>
     <p>Presented in the <em>SDSC Industrial Partnership Program webinar series</em>, sponsored by SDSC.  La Jolla, CA.</p>
 </div>
@@ -176,6 +194,22 @@ operations communities.
 <h2 class="cv-h2">Publications</h2>
 
 <div class="cv-block">
+    <div class="cv-head-left-container" style="border:0">Haplotyping germline and cancer genomes with high-throughput linked-read sequencing</div>
+    <p>Grace X. Y. Zheng, Billy T. Lau, Michael Schnall-Levin, Mirna Jarosz, et al.
+       <span class="cv-ref-journal">Nature Biotechnol.</span>
+       <span class="cv-ref-journal-vol">34</span>,
+       303 (2016).</p>
+</div>
+
+<div class="cv-block">
+    <div class="cv-head-left-container" style="border:0">Group-based variant calling leveraging next-generation supercomputing for large-scale whole-genome sequencing studies</div>
+    <p>K. A. Standish, T. M. Carland, G. K. Lockwood, Wayne Pfeiffer, et al.
+       <span class="cv-ref-journal">BMC Bioinformatics</span>
+       <span class="cv-ref-journal-vol">16</span>,
+       304 (2015).</p>
+</div>
+
+<div class="cv-block">
     <div class="cv-head-left-container" style="border:0">Storage utilization in the long tail of science</div>
     <p>G. K. Lockwood, R. Wagner, and M. Tatineni.
        <span class="cv-ref-journal">Proceedings of the 2015 Annual Conference on Extreme Science and Engineering Discovery Environment - XSEDE'15</span>
@@ -183,7 +217,7 @@ operations communities.
 </div>
 
 <div class="cv-block">
-    <div class="cv-head-left-container" style="border:0">Lifetimes of excess protons at the water-silica interface</div>
+    <div class="cv-head-left-container" style="border:0">Proton dynamics at the water-silica interface via dissociative molecular dynamics</div>
     <p>G. K. Lockwood and S. H. Garofalini.  
        <span class="cv-ref-journal">J. Phys. Chem. C</span>
        <span class="cv-ref-journal-vol">118</span>,

@@ -109,17 +109,17 @@ body {
 }
 
 .content-box h1 > a:hover,
-             h2 > a:hover,
-             h3 > a:hover,
-             h1 > a:visited,
-             h2 > a:visited,
-             h3 > a:visited,
-             h1 > a:link,
-             h2 > a:link,
-             h3 > a:link,
-             h1 > a:active,
-             h2 > a:active,
-             h3 > a:active {
+.content-box h2 > a:hover,
+.content-box h3 > a:hover,
+.content-box h1 > a:visited,
+.content-box h2 > a:visited,
+.content-box h3 > a:visited,
+.content-box h1 > a:link,
+.content-box h2 > a:link,
+.content-box h3 > a:link,
+.content-box h1 > a:active,
+.content-box h2 > a:active,
+.content-box h3 > a:active {
     text-decoration: none;
 }
 
@@ -215,6 +215,14 @@ body {
 .main-page-header p {
     line-height: 130%;
     font-size: 18px;
+    text-align: left;
+}
+.main-page-header a {
+    text-decoration: none;
+}
+.main-page-header a:visited,
+.main-page-header a:link {
+    color: black;
 }
 
 .page-header {
