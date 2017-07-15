@@ -153,7 +153,7 @@ byte-addressable memory technology.  Although there is lots of speculation about
 the actual materials technology under the hood, it sounds like it is based on
 a phase-change memory (PCM) technology.  It uses [chalcogenides][3dxpoint uses chalcogenides]
 but, unlike other "conductive-bridge" or "filamentary" PCM technologies, it uses
-a bulk switching phenomenon to store its data.  In principal, this would
+a bulk switching phenomenon to store its data.  In principle, this would
 increase the endurance of the cells.
 
 It is more energy efficient than DRAM due to its nonvolatility, and Intel has
