@@ -6,7 +6,7 @@
         <th>Cache</th>
         <th>Memory</th>
         <th style="text-align:center">Time (sec)</th>
-        <th>Compiler</th>
+        <th>Optimized<br>Time (sec)</th>
     </thead>
     <!-- I'm no longer showing mem speed because it's invariably wrong in
          numa architectures -->
@@ -19,7 +19,8 @@
     <td style="font-size:smaller; white-space:nowrap">{{ .cache | safeHTML }}</td>
     <td>{{ .mem_type | safeHTML }}</td>
     <td style="text-align:center;">{{ .wall_secs }}</td>
-    <td style="font-size:smaller" title="{{ .compile_flags }}">{{ .compiler | safeHTML }}</td>
+    <td style="text-align:center;">{{ if isset . "memreorder_secs" }}{{ .memreorder_secs }}{{else}}-{{ end }}</td>
+<!--    <td style="font-size:smaller" title="{{ .compile_flags }}">{{ .compiler | safeHTML }}</td> -->
     </tr>
 {{ end }}
     </tbody>

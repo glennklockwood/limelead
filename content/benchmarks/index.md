@@ -22,6 +22,12 @@ sensible set of optimization options.  To see the exact options I used for
 each benchmark, in addition to a plethora of other metadata, you can view the
 raw data used to generate this page in [my website's git repository].
 
+Note that some measurements have an "Optimized Time" column.  This measurement
+was made on a version of the application that periodically sorts the atomic 
+positions in memory to increase cache hit rate.  Because this optimization was
+not available at the time I started doing these benchmarks, many of the older
+systems do not have it.
+
 ## SPARC Processors
 
 <div class="shortcode">
