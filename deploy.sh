@@ -11,6 +11,15 @@ if which gsed >/dev/null; then
 else
     SED=sed
 fi
+### The sed that ships with macOS doesn't work well
+if which gdate >/dev/null; then
+    DATE=gdate
+    echo "Using gdate instead of date"
+else
+    DATE=date
+fi
+
+
 
 ###
 ### The master recipe for building this website
@@ -102,11 +111,11 @@ function fix_update_time {
     if [ "$md_file" == "GLOBAL" ]; then
         local html_file="${REPO_HOME}/public/index.html"
         local last_update="$(git log | awk '/^Date:/ { print $4, $3, $6, $5, $7; exit }')"
-        last_update="$(date -d "$last_update" +%s)"
+        last_update="$($DATE -d "$last_update" +%s)"
     else
         local html_file="$($SED -e 's#'"${REPO_HOME}"'/content/#'"${REPO_HOME}"'/public/#' -e 's#\.md$#.html#' <<< "$md_file")"
         local last_update="$(git log "$md_file" | awk '/^Date:/ { print $4, $3, $6, $5, $7; exit }')"
-        last_update="$(date -d "$last_update" +%s)"
+        last_update="$($DATE -d "$last_update" +%s)"
     fi
     if [ ! -f "$html_file" ]; then
         echo "Warning: $html_file not found (from $md_file)" >&2
@@ -121,7 +130,7 @@ function fix_update_time {
         ### communicate out our final value at the end
         last_update=$(
             git log ${REPO_HOME}/data/benchmarks | awk '/^Date:/ { print $4, $3, $6, $5, $7 }' | while read date_str; do
-                update_time="$(date -d "$date_str" +%s)"
+                update_time="$($DATE -d "$date_str" +%s)"
                 if [ $update_time -gt $last_update ]; then
                     last_update="$update_time"
                 fi
@@ -130,7 +139,7 @@ function fix_update_time {
         )
     fi
 
-    local new_update=$(date -d "@${last_update}" +"%-m/%-d/%Y at %-I:%M %p %Z")
+    local new_update=$($DATE -d "@${last_update}" +"%-m/%-d/%Y at %-I:%M %p %Z")
     $SED -i 's#^ *Last modified.*$#Last modified '"$new_update"'#' $html_file
     local ecode=$?
     if [ $ecode -eq 0 ]; then
