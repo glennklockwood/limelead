@@ -77,7 +77,14 @@ Laboratory][lbl.gov] (LBL).
 
 Now at NERSC, I am a part of the [Advanced Technologies Group][nersc atg] where
 I try to envision what the future of supercomputing will have to be to meet the
-needs of scientists.
+needs of scientists.  I am one of the resident experts in parallel I/O and
+new storage technologies, and the emphasis of my work is on parallel I/O system
+architectures.  This includes understanding the [low-level hardware details of
+non-volatile storage media][nvme page], new software technologies for
+[high-performance I/O transport][io forwarding page], optimization points
+for various parallel storage systems including Lustre, Spectrum Scale, and
+[object stores][object stores page], and where all of these technologies are
+headed in the next five to ten years.
 
 [ru engineering]: http://soe.rutgers.edu
 [imsl]: http://glass.rutgers.edu/
@@ -95,3 +102,6 @@ needs of scientists.
 [lbl.gov]: http://www.lbl.gov/
 [nersc atg]: http://www.nersc.gov/about/groups/advanced-technologies-group/
 [10x genomics]: http://www.10xgenomics.com/
+[nvme page]: ../data-intensive/storage/nvram.html
+[io forwarding page]: ../data-intensive/storage/io-forwarding.html
+[object stores page]: ../data-intensive/storage/object-storage.html
