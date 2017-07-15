@@ -6,7 +6,7 @@ last_mod: "September 11, 2015"
 parentdirs: [ 'personal' ]
 ---
 
-## A Biographical Narrative
+## Early Life and Education
 
 I was born in Hawaii and moved to the mainland when I was quite young.  I grew
 up in the suburbs of central New Jersey, just off of 8A on the turnpike.  After
@@ -29,6 +29,8 @@ sense).
 
 Those plans did not pan out, and after a semester in Pennsylvania, I returned to
 Rutgers to continue doing research with molecular dynamics simulations.
+
+## Getting into Supercomputing
 
 In the four years I was doing my Ph.D. work at Rutgers, I started collecting old
 UNIX workstations.  In the course of playing with them all, I began benchmarking
@@ -65,6 +67,8 @@ opportunity to join an [early-stage sequencing startup][10xtech] that was
 developing a revolutionary new product, and my desire to experience the startup
 life and be a part of such a rapidly growing industry lured me away from SDSC.
 
+## Foray into Genomics
+
 After eighteen months in San Diego, I moved up to Oakland and joined [10X 
 Genomics][10x genomics] as a DevOps Engineer (a job which I had no idea how to
 do).  My job involved running a small cluster, maintaining a couple hundred
@@ -74,6 +78,8 @@ supercomputing though, and shortly after my one-year anniversary at 10X, I
 returned to the world of supercomputing at the [National Energy Research
 Scientific Computing Center][nersc] (NERSC) at the [Lawrence Berkeley National
 Laboratory][lbl.gov] (LBL).
+
+## Today
 
 Now at NERSC, I am a part of the [Advanced Technologies Group][nersc atg] where
 I try to envision what the future of supercomputing will have to be to meet the
