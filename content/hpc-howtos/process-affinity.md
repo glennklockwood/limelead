@@ -202,7 +202,7 @@ numa pool associated with cpu node 0, you can do
 
 or just
 
-<pre>$ <kbd>numactl -C 0 -N 0 simulation.x</kbd></pre>
+<pre>$ <kbd>numactl -C 0 -m 0 simulation.x</kbd></pre>
 
 You can see what _cpu nodes_ and their corresponding _memory nodes_ are
 available on your system by using <kbd>numactl -H</kbd>:
