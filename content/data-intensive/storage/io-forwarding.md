@@ -74,6 +74,12 @@ I/O to this DVS file system is forwarded to one (or more, in the case of
 _cluster parallel mode_) DVS servers who act as clients for an underlying
 file system.
 
+### [Intel IOF][Intel's IOF]
+
+Intel is developing an I/O forwarding service as a part of the CORAL system
+being deployed at Argonne.  It is not yet a product, but its source code can be
+browsed online.
+
 ### [v9fs/9P][v9fs kdoc] 
 
 v9fs is the Plan 9 remote file system and its protocol.  Several features
@@ -122,9 +128,10 @@ behave like I/O forwarders.
     abstraction layer which can be used instead of LNET.
   - Mercury itself does not include an I/O forwarding system, but I/O forwarding
     can be built on top of Mercury.  For example, 
-    - IOFSL (see above) can use Mercury instead of its original BMI protocol
-    - [Mercury POSIX] is a project built on top of Mercury that performs POSIX
-      I/O function shipping
+        - IOFSL (see above) can use Mercury instead of its original BMI protocol
+        - [Mercury POSIX][] was a proof-of-concept forwarding service built on
+          top of Mercury to perform POSIX I/O function shipping
+        - [Intel's IOF][] uses Mercury for transport.
 - [BMI][bmi] is the network transport layer used in PVFS2.
 
 ## Additional Information
@@ -150,3 +157,4 @@ behave like I/O forwarders.
 [Mercury POSIX]: https://wiki.hpdd.intel.com/display/PUB/Fast+Forward+Storage+and+IO+Program+Documents?preview=/12127153/16843337/M6.1_PosixFunctionShipping-Demo-v3.pdf
 [BMI]: http://dx.doi.org/10.1109/IPDPS.2005.128
 [libsysio]: http://www.cs.sandia.gov/Scalable_IO/
+[Intel's IOF]: https://git.hpdd.intel.com/?p=daos/iof.git
