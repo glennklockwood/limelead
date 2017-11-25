@@ -6,6 +6,7 @@ title: "Sysadmin Howtos"
 ---
 
 * [Create a wired Ethernet island on a wifi network with Raspberry Pi](rpi-wifi-island.html)
+* [Configuring Raspberry Pi for Headless Boot](rpi-headless-boot.html)
 * [Installing and configuring a Solaris 10 server](configuring-solaris10.html)
 * [Converting 520-byte block disks to 512-byte blocks (Solaris)](converting-blocksize-on-solaris.html)
 * [Configuring dmake (Solaris)](configuring-dmake.html)
