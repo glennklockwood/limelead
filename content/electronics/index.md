@@ -14,5 +14,6 @@ with [Raspberry Pi][].
 - [Experimenting with digipots and ADCs](digipots.html)
 - [Programming the HD44780 LCD display driver with Raspberry Pi](hd44780-lcd-display.html)
 - [Understanding the TWSU Synth Kit](twsu-synth-kid.html)
+- [Understanding the 555 Timer IC](555.html)
 
 [Raspberry Pi]: http://www.raspberrypi.org/
