@@ -14,6 +14,21 @@
         "_comment" :    "10000 seconds with reordering"
     },
     {
+        "model":        "Terasic DE10-Nano",
+        "processor":    "ARM Cortex-A9",
+        "clock":        "2&#215; 800",
+        "cache":        "32+32K<br>512K",
+        "mem":          "1024 MB",
+        "mem_type":     "DDR3-400",
+        "mem_speed":    "6.4 GB/s",
+        "wall_secs":    3253,
+        "memreorder_secs": 2016,
+        "compiler":     "GNU GFortran 4.6",
+        "compile_flags": "-mabi=aapcs-linux -march=armv7-a -mcpu=cortex-a9 -mfpu=vfp -mfloat-abi=hard -mstructure-size-boundary=0x20 -O3 -fdefault-real-8 -fdefault-double-8 -fopenmp -cpp",
+        "memreorder_compile_flags": "-mabi=aapcs-linux -march=armv7-a -mtune=cortex-a9 -mcpu=cortex-a9 -mfpu=neon -mfloat-abi=hard -mstructure-size-boundary=0x20 -O3 -fdefault-real-8 -fdefault-double-8 -fopenmp -cpp"
+    },
+
+    {
         "model":        "Raspberry Pi 3",
         "processor":    "ARM Cortex-A53",
         "clock":        "1200",
@@ -23,6 +38,7 @@
         "mem_speed":    "3.2 GB/s",
         "_mem_speed_comment": "400 MHz LPDDR2 (800 MT/sec) at 32-bit bus width; STREAM gives 2.2 GB/sec peak",
         "wall_secs":    2531,
+        "memreorder_secs": 1463,
         "compiler":     "GNU GFortran 4.9.2",
         "compile_flags": "-mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8",
         "_comment" :    "1463 / 1489 / 1569 / 1939 sec with reordering @ 1, 2, 3, and 4 threads"
@@ -37,6 +53,7 @@
         "mem_speed":    "3.2 GB/s",
         "_mem_speed_comment": "400 MHz LPDDR2 (800 MT/sec) at 32-bit bus width; STREAM gives 2.2 GB/sec peak",
         "wall_secs":    2427,
+        "memreorder_secs": 1489,
         "compiler":     "GNU GFortran 4.9.2",
         "compile_flags": "-mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8",
         "_comment" :    "1463 / 1489 / 1569 / 1939 sec with reordering @ 1, 2, 3, and 4 threads"
@@ -51,6 +68,7 @@
         "mem_speed":    "3.2 GB/s",
         "_mem_speed_comment": "400 MHz LPDDR2 (800 MT/sec) at 32-bit bus width; STREAM gives 2.2 GB/sec peak",
         "wall_secs":    2508,
+        "memreorder_secs": 1939,
         "compiler":     "GNU GFortran 4.9.2",
         "compile_flags": "-mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8",
         "_comment" :    "1463 / 1489 / 1569 / 1939 sec with reordering @ 1, 2, 3, and 4 threads"
