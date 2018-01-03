@@ -16,18 +16,31 @@
     {
         "model":        "Terasic DE10-Nano",
         "processor":    "ARM Cortex-A9",
+        "clock":        "800",
+        "cache":        "32+32K<br>512K",
+        "mem":          "1024 MB",
+        "mem_type":     "DDR3-400",
+        "mem_speed":    "6.4 GB/s",
+        "wall_secs":    3639,
+        "memreorder_secs": 2501,
+        "compiler":     "GNU GFortran 4.6",
+        "compile_flags": "-mabi=aapcs-linux -march=armv7-a -mtune=cortex-a9 -mcpu=cortex-a9 -mfpu=neon -mfloat-abi=hard -mstructure-size-boundary=0x20 -O3 -fdefault-real-8 -fdefault-double-8",
+        "memreorder_compile_flags": "-mabi=aapcs-linux -march=armv7-a -mtune=cortex-a9 -mcpu=cortex-a9 -mfpu=neon -mfloat-abi=hard -mstructure-size-boundary=0x20 -O3 -fdefault-real-8 -fdefault-double-8"
+    },
+    {
+        "model":        "Terasic DE10-Nano",
+        "processor":    "ARM Cortex-A9",
         "clock":        "2&#215; 800",
         "cache":        "32+32K<br>512K",
         "mem":          "1024 MB",
         "mem_type":     "DDR3-400",
         "mem_speed":    "6.4 GB/s",
-        "wall_secs":    3253,
-        "memreorder_secs": 2016,
+        "wall_secs":    3203,
+        "memreorder_secs": 2011,
         "compiler":     "GNU GFortran 4.6",
-        "compile_flags": "-mabi=aapcs-linux -march=armv7-a -mcpu=cortex-a9 -mfpu=vfp -mfloat-abi=hard -mstructure-size-boundary=0x20 -O3 -fdefault-real-8 -fdefault-double-8 -fopenmp -cpp",
+        "compile_flags": "-mabi=aapcs-linux -march=armv7-a -mtune=cortex-a9 -mcpu=cortex-a9 -mfpu=neon -mfloat-abi=hard -mstructure-size-boundary=0x20 -O3 -fdefault-real-8 -fdefault-double-8 -fopenmp -cpp",
         "memreorder_compile_flags": "-mabi=aapcs-linux -march=armv7-a -mtune=cortex-a9 -mcpu=cortex-a9 -mfpu=neon -mfloat-abi=hard -mstructure-size-boundary=0x20 -O3 -fdefault-real-8 -fdefault-double-8 -fopenmp -cpp"
     },
-
     {
         "model":        "Raspberry Pi 3",
         "processor":    "ARM Cortex-A53",
