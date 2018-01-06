@@ -10,3 +10,4 @@ title: "Sysadmin Howtos"
 * [Installing and configuring a Solaris 10 server](configuring-solaris10.html)
 * [Converting 520-byte block disks to 512-byte blocks (Solaris)](converting-blocksize-on-solaris.html)
 * [Configuring dmake (Solaris)](configuring-dmake.html)
+* [Getting started with the Terasic DE10-Nano](terasic-de10-nano.html)
