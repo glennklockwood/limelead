@@ -7,6 +7,7 @@ parentdirs: [ 'sysadmin-howtos' ]
 ---
 
 ## Table of Contents
+
 * [1. Initial Setup](#1-initial-setup)
     * [1.1. Downloading the OS image](#1-1-downloading-the-os-image)
     * [1.2. Resize the file system](#1-2-resize-the-file-system)
@@ -19,6 +20,7 @@ parentdirs: [ 'sysadmin-howtos' ]
     * [3.1. Adding a non-root user](#3-1-adding-a-non-root-user)
     * [3.2. Installing Software](#3-2-installing-software)
     * [3.3. Basic Security](#3-3-basic-security)
+    * [3.4. Enabling non-root i2c, spi, and GPIO access](#3-4-enabling-non-root-i2c-spi-and-gpio-access)
 
 # 1. Initial Setup
 
@@ -32,8 +34,7 @@ which parts of the following instructions require Linux specifically.
 
 The DE10-nano kit comes with a micro-SD card that is supposed to come
 pre-flashed with Angstrom Linux and the appropriate Altera drivers, but mine
-came empty.  So, I went to the [Terasic DE10-Nano Kit download page at
-Intel](https://downloadcenter.intel.com/download/26687/) and downloaded
+came empty.  So, I went to the [Terasic DE10-Nano Kit download page at Intel][] and downloaded
     
     de10-nano-image-Angstrom-v2016.12.socfpga-sdimg.2017.03.31.tgz
     
@@ -41,7 +42,7 @@ which contains only one file (`de10-nano-image-Angstrom-v2016.12.socfpga-sdimg`)
 which is the image.
 
 I plugged the blank micro-SD card into my iMac and used
-[Etcher](http://www.etcher.io) to burn it.  Etcher only lets you write image
+[Etcher][] to burn it.  Etcher only lets you write image
 files that end with `.img` and not `.sdimg`, so I had to add the `.img`
 extension on to the uncompressed `de10-nano-image-Angstrom-v2016.12.socfpga-sdimg`
 file.
@@ -263,6 +264,8 @@ following line:
 Other useful software packages to install include
 
 * `coreutils` - replace the busybox version of common Linux commands with the full Linux versions
+* `man` - so you can read manual pages
+* `man-pages` - the actual man pages
 * `file` - determine the file type
 
 It's also helpful to `opkg list > opkg_list.txt` so that you can just grep a
@@ -280,3 +283,21 @@ Disable the VNC service (if you aren't using it):
 
 You can also go ahead and disable `de10-nano-xfce-init.service` as well if you
 don't plan on using the desktop UI at all.
+
+## 3.4. Enabling non-root i2c, spi, and GPIO access
+
+First create new groups called `i2c`, `spi`, and `gpio` (the GIDs don't matter).  Then create a file called `/etc/udev/rules.d/99-com.rules` which contains:
+
+    SUBSYSTEM=="i2c-dev", GROUP="i2c", MODE="0660"
+    SUBSYSTEM=="spidev", GROUP="spi", MODE="0660"
+    SUBSYSTEM=="gpio*", PROGRAM="/bin/sh -c '\
+    	chown -R root:gpio /sys/class/gpio && chmod -R 770 /sys/class/gpio;\
+    	chown -R root:gpio /sys/devices/virtual/gpio && chmod -R 770 /sys/devices/virtual/gpio;\
+    	chown -R root:gpio /sys$devpath && chmod -R 770 /sys$devpath\
+    '"
+
+Incidentally, this file is taken (in part) from Raspbian and is exactly how Raspberry Pi allows non-root users to manipulate the I2C, SPI, and GPIO devices on that SoC.  There are some caveats surrounding the GPIO case since there is latency associated with all the `chown`s that must happen when GPIO pins are initialized by an application.  See [GPIO/I2C/SPI-access without root-permissions][] for the specific caveats on how to work around this.
+
+[Terasic DE10-Nano Kit download page at Intel]: https://downloadcenter.intel.com/download/26687/
+[Etcher]: http://www.etcher.io
+[GPIO/I2C/SPI-access without root-permissions]: http://forum.up-community.org/discussion/2141/tutorial-gpio-i2c-spi-access-without-root-permissions
