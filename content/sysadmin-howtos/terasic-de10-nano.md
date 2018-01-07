@@ -21,7 +21,7 @@ parentdirs: [ 'sysadmin-howtos' ]
     * [3.2. Installing Software](#3-2-installing-software)
     * [3.3. Basic Security](#3-3-basic-security)
     * [3.4. Enabling non-root i2c, spi, and GPIO access](#3-4-enabling-non-root-i2c-spi-and-gpio-access)
-
+    
 # 1. Initial Setup
 
 My host computer is an iMac running macOS, and I used this to get my DE10-Nano
@@ -263,10 +263,14 @@ following line:
 
 Other useful software packages to install include
 
-* `coreutils` - replace the busybox version of common Linux commands with the full Linux versions
-* `man` - so you can read manual pages
-* `man-pages` - the actual man pages
-* `file` - determine the file type
+| package      | description 
+|--------------|---------------------------------------------------------------
+| `coreutils`  | replace the busybox version of common Linux commands with the full Linux versions
+| `man`        | so you can read manual pages
+| `man-pages`  | the actual man pages
+| `file`       | determine the file type
+| `python-pip` | so you can `pip install` python packages
+| `screen`     | GNU screen
 
 It's also helpful to `opkg list > opkg_list.txt` so that you can just grep a
 local copy of the software repository when searching for packages.
