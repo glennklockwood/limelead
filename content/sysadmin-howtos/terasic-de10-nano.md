@@ -21,8 +21,10 @@ parentdirs: [ 'sysadmin-howtos' ]
     * [3.2. Installing Software](#3-2-installing-software)
     * [3.3. Basic Security](#3-3-basic-security)
     * [3.4. Enabling non-root i2c, spi, and GPIO access](#3-4-enabling-non-root-i2c-spi-and-gpio-access)
-    
-# 1. Initial Setup
+* [4. Advanced Configuration](#4-advanced-configuration)
+    * [4.1. Getting wifi working](#4-1-getting-wifi-working)
+   
+## 1. Initial Setup
 
 My host computer is an iMac running macOS, and I used this to get my DE10-Nano
 up and running.  Because the DE10-Nano and the Altera software stack aren't
@@ -30,7 +32,7 @@ really meant to work with macOS, I make heavy use of Virtualbox (for macOS) and
 a CentOS 7 virtual machine to do some of the Linux-specific stuff.  I'll note
 which parts of the following instructions require Linux specifically.
 
-## 1.1. Downloading the OS image
+### 1.1. Downloading the OS image
 
 The DE10-nano kit comes with a micro-SD card that is supposed to come
 pre-flashed with Angstrom Linux and the appropriate Altera drivers, but mine
@@ -47,7 +49,7 @@ files that end with `.img` and not `.sdimg`, so I had to add the `.img`
 extension on to the uncompressed `de10-nano-image-Angstrom-v2016.12.socfpga-sdimg`
 file.
 
-## 1.2. Resize the file system
+### 1.2. Resize the file system
 
 The SD card shipped by Terasic is 8 GB but the Angstrom Linux image is only
 ~2.5 GB, so there's a lot of free space on the card that Linux doesn't use by
@@ -122,7 +124,7 @@ enlarged partition:
     The filesystem on /dev/sdb2 is now 1903872 blocks long.
 
     
-# 2. Connecting
+## 2. Connecting
 
 Once your micro-SD card is flashed and the DE10-nano is successfully booted, one
 of the user LEDs should pulse like a heartbeat once Linux is booted.
@@ -134,7 +136,7 @@ is `root`, and it has no password.  You can get in via
 * SSH (passwordless root login is enabled--yuck!)
 * VNC (again, passwordless root login to desktop works)
 
-## 2.1. Serial connection
+### 2.1. Serial connection
 
     glock@Glenns-iMac:~$ sudo cu -l /dev/tty.usbserial-A106I3A5 -s 115200
     
@@ -159,7 +161,7 @@ is `root`, and it has no password.  You can get in via
 
 The default `root` account has no password, so just hit return.
 
-## 2.2. Ethernet over USB
+### 2.2. Ethernet over USB
 
 The DE10-SOC comes configured to use RNDIS to tunnel Ethernet over USB; this
 protocol is only supported on Windows and Linux though, so _Ethernet over USB
@@ -197,7 +199,7 @@ configured to use the same subnet as the DE10; the appropriate settings are
 Use either the GUI or `ifconfig` to set these.  Then you should be able to
 `ping 192.168.7.1` to talk to the DE10.
 
-## 2.3. SSH
+### 2.3. SSH
 
 Get the IP of the system from either your home router or (if you've logged in
 via serial) `ifconfig`.  Then SSH to this IP address:
@@ -215,16 +217,16 @@ usual before prompting to accept the host key:
     de10-nano:~$ who
     glock           pts/0           00:00   Dec 26 21:32:29  192.168.1.128
     
-## 2.4. VNC
+### 2.4. VNC
 
 The default VNC client that ships with macOS doesn't seem to work with the
 DE10-nano's VNC server, so I followed Terasic's instructions and downloaded the
 free RealVNC client.  Connecting to the IP address (192.168.1.182 in my case)
 just worked and dropped me in an XFCE desktop, logged in as root.
 
-# 3. Basic Configuration
+## 3. Basic Configuration
 
-## 3.1. Adding a non-root user
+### 3.1. Adding a non-root user
 
 First thing to do after logging in is set a root password:
 
@@ -245,7 +247,7 @@ Make sure the user account works:
 Not sure why the `mesg: Operation not permitted` error comes up, but it's
 harmless.
 
-## 3.2. Installing Software
+### 3.2. Installing Software
 
     # opkg update
     # opkg list | grep sudo
@@ -275,7 +277,7 @@ Other useful software packages to install include
 It's also helpful to `opkg list > opkg_list.txt` so that you can just grep a
 local copy of the software repository when searching for packages.
 
-## 3.3. Basic Security
+### 3.3. Basic Security
 
 Edit `/etc/ssh/sshd_config` and change `PermitRootLogin` to `no`.
 
@@ -288,20 +290,83 @@ Disable the VNC service (if you aren't using it):
 You can also go ahead and disable `de10-nano-xfce-init.service` as well if you
 don't plan on using the desktop UI at all.
 
-## 3.4. Enabling non-root i2c, spi, and GPIO access
+### 3.4. Enabling non-root i2c, spi, and GPIO access
 
 First create new groups called `i2c`, `spi`, and `gpio` (the GIDs don't matter).  Then create a file called `/etc/udev/rules.d/99-com.rules` which contains:
 
     SUBSYSTEM=="i2c-dev", GROUP="i2c", MODE="0660"
     SUBSYSTEM=="spidev", GROUP="spi", MODE="0660"
     SUBSYSTEM=="gpio*", PROGRAM="/bin/sh -c '\
-    	chown -R root:gpio /sys/class/gpio && chmod -R 770 /sys/class/gpio;\
-    	chown -R root:gpio /sys/devices/virtual/gpio && chmod -R 770 /sys/devices/virtual/gpio;\
-    	chown -R root:gpio /sys$devpath && chmod -R 770 /sys$devpath\
+        chown -R root:gpio /sys/class/gpio && chmod -R 770 /sys/class/gpio;\
+        chown -R root:gpio /sys/devices/virtual/gpio && chmod -R 770 /sys/devices/virtual/gpio;\
+        chown -R root:gpio /sys$devpath && chmod -R 770 /sys$devpath\
     '"
 
 Incidentally, this file is taken (in part) from Raspbian and is exactly how Raspberry Pi allows non-root users to manipulate the I2C, SPI, and GPIO devices on that SoC.  There are some caveats surrounding the GPIO case since there is latency associated with all the `chown`s that must happen when GPIO pins are initialized by an application.  See [GPIO/I2C/SPI-access without root-permissions][] for the specific caveats on how to work around this.
 
+## 4. Advanced Configuration
+
+### 4.1. Getting wifi working
+
+I have an rt8192-based USB wifi dongle that I wanted to plug into the DE10-nano.
+After buying a [USB OTG adapter][] to add some standard USB type B ports into
+which I could plug my [Edimax wifi dongle][].  On the first plug-in, everything
+seemed to work well and I configured the adapter per 
+[Adafruit's BeagleBone wifi guide][] and it worked, but after rebooting, the wifi
+adapter no longer worked and I started getting these suspicious USB bus errors:
+
+    [   18.433665] rtl_usb: reg 0x4, usbctrl_vendorreq TimeOut! status:0xffffff92 value=0x80208f0e
+    [   28.436455] rtl_usb: reg 0x21, usbctrl_vendorreq TimeOut! status:0xffffff92 value=0x80208f0e
+    [   38.436463] rtl_usb: reg 0x0, usbctrl_vendorreq TimeOut! status:0xffffff92 value=0x80674120
+    [   39.146471] dwc2 ffb40000.usb: s3c_hsotg_handle_rx: unknown status 000e0004
+    [   40.146460] dwc2 ffb40000.usb: s3c_hsotg_handle_rx: unknown status 000e000f
+    [   40.153623] usb 1-1-port1: cannot reset (err = -110)
+    [   41.156459] dwc2 ffb40000.usb: s3c_hsotg_handle_rx: unknown status 000e0000
+    [   41.163619] usb 1-1-port1: cannot reset (err = -110)
+
+After a few minutes, I got some nasty deadlock warnings from the kernel:
+
+    [  240.236457] INFO: task kworker/1:0:12 blocked for more than 120 seconds.
+    [  240.250413]       Tainted: G           O    4.1.33-ltsi-altera #1
+    [  240.263716] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+    [  240.278970] kworker/1:0     D c07dc978     0    12      2 0x00000000
+    [  240.292799] Workqueue: events_power_efficient reg_timeout_work
+    [  240.305982] [<c07dc978>] (__schedule) from [<c07dcdcc>] (schedule+0x4c/0xa4)
+    [  240.320348] [<c07dcdcc>] (schedule) from [<c07dd174>] (schedule_preempt_disabled+0x18/0x1c)
+    [  240.336170] [<c07dd174>] (schedule_preempt_disabled) from [<c07de894>] (__mutex_lock_slowpath+0xac/0x164)
+    [  240.353196] [<c07de894>] (__mutex_lock_slowpath) from [<c07de9a8>] (mutex_lock+0x5c/0x60)
+    [  240.368849] [<c07de9a8>] (mutex_lock) from [<c05ec958>] (rtnl_lock+0x20/0x24)
+    [  240.383543] [<c05ec958>] (rtnl_lock) from [<c073698c>] (reg_timeout_work+0x18/0x3c)
+    [  240.398784] [<c073698c>] (reg_timeout_work) from [<c003e094>] (process_one_work+0x210/0x50c)
+    [  240.414829] [<c003e094>] (process_one_work) from [<c003eecc>] (worker_thread+0x54/0x568)
+    [  240.430462] [<c003eecc>] (worker_thread) from [<c00440f0>] (kthread+0xec/0x104)
+    [  240.445296] [<c00440f0>] (kthread) from [<c000fb68>] (ret_from_fork+0x14/0x2c)
+
+After scouring the output of `dmesg` and `journalctl -b`, I noticed that on
+boot, the USB OTG adapter and the wifi actually did configure and come up
+momentarily, but they went offline at around the time that these messages
+appeared:
+
+    [    7.631038] usb0: HOST MAC de:82:da:8a:80:bb
+    [    7.641618] usb0: MAC 4e:3a:11:5e:1b:a7
+    [    7.658212] g_multi gadget: Multifunction Composite Gadget
+    [    7.670041] g_multi gadget: userspace failed to provide iSerialNumber
+    [    7.682810] g_multi gadget: g_multi ready
+    [    7.696105] dwc2 ffb40000.usb: bound driver g_multi
+
+It turns out that the DE10-Nano has a service that enables Ethernet-over-USB on
+bootup and effectively hijacks the USB OTG port on boot.  Disabling this
+service: 
+
+    # systemctl disable de10-nano-gadget-init.service
+
+Appears to be absolutely required to use the DE10-Nano as a USB host, or else
+the USB OTG port gets configured as a host, then switches to a device, then
+leaves different parts of Linux confused about its ultimate state.
+
 [Terasic DE10-Nano Kit download page at Intel]: https://downloadcenter.intel.com/download/26687/
 [Etcher]: http://www.etcher.io
 [GPIO/I2C/SPI-access without root-permissions]: http://forum.up-community.org/discussion/2141/tutorial-gpio-i2c-spi-access-without-root-permissions
+[USB OTG adapter]: http://a.co/cVUx9Qk
+[Edimax wifi dongle]: http://a.co/452ghll
+[Adafruit's BeagleBone wifi guide]: https://learn.adafruit.com/beaglebone/wifi
