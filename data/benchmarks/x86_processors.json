@@ -827,6 +827,73 @@
         "runtime_flags": "OMP_PLACES=cores OMP_PROC_BIND=close",
         "compile_flags": "-ipo -O3 -real-size 64 -xHost -fp-model precise -ftz -prec-div -prec-sqrt -fma -qopt-report=5 -align all"
     },
+
+    {
+        "model":        "-",
+        "processor":    "Xeon E5-2643 v4",
+        "clock":        "6&#215; 3401",
+        "clock_turbo?": false,
+        "cache":        "32K+32K<br>256K<br>20M",
+        "mem":          "128 GB",
+        "mem_type":     "DDR4",
+        "mem_speed":    "- GB/sec",
+        "wall_secs":    116,
+        "memreorder_secs": 102,
+        "compiler":     "Intel 18.0.1",
+        "hostname":     "dtn12",
+        "runtime_flags": "KMP_AFFINITY=compact,verbose",
+        "compile_flags": "-ipo -O3 -real-size 64 -xbroadwell -fp-model precise -ftz -prec-div -prec-sqrt -fma -qopt-report=5 -align all -march=broadwell -mtune=broadwell -qopt-prefetch-issue-excl-hint"
+    },
+    {
+        "model":        "-",
+        "processor":    "Xeon E5-2643 v4",
+        "clock":        "3&#215; 3401",
+        "clock_turbo?": false,
+        "cache":        "32K+32K<br>256K<br>20M",
+        "mem":          "128 GB",
+        "mem_type":     "DDR4",
+        "mem_speed":    "- GB/sec",
+        "wall_secs":    132,
+        "memreorder_secs": 110,
+        "compiler":     "Intel 18.0.1",
+        "hostname":     "dtn12",
+        "runtime_flags": "KMP_AFFINITY=compact,verbose",
+        "compile_flags": "-ipo -O3 -real-size 64 -xbroadwell -fp-model precise -ftz -prec-div -prec-sqrt -fma -qopt-report=5 -align all -march=broadwell -mtune=broadwell -qopt-prefetch-issue-excl-hint"
+    },
+    {
+        "model":        "-",
+        "processor":    "Xeon E5-2643 v4",
+        "clock":        "2&#215; 3401",
+        "clock_turbo?": false,
+        "cache":        "32K+32K<br>256K<br>20M",
+        "mem":          "128 GB",
+        "mem_type":     "DDR4",
+        "mem_speed":    "- GB/sec",
+        "wall_secs":    154,
+        "memreorder_secs": 122,
+        "compiler":     "Intel 18.0.1",
+        "hostname":     "dtn12",
+        "runtime_flags": "KMP_AFFINITY=compact,verbose",
+        "compile_flags": "-ipo -O3 -real-size 64 -xbroadwell -fp-model precise -ftz -prec-div -prec-sqrt -fma -qopt-report=5 -align all -march=broadwell -mtune=broadwell -qopt-prefetch-issue-excl-hint"
+    },
+    {
+        "model":        "-",
+        "processor":    "Xeon E5-2643 v4",
+        "clock":        "1&#215; 3401",
+        "clock_turbo?": false,
+        "cache":        "32K+32K<br>256K<br>20M",
+        "mem":          "128 GB",
+        "mem_type":     "DDR4",
+        "mem_speed":    "- GB/sec",
+        "wall_secs":    202,
+        "memreorder_secs": 160,
+        "compiler":     "Intel 18.0.1",
+        "hostname":     "dtn12",
+        "runtime_flags": "KMP_AFFINITY=compact,verbose",
+        "compile_flags": "-ipo -O3 -real-size 64 -xbroadwell -fp-model precise -ftz -prec-div -prec-sqrt -fma -qopt-report=5 -align all -march=broadwell -mtune=broadwell -qopt-prefetch-issue-excl-hint"
+    },
+
+
     {
         "model":        "Cray XC40",
         "processor":    "Xeon Phi 7250",
