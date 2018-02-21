@@ -360,9 +360,21 @@ service:
 
     # systemctl disable de10-nano-gadget-init.service
 
-Appears to be absolutely required to use the DE10-Nano as a USB host, or else
+appears to be absolutely required to use the DE10-Nano as a USB host, or else
 the USB OTG port gets configured as a host, then switches to a device, then
 leaves different parts of Linux confused about its ultimate state.
+
+I later found that the USB would still drop with this error, suggesting that
+the device was reverting from host mode:
+
+    [  588.465205] dwc2 ffb40000.usb: Mode Mismatch Interrupt: currently in Device mode
+
+Disabling the `de10-nano-synergy-init` service seems to work around this:
+
+    # systemctl disable de10-nano-synergy-init.service
+
+The configuration for this service tries to bind the synergy client to the USB
+OTG Ethernet gadget, so this may have been causing the regression.
 
 [Terasic DE10-Nano Kit download page at Intel]: https://downloadcenter.intel.com/download/26687/
 [Etcher]: http://www.etcher.io
