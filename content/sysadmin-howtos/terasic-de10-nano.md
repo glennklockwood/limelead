@@ -268,6 +268,7 @@ Other useful software packages to install include
 | package      | description 
 |--------------|---------------------------------------------------------------
 | `coreutils`  | replace the busybox version of common Linux commands with the full Linux versions
+| `util-linux` | replace the busybox version of other common Linux commands with full Linux versions
 | `man`        | so you can read manual pages
 | `man-pages`  | the actual man pages
 | `file`       | determine the file type
