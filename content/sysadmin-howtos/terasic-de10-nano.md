@@ -49,6 +49,25 @@ files that end with `.img` and not `.sdimg`, so I had to add the `.img`
 extension on to the uncompressed `de10-nano-image-Angstrom-v2016.12.socfpga-sdimg`
 file.
 
+<div class="shortcode">
+{{% alertbox info %}}
+Confusingly, Intel _also_ maintains a version of 
+<a href="https://www.intel.com/content/www/us/en/programmable/support/training/university/materials-software.html">Ubuntu 12.04 specifically for the DE10-Nano</a>.
+Sadly, Ubuntu 12.04 is beyond EOL, so while Intel is patching their example
+code for this image, the rest of the user environment is very old and no
+longer updated.
+{{%/alertbox%}}
+</div>
+
+<div class="shortcode">
+{{% alertbox danger %}}
+The SD card that shipped with my DE10-nano tends to lose its contents if left
+unpowered for a few months.  This is likely why mine came empty.  I recommend
+replacing it with an SD card from a more reputable manufacturer if you don't
+want to lose data on it over time.
+{{%/alertbox%}}
+</div>
+
 ### 1.2. Resize the file system
 
 The SD card shipped by Terasic is 8 GB but the Angstrom Linux image is only
@@ -383,3 +402,4 @@ OTG Ethernet gadget, so this may have been causing the regression.
 [USB OTG adapter]: http://a.co/cVUx9Qk
 [Edimax wifi dongle]: http://a.co/452ghll
 [Adafruit's BeagleBone wifi guide]: https://learn.adafruit.com/beaglebone/wifi
+[Terasic DE10-Nano Ubuntu download]: https://www.intel.com/content/www/us/en/programmable/support/training/university/materials-software.html
