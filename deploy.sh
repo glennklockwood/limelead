@@ -19,7 +19,31 @@ else
     DATE=date
 fi
 
-
+BUILD_WEBSITE=0
+DEPLOY_WEBSITE=0
+UNCLEAN_OK=0
+while test $# -gt 0
+do
+    case "$1" in
+        --build)
+            BUILD_WEBSITE=1
+            ;;
+        --deploy)
+            DEPLOY_WEBSITE=1
+            ;;
+        --unclean)
+            UNCLEAN_OK=1
+            ;;
+        *)
+            ;;
+    esac
+    shift
+done
+### Default action is to build + deploy
+if [ "$BUILD_WEBSITE" -eq 0 -a "$DEPLOY_WEBSITE" -eq 0 ]; then
+    BUILD_WEBSITE=1
+    DEPLOY_WEBSITE=1
+fi
 
 ###
 ### The master recipe for building this website
@@ -95,11 +119,16 @@ function check_required_binaries {
 ### html file, so refuse to proceed unless our index is clean
 ###
 function check_clean_index {
-    if ! git diff-index --quiet --exit-code HEAD; then
-        echo "It looks like the git index is not clean, so we cannot correctly" >&2
-        echo "insert the 'Last modified' lines into our generated html.  Please" >&2
-        echo "commit all changes and then re-run this script." >&2
-        exit 1
+    if ! git diff-index --exit-code --quiet HEAD; then
+        if [ "$UNCLEAN_OK" -ne 0 ]; then
+            echo "It looks like the git index is not clean, so we cannot correctly" >&2
+            echo "insert the 'Last modified' lines into our generated html." >&2
+        else
+            echo "It looks like the git index is not clean, so we cannot correctly" >&2
+            echo "insert the 'Last modified' lines into our generated html.  Please" >&2
+            echo "commit all changes and then re-run this script." >&2
+            exit 1
+        fi
     fi
 }
 
@@ -165,5 +194,11 @@ function clean_redundant_htmls {
 ###
 ### Actually pull the trigger and run all of this
 ###
-build_website
-deploy_website
+if [ "$BUILD_WEBSITE" -ne 0 ]; then
+    echo "Building website"
+    build_website
+fi
+if [ "$DEPLOY_WEBSITE" -ne 0 ]; then
+    echo "Deploying website"
+    deploy_website
+fi
