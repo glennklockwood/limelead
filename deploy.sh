@@ -92,12 +92,14 @@ function deploy_website {
 ### Required settings to deploy website
 ###
 function check_deploy_environment {
-    if [ -z "$WEBSITE_REMOTE_USER" -o -z "$WEBSITE_REMOTE_HOST" -o -z "$WEBSITE_REMOTE_PATH" ]; then
-        echo "You must have the following environment variables defined:"
-        echo "    WEBSITE_REMOTE_USER (currently=$WEBSITE_REMOTE_USER)"
-        echo "    WEBSITE_REMOTE_HOST (currently=$WEBSITE_REMOTE_HOST)"
-        echo "    WEBSITE_REMOTE_PATH (currently=$WEBSITE_REMOTE_PATH)"
-        exit 1
+    if [ "$DEPLOY_WEBSITE" -ne 0 ]; then
+        if [ -z "$WEBSITE_REMOTE_USER" -o -z "$WEBSITE_REMOTE_HOST" -o -z "$WEBSITE_REMOTE_PATH" ]; then
+            echo "You must have the following environment variables defined:"
+            echo "    WEBSITE_REMOTE_USER (currently=$WEBSITE_REMOTE_USER)"
+            echo "    WEBSITE_REMOTE_HOST (currently=$WEBSITE_REMOTE_HOST)"
+            echo "    WEBSITE_REMOTE_PATH (currently=$WEBSITE_REMOTE_PATH)"
+            exit 1
+        fi
     fi
 }
 
