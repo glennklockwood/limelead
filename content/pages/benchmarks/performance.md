@@ -59,4 +59,4 @@ systems do not have it.
 
 {{ json2table("content/data/benchmarks/x86_processors.json", show_cols=show_cols) }}
 
-[my website's git repository]: https://github.com/glennklockwood/limelead/tree/master/data/benchmarks
+[my website's git repository]: https://github.com/glennklockwood/limelead/tree/master/content/data/benchmarks
