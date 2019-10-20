@@ -73,10 +73,6 @@ body {
     border-bottom: 1px solid #777;
 }
 
-.content-box h3, h4, h5 {
-    border-bottom: 1px solid #777;
-}
-
 .content-box h1 > a:hover,
 .content-box h2 > a:hover,
 .content-box h3 > a:hover,
