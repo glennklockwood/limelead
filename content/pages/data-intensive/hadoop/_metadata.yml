@@ -1,2 +1,8 @@
 title: Topics in Hadoop
 shortTitle: Hadoop
+order: 40
+content: |
+  These materials were generated in conjunction with a set of tutorials I did
+  while working as a user services consultant at the San Diego Supercomputer
+  Center.  I stopped following Hadoop developments after 2014 so this tutorial
+  may be very out of date.

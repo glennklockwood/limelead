@@ -11,7 +11,7 @@ analysis of large data sets at scale.
 
 If this information is of use to anyone, please send me an e-mail and let me
 know.  I could use my experience and sample dataset as the basis for a tutorial
-(like the one I did for [Parallel Computing with R](r/index.html)) given the
+(like the one I did for [Parallel Computing with R](../r/index.html)) given the
 demand.
 
 [Dask]: https://dask.org/

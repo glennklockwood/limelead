@@ -21,14 +21,17 @@
 
 <!-- Data-Intensive Computing meta-section -->
 <h2>Data-Intensive Computing</h2>
-<p>My career has largely revolved around data-intensive scientific computing.
-Most of my current work is in storage systems and architecture, but in the past
-I have worked in the application space with tools including Hadoop and R.</p>
+<p>
+The following pages document some of the different faces of data-intensive
+scientific computing in which I've worked over the last few years.  I haven't
+used Hadoop or R since I left the San Diego Supercomputer Center in 2014, so
+those guides may seem a bit dated now.
+</p>
 
+{{ make_index_html_ul(PATH + '/pages/data-intensive/analysis', PATH + '/pages', SITEURL, 3) }}
 {{ make_index_html_ul(PATH + '/pages/data-intensive/storage', PATH + '/pages', SITEURL, 3) }}
 {{ make_index_html_ul(PATH + '/pages/data-intensive/hadoop', PATH + '/pages', SITEURL, 3) }}
 {{ make_index_html_ul(PATH + '/pages/data-intensive/r', PATH + '/pages', SITEURL, 3) }}
-{{ make_index_html_ul(PATH + '/pages/data-intensive', PATH + '/pages', SITEURL, hlevel="<h3>Miscellaneous Topics</h3>", asset_type="file") }}
 
 <!-- HPC-howtos section -->
 {{ make_index_html_ul(PATH + '/pages/hpc-howtos', PATH + '/pages', SITEURL, 2) }}

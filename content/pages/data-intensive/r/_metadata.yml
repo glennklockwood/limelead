@@ -1,2 +1,10 @@
-title: Topics in R
-shortTitle: R
+title: Parallel Computing with R
+shortTitle: Parallel Computing with R
+order: 30
+content: |
+  These materials were generated in conjunction with a set of tutorials I did
+  while working as a user services consultant at the San Diego Supercomputer
+  Center.  After 2014, I stopped using and supporting R for data analysis, so
+  this tutorial may be very out of date.  I've been using the Python ecosystem
+  as of late and recommend it since the skills you'll develop have utility in
+  a broader variety of programming tasks.
