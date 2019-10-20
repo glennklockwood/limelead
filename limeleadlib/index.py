@@ -94,7 +94,7 @@ def make_dir_index(pagesubdir, pagerootdir, siterootdir):
 
     return sorted(assets, key=_sorter)
 
-def make_index_html_ul(pagesubdir, pagerootdir, siterootdir, hlevel=2):
+def make_index_html_ul(pagesubdir, pagerootdir, siterootdir, hlevel=2, asset_type=None):
     """Creates an HTML unordered list for a directory
 
     Given a path, builds an index list (in HTML) describing the contents of that
@@ -105,8 +105,9 @@ def make_index_html_ul(pagesubdir, pagerootdir, siterootdir, hlevel=2):
             entry should be created
         pagerootdir (str): Full path to the root directory of the page sources
         siterootdir (str): The SITEURL for the published site
-        hlevel (int): Which heading level to create the index heading.  If zero,
-            do not draw heading.
+        hlevel (int or str): Which heading level to create the index heading.
+            If zero, do not draw heading.  If a string, literally print this
+            instead of a heading (should include h tags if desired).
 
     Returns:
         str: An HTML string that will generate a link to this file
@@ -114,21 +115,28 @@ def make_index_html_ul(pagesubdir, pagerootdir, siterootdir, hlevel=2):
 
     # Draw heading and optional short description
     my_metadata = get_dir_metadata(pagesubdir)
+
+    found = 0
     output = ""
     if hlevel:
-        output += "<h%d>" % hlevel
-        output += "%(title)s" % my_metadata
-        output += "</h%d>\n" % hlevel
+        if isinstance(hlevel, str):
+            output += hlevel
+        else:
+            output += "<h%d>" % hlevel
+            output += "%(title)s" % my_metadata
+            output += "</h%d>\n" % hlevel
     if 'contentHtml' in my_metadata:
         output += my_metadata['contentHtml'] + "\n\n"
 
     # Draw bulleted list of contents
     output += "<ul>\n"
     for asset in make_dir_index(pagesubdir, pagerootdir, siterootdir):
-        output += '  <li><a href="%(url)s">%(title)s</a></li>\n' % asset
+        if asset_type is None or asset.get('type') == asset_type:
+            output += '  <li><a href="%(url)s">%(title)s</a></li>\n' % asset
+            found += 1
     output += "</ul>\n"
 
-    return output
+    return output if found else ""
 
 def make_index_md(pagesubdir, pagerootdir, siterootdir):
     """Creates an index markdown for a directory
