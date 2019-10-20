@@ -16,7 +16,9 @@ demand.
 
 [Dask]: https://dask.org/
 
-## Partitioning
+## Analyzing large data sets
+
+### Partitioning
 
 Dask doesn't appear to have any notion of load balancing or rebalancing;
 once a dataset is partitioned (often one partition per file), that is the
@@ -49,24 +51,7 @@ following bash one-liner will nuke all the empty ones:
         [ $(gunzip -c $i | wc -c) -eq 0 ] && rm -v "$i"
     done
 
-## Scheduler
-
-The distributed scheduler provides a really nice web UI for seeing what's
-happening, but its strictness in enforcing memory limits can cause all manner
-of artificial problems on workloads that may require a lot of memory per task.
-Workers will be killed if they use more than 95% of their allotted memory, and
-if a worker gets killed too many times on the same task, that task will be
-blacklisted from execution and the whole collection of tasks will deadlock.
-
-If a workload seems to be causing workers to get killed for exceeding 95% of
-their memory allocation, try using a local scheduler (processes or threads).
-These schedulers will do whatever they do, and even if one task blows up memory,
-as long as the sum of all tasks remains within the memory limits, all will be
-well.  It may be worthwhile to run workers with no memory restrictions, but I
-don't know what will happen in these cases (update: turns out it works; see
-below)
-
-## Changing bag element granularity
+### Changing bag element granularity
 
 `.map_partition(lambda x: ...)` passes a sequence of elements as x, but returns
 a concatenated bag of elements at the end.  Thus you can use this to perform
@@ -91,7 +76,57 @@ the original bag.
 
 For whatever reason, you cannot simply do a `.from_sequence(partition_contents)`
 
-## Memory Management and Distributed Mode
+### Parquet
+
+It looks like working with Dask DataFrames is far faster than bags, and it may
+be simpler to go from as primitive of a bag to a DataFrame as possible, and then
+just rebuild DataFrames when more of the unstructured part of each bag (the
+transfer metadata) is needed.
+
+Parquet seemed like a more sensible ingest format for DataFrames than bags, but
+there are a lot of problems with it.  Foremost, a naive operation like
+
+    :::python
+    >>> bag.to_dataframe().to_parquet()
+
+will fail with a cryptic
+
+    TypeError: expected list of bytes
+
+error.  This is because the default index created by `to_dataframe()` is not
+very well defined.  So you have to
+
+    :::python
+    >>> dataframe = bag.to_dataframe()
+    >>> dataframe.index = dataframe.index.astype('i8')
+    >>> dataframe.to_parquet()
+
+There are also two backends; fastparquet seems to be preferred, but it is full
+of very opaque errors or silent failures.  For example, I could not get compression to work--passing no `compression=` argument, passing `compression='GZIP'`, and passing `compression='snappy'` (with the `python-snappy` conda package installed) all resulted in identically sized files, all of which are significantly larger (22 GiB) than the 4.5 GiB gzipped json source dataset.
+
+pyarrow is the official implementation provided by the Apache foundation, but the version that Dask requires is so new that it is in neither standard conda nor conda-forge, so you effectively can't use it in a supported way within Anaconda.  As such, I really don't know how well it works.
+
+
+## Configuring and using the runtime framework
+
+### Scheduler
+
+The distributed scheduler provides a really nice web UI for seeing what's
+happening, but its strictness in enforcing memory limits can cause all manner
+of artificial problems on workloads that may require a lot of memory per task.
+Workers will be killed if they use more than 95% of their allotted memory, and
+if a worker gets killed too many times on the same task, that task will be
+blacklisted from execution and the whole collection of tasks will deadlock.
+
+If a workload seems to be causing workers to get killed for exceeding 95% of
+their memory allocation, try using a local scheduler (processes or threads).
+These schedulers will do whatever they do, and even if one task blows up memory,
+as long as the sum of all tasks remains within the memory limits, all will be
+well.  It may be worthwhile to run workers with no memory restrictions, but I
+don't know what will happen in these cases (update: turns out it works; see
+below)
+
+### Memory Management and Distributed Mode
 
 Trying to use a lot of memory with Dask is tough.  A three-month dataset is
 approximately 90 GB when encoded as uncompressed JSON.  Persisting this into
@@ -139,37 +174,103 @@ Finally, note that `.persist()` pins stuff in memory and will result in OOM
 errors.  It appears that persisted objects are not allowed to spill to disk even
 if running out of memory is imminent.
 
-## Parquet
+### On Slurm
 
-It looks like working with Dask DataFrames is far faster than bags, and it may
-be simpler to go from as primitive of a bag to a DataFrame as possible, and then
-just rebuild DataFrames when more of the unstructured part of each bag (the
-transfer metadata) is needed.
+[NERSC's guide to using Dask][] covers the basics of running Dask within a Slurm
+batch environment.  I developed an interactive workflow based on this.  First,
+get an interactive job that requests the correct number of nodes (`-N 16`) and
+total Dask workers to spawn (`-n 128`) for a time that's generally long enough
+to run the analysis:
 
-Parquet seemed like a more sensible ingest format for DataFrames than bags, but
-there are a lot of problems with it.  Foremost, a naive operation like
+    $ salloc -N 16 -n 128 -t 30:00 --qos interactive
+
+As soon as the interactive session opens, do
+
+    $ export SCHEDULE_FILE="$SCRATCH/scheduler_${SLURM_JOB_ID}.json"
+
+so that this job has its own unique Dask scheduler file to which subsequent Dask
+analyses can connect.
+
+I then use a standalone Bash script that instantiates the Dask runtime
+environment in the Slurm job called `start_dask_slurm.sh`:
+
+    :::bash
+    #!/usr/bin/env bash
+
+    # delete any stale scheduler files
+    SCHEDULE_FILE="${SCHEDULE_FILE:-$SCRATCH/scheduler_${SLURM_JOB_ID}.json}"
+    if [ -f "$SCHEDULE_FILE" ]; then
+        rm -f "$SCHEDULE_FILE"
+    fi
+    dask-scheduler --scheduler-file "$SCHEDULE_FILE" &
+    sleep 5
+    echo "Scheduler file: $SCHEDULE_FILE"
+
+This is pretty straightforward and just launches the scheduler daemon and
+generates the scheduler file to which all workers will have to connect.
+I stuck a `sleep 5` in there because it's tempting to launch workers right
+away, but they will freak out if the dask scheduler isn't fully bootstrapped
+which can take a second or two.
+
+Then I made a second script called `add_workers.sh`:
+
+    :::bash
+    #!/usr/bin/env bash
+    #
+    # Starts up a Dask cluster from within a Slurm job.  Does not pass -n or -N to
+    # srun, so your batch job should already have this set up correctly.
+    #
+    NTHREADS=1
+    NPROCS=1
+    MEMLIMIT=""
+    INTERFACE="ipogif0" # use Aries
+
+    SCHEDULE_FILE="${SCHEDULE_FILE:-$SCRATCH/scheduler_${SLURM_JOB_ID}.json}"
+
+    if [ ! -z "$MEMLIMIT" ]; then
+        MEMLIMIT="--memory-limit $MEMLIMIT"
+    fi
+
+    echo "Scheduler file: $SCHEDULE_FILE"
+    srun python3 $(which dask-worker) --interface=$INTERFACE --nthreads $NTHREADS --nprocs $NPROCS $MEMLIMIT --scheduler-file "$SCHEDULE_FILE" &
+
+In practice, the `NTHREADS`, `NPROCS`, and `MEMLIMIT` variables set above are
+the optimal values.  Fiddling with them can lead to things hanging because too
+many threads are running at once; it's easier to let `srun` inherit the right
+degree of parallelism from your `salloc` command.
+
+Having the scheduler start separately from the workers being added is handy for
+those cases where your analysis crashes because it runs out of memory.  Workers
+will permanently die off, leaving the scheduler still running but with no
+workers.  When that happens, you can just `add_workers.sh` without having to
+kill and re-run `start_dask_slurm.sh`.
+
+To kill the entire cluster, `ps ux | grep dask-scheduler` and kill the scheduler.
+
+To kill just the workers, you can `ps ux | grep srun` and kill the parent srun
+that launched all the workers.  The scheduler will remain up, allowing you to
+re-run `add_workers.sh`.
+
+Once the cluster is running, you can run Python scripts that point to
+`$SCHEDULE_FILE` environment variable we set at the very beginning.  For
+example,
 
     :::python
-    >>> bag.to_dataframe().to_parquet()
+    import os
+    import dask
+    import dask.bag
+    import dask.distributed
 
-will fail with a cryptic
+    SCHEDULER_FILE = os.environ.get("SCHEDULER_FILE")
+    if SCHEDULER_FILE and os.path.isfile(SCHEDULER_FILE):
+        client = dask.distributed.Client(scheduler_file=SCHEDULER_FILE)
 
-    TypeError: expected list of bytes
+    bag = dask.bag.read_text(glob.glob('*.json')).map(json.loads)
+    # etc etc
 
-error.  This is because the default index created by `to_dataframe()` is not
-very well defined.  So you have to
+[NERSC's guide to using Dask]: https://docs.nersc.gov/programming/high-level-environments/python/dask/
 
-    :::python
-    >>> dataframe = bag.to_dataframe()
-    >>> dataframe.index = dataframe.index.astype('i8')
-    >>> dataframe.to_parquet()
-
-There are also two backends; fastparquet seems to be preferred, but it is full
-of very opaque errors or silent failures.  For example, I could not get compression to work--passing no `compression=` argument, passing `compression='GZIP'`, and passing `compression='snappy'` (with the `python-snappy` conda package installed) all resulted in identically sized files, all of which are significantly larger (22 GiB) than the 4.5 GiB gzipped json source dataset.
-
-pyarrow is the official implementation provided by the Apache foundation, but the version that Dask requires is so new that it is in neither standard conda nor conda-forge, so you effectively can't use it in a supported way within Anaconda.  As such, I really don't know how well it works.
-
-## pypy
+### pypy
 
 Dask distributed is painfully slow for fine-grained tasks.  It may be because of
 the pure Python implementation of its communication stack.  Does pypi make
@@ -186,3 +287,6 @@ You seem to have to manually install all the dependencies.  For h5py,
     export DYLD_LIBRARY_PATH=/Users/glock/anaconda3//pkgs/hdf5-1.10.4-hfa1e0ec_0/lib
     export C_INCLUDE_PATH=/Users/glock/anaconda3//pkgs/hdf5-1.10.4-hfa1e0ec_0/include
     export LIBRARY_PATH=/Users/glock/anaconda3//pkgs/hdf5-1.10.4-hfa1e0ec_0/lib
+
+Unfortunately, weird stuff I was doing in my analysis (specifically with
+`**kwargs`) was incompatible with pypy, so I never got to do a speed comparison.
