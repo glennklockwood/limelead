@@ -1,14 +1,16 @@
-# My Personal Website, Pelican Edition
+# My Personal Website
 
-I started this repository to move away from the Hugo-based version that is
-currently live.  I don't use Go and find the Go templating engine idiosyncratic
-and not very valuable to learn; as a result, I wound up having to implement a
-bunch of postprocessing features in Python to wrap the Hugo runtime.
+This repository contains all of the content and tooling used to generate my
+personal website, https://www.glennklockwood.com/.  The site used to be
+[Hugo][]-based but I switched to [Pelican][] since don't really use Go, find the
+Go templating engine idiosyncratic, and I wind up using a lot more Python these
+days.
 
-Pelican provides a Python-native way to integrate these specific bits of my
-website, so we're giving that a shot here.  The `limeleadlib` Python library
-provides functionality that was previously implemented in bash and Python
-wrappers.
+There is a fair amount of site-specific devilry baked into this site which is
+implemented in the included `limeleadlib` Python library.
+
+[Hugo]: https://gohugo.io/
+[Pelican]: https://getpelican.com/
 
 ## Requirements
 
@@ -22,6 +24,11 @@ See `requirements.txt`.  The following packages are noteworthy:
 - yaml: Directory metadata is expressed in YAML files
 
 ## Common Operations
+
+This website uses Pelican as a foundation for providing the directory structure
+and rendering interfaces, but there are a lot of site-specific operations that
+require understanding the specific way in which limeleadlib and the _molecular_
+theme extend Pelican.
 
 ### Editing the Landing Page
 
