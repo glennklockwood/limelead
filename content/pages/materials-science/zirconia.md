@@ -1,10 +1,6 @@
 ---
-date: "2006-10-09T18:36:45-05:00"
-draft: false
-title: "Overview of Zirconia"
-shortTitle: "Zirconia"
-last_mod: "October 9, 2006"
-parentdirs: [ 'materials-science' ]
+title: Overview of Zirconia
+shortTitle: Zirconia
 ---
 
 ## Introduction

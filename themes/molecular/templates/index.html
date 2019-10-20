@@ -1,139 +1,49 @@
-{{ partial "header.html" . }}
-    <div class="container">
-        <div class="content-box">
-            <div class="main-page-header">
-            <img src="me2.jpg" alt="Glenn K. Lockwood">
-                <h1>Glenn K. Lockwood, Ph.D.</h1>
-                <p style="font-size: 150%; margin-bottom: 0">HPC Performance Analyst</p>
-                <p style="margin-bottom: 0">Materials Scientist</p>
-                <p><script type="text/javascript">var username = "glenn"; var hostname = "glennklockwood.com"; var linktext = username + "@" + hostname; document.write("<a href='" + "mail" + "to:" + username + "@" + hostname + "'>" + linktext + "<\/a>");</script>
-                </p>
+{% extends "base.html" %}
 
-                <hr>
-            </div>
-<div class="content">
-<p>I am a computational scientist and specialist in high-performance computing
-systems currently working at the <a href="//www.nersc.gov">National Energy
-Research Scientific Computing Center (NERSC)</a> at
-<a href="//www.lbl.gov/">Lawrence Berkeley National Laboratory</a>.  My work
-focuses on I/O performance analysis, extreme-scale storage architectures, and
-emerging I/O technologies and interfaces.</p>
+{% set HIDE_SIDEBAR=True %}
 
-<p>In my previous life, I did research in computational materials science and
-studied the chemical physics of water/silica interfaces with molecular dynamics
-simulation.  I also spent some time working in the DNA sequencing industry
-helping to connect bioinformaticians with the computational resources their
-work demanded.  More information about me is available on <a href="cv.html">my
-CV</a> and on <a href="http://www.linkedin.com/in/glennklockwood">LinkedIn</a>.
-</p>
+{% block title %}{{ SITENAME }}{% endblock %}
 
-<p>This site contains various notes I've taken related to technical computing
-over the years.  I welcome any feedback about its contents at the e-mail
-address listed at the bottom of every page, and I can also be found in
-<code>#hpc</code> on <a href="http://freenode.net/">freenode</a>.</p> 
+{% block container_header %}
+{% endblock %}
 
-<div class="main-page-index">
+{% block content %}
+<div class="main-page-header">
+  <img src="me2.jpg" alt="Glenn K. Lockwood">
+  <h1>Glenn K. Lockwood, Ph.D.</h1>
+  <p style="font-size: 150%; margin-bottom: 0">HPC Performance Analyst</p>
+  <p style="margin-bottom: 0">Materials Scientist</p>
+  <p><script type="text/javascript">var username = "glenn"; var hostname = "glennklockwood.com"; var linktext = username + "@" + hostname; document.write("<a href='" + "mail" + "to:" + username + "@" + hostname + "'>" + linktext + "<\/a>");</script></p>
+  <hr>
+</div>
+
+{{ includefile(PATH + '/pages/_index.md') | md2html(MARKDOWN) }}
+
+<!-- Data-Intensive Computing meta-section -->
 <h2>Data-Intensive Computing</h2>
 <p>My career has largely revolved around data-intensive scientific computing.
 Most of my current work is in storage systems and architecture, but in the past
 I have worked in the application space with tools including Hadoop and R.</p>
-<h3>Topics in Storage</h3>
-<ul>
-    <li><a href="data-intensive/storage/object-storage.html">Principles of Object Storage</a></li>
-    <li><a href="data-intensive/storage/nvram.html">Principles of Non-volatile RAM</a></li>
-    <li><a href="data-intensive/storage/io-forwarding.html">I/O Forwarding for Extreme-Scale Systems</a></li>
-</ul>
+{{ make_index_html_ul(PATH + '/pages/data-intensive/storage', PATH + '/pages', SITEURL, 3) }}
+{{ make_index_html_ul(PATH + '/pages/data-intensive/hadoop', PATH + '/pages', SITEURL, 3) }}
+{{ make_index_html_ul(PATH + '/pages/data-intensive/r', PATH + '/pages', SITEURL, 3) }}
 
-<h3>Topics in Hadoop</h3>
-<ul>
-    <li><a href="data-intensive/hadoop/overview.html">Conceptual Overview of Map/Reduce and Hadoop</a></li>
-    <li><a href="data-intensive/hadoop/streaming.html">Writing Hadoop Applications in Python with Hadoop Streaming</a></li>
-    <li><a href="data-intensive/hadoop/parsing-vcfs.html">Parsing VCF Files with Hadoop Streaming</a></li>
-    <li><a href="data-intensive/hadoop/on-hpc.html">Running Hadoop on HPC Clusters</a></li>
-    <li><a href="http://www.slideshare.net/glennklockwood/hadoop-streaming-29230982"><strong>Slides</strong>: Hadoop Streaming: Programming Hadoop without Java</a></li>
-    <li><a href="http://www.slideshare.net/glennklockwood/introduction-to-spark-41788747"><strong>Slides</strong>: Introduction to Spark</a></li>
-</ul>
-<h3>Topics in R</h3>
-<ul>
-    <li><a href="data-intensive/r/on-hpc.html">Using R on HPC Clusters</a></li>
-    <li><a href="data-intensive/r/parallel-options.html">Parallel Options for R</a></li>
-    <li><a href="https://github.com/glennklockwood/paraR">Code Samples for Parallel R</a></li>
-</ul>
+<!-- HPC-howtos section -->
+{{ make_index_html_ul(PATH + '/pages/hpc-howtos', PATH + '/pages', SITEURL, 2) }}
 
-<h2>HPC Howtos</h2>
-<p>In the past I have worked as both a user services consultant and a systems
-enginer.  This section contains a few notes relevant to using and managing HPC
-resources, but <a href="http://users.sdsc.edu/~glockwood/">the bulk of my HPC
-how-to guides</a> remains hosted at the San Diego Supercomputer Center.
-<ul>
-    <li><a href="hpc-howtos/process-affinity.html">Managing Process Affinity in Linux</a></li>
-    <li><a href="http://glennklockwood.blogspot.com/2013/04/quick-mpi-cluster-setup-on-amazon-ec2.html"><strong>Blog</strong>: Setting up a basic MPI cluster on Amazon EC2</a></li>
-</ul>
+<!-- Performance and Benchmarking section -->
+{{ make_index_html_ul(PATH + '/pages/benchmarks', PATH + '/pages', SITEURL, 2) }}
 
-<h2>Performance &amp; Benchmarks</h2>
-<p>This section contains a number of disjoint pieces revolving around
-performance analysis.</p>
-<ul>
-    <li><a href="https://glennklockwood.blogspot.com/2016/07/basics-of-io-benchmarking.html"><strong>Blog</strong>: Basics of I/O Benchmarking</a></li>
-    <li><a href="https://glennklockwood.blogspot.com/2014/02/quantum-espresso-performance-benefits.html"><strong>Blog</strong>: BLAS, LAPACK, and ScaLAPACK Implementations</a></li>
-    <li><a href="https://glennklockwood.blogspot.com/2013/12/high-performance-virtualization-sr-iov.html"><strong>Blog</strong>: SR-IOV with Amazon's C3 Instances</a></li>
-    <li><a href="https://glennklockwood.blogspot.com/2013/12/high-performance-virtualization-sr-iov_14.html"><strong>Blog</strong>: SR-IOV with QDR InfiniBand</a></li>
-    <li><a href="https://glennklockwood.blogspot.com/2013/06/whats-killing-cloud-interconnect.html"><strong>Blog</strong>: IP over InfiniBand and IP over Ethernet</a></li>
-    <li><a href="https://glennklockwood.blogspot.com/2013/05/fdr-infiniband-vs-dual-rail-qdr.html"><strong>Blog</strong>: Dual-Rail QDR InfiniBand vs. FDR InfiniBand</a></li>
-    <li><a href="benchmarks/index.html">Historical performance trends (1996-2017)</a></li>
-    <li><a href="benchmarks/power-consumption.html">Historical power consumption of Unix workstations</a></li>
-</ul>
+<!-- Materials science section -->
+{{ make_index_html_ul(PATH + '/pages/materials-science', PATH + '/pages', SITEURL, 2) }}
 
-<h2>Materials Science</h2>
-<p>When I was a student I maintained a variety of notes about different
-topics relevant to ceramic engineering, in which I got my undergraduate degree.
-I've re-uploaded them here for posterity.</p>
-<ul>
-  <li><a href="materials-science/statistical-design.html">Statistical Design using Orthogonal Arrays</a></li>
-  <li><a href="materials-science/overview-glasses.html">Overview of Glasses</a></li>
-  <li><a href="materials-science/metals.html">Overview of Metals</a></li>
-  <li><a href="materials-science/alumina.html">Overview of Alumina</a></li>
-  <li><a href="materials-science/silicon-carbide.html">Overview of Silicon Carbide</a></li>
-  <li><a href="materials-science/silicon-nitride.html">Overview of Silicon Nitride</a></li>
-  <li><a href="materials-science/zirconia.html">Overview of Zirconia</a></li>
-  <li><a href="materials-science/glass-compositions.html">Glass Compositions</a></li>
-</ul>
-
+<!-- Miscellaneous section -->
 <h2>Miscellany</h2>
 <p>I've created the following pages about my hobbies mostly for my own
-entertainment.  They have little to do with what I do professionally, but they
-might be of interest to people who hold similar interests.</p>
-<h3>Electronics</h3>
-<ul>
+entertainment. They have little to do with what I do professionally, but
+they might be of interest to people who hold similar interests.</p>
+{{ make_index_html_ul(PATH + '/pages/electronics', PATH + '/pages', SITEURL, 3) }}
+{{ make_index_html_ul(PATH + '/pages/sysadmin-howtos', PATH + '/pages', SITEURL, 3) }}
+{{ make_index_html_ul(PATH + '/pages/personal', PATH + '/pages', SITEURL, 3) }}
 
-    <li><a href="https://glennklockwood.blogspot.com/2016/10/learning-electronics-with-roulette.html"><strong>Blog</strong>: Learning electronics with Velleman MK152 and Raspberry Pi</a></li>
-    <li><a href="electronics/max7219.html">Using the MAX7219 LED display driver</a></li>
-    <li><a href="electronics/bipolar-junction-transistors.html">Understanding bipolar junction transistors</a></li>
-    <li><a href="electronics/digipots.html">Experimenting with digipots and ADCs</a></li>
-    <li><a href="electronics/hd44780-lcd-display.html">Programming the HD44780 LCD display driver with Raspberry Pi</a></li>
-    <li><a href="electronics/twsu-synth-kid.html">Understanding the TWSU Synth Kit</a></li>
-    <li><a href="electronics/555.html">Understanding the 555 Timer IC</a></li>
-</ul>
-
-<h3>Unix and Linux Howtos</h3>
-<ul>
-    <li><a href="sysadmin-howtos/rpi-wifi-island.html">Create a wired Ethernet island on a wifi network with Raspberry Pi</a></li>
-    <li><a href="sysadmin-howtos/rpi-headless-boot.html">Configuring Raspberry Pi for Headless Boot</a></li>
-    <li><a href="sysadmin-howtos/configuring-solaris10.html">Installing and configuring a Solaris 10 server</a></li>
-    <li><a href="sysadmin-howtos/converting-blocksize-on-solaris.html">Converting 520-byte block disks to 512-byte blocks (Solaris)</a></li>
-    <li><a href="sysadmin-howtos/configuring-dmake.html">Configuring dmake (Solaris)</a></li>
-    <li><a href="sysadmin-howtos/terasic-de10-nano.html">Getting started with the Terasic DE10-Nano</a></li>
-</ul>
-
-<h3>Personal</h3>
-<ul>
-    <li><a href="personal/about.html">A little about me</a></li>
-    <li><a href="personal/computer-collection.html">My old computer collection</a></li>
-</ul>
-
-</div>
-</div>
-        </div>
-        {{ partial "container-footer.html" . }}
-    </div>
-{{ partial "footer.html" . }}
+{% endblock %}

@@ -1,17 +1,7 @@
 ---
-date: "2013-08-14T00:00:00-07:00"
-draft: false
-title: "Alternative Forms of Parallelism"
-shortTitle: "Alternative Forms of Parallelism"
-last_mod: "August 14, 2013"
-parentdirs: [ 'data-intensive', 'r' ]
+title: Alternative Forms of Parallelism
+order: 30
 ---
-
-## Contents
-
-* [6. Introduction](#6-introduction)
-* [6.1. Poor-man's parallelism](#6-1-poor-man-s-parallelism)
-* [6.2. Hands-off parallelism](#6-2-hands-off-parallelism)
 
 ## 6. Introduction
 
@@ -67,8 +57,7 @@ parallelization; rather, we
 1. take input from the command line so that we have a mechanism to distinguish one particular execution of this script from another
 2. use this command-line input to set the random number generator's seed value
 
-<div class="shortcode">
-{{% inset "Parallel Random Numbers" %}}
+{% call inset("Parallel Random Numbers") %}
 When running many instances of the same script in parallel, it is 
 particularly important to remember that computers generate pseudorandom numbers
 by using some deterministic algorithm based on a seed value.  If the seed value
@@ -85,8 +74,7 @@ parallel invocation of the same R script.  In this k-means example, manually
 calling <code>set.seed</code> is actually not necessary; I merely included it
 here to show how we can get command-line arguments from an R script to affect
 how one might use the same R script with PMP.
-{{% /inset %}}
-</div>
+{% endcall %}
 
 We then run four copies of this script using different inputs to generate
 different randomized starts:
@@ -189,15 +177,13 @@ the default "greediness" of OpenMP up to the OpenMP implementors, and I've seen
 different compilers choose both one and all cores if <var>OMP_NUM_THREADS</var>
 is not explicitly defined.  Just be mindful of the possibilities.
 
-<div class="shortcode">
-{{% alertbox info %}}
+{% call alert(type="info") %}
 As of R 3.0.2, only the <code>colSums()</code> and <code>dist()</code> builtin
 functions actually support OpenMP.  However, third-party libraries from CRAN can
 also include OpenMP, and as long as your installation of R was built with OpenMP
 support, this poor-man's parallelism will be enabled whenever such a library
 is installed with <code>install.packages()</code>
-{{% /alertbox %}}
-</div>
+{% endcall %}
 
 <!-- references -->
 [my parallel r github repository]: https://github.com/glennklockwood/paraR/tree/master/kmeans

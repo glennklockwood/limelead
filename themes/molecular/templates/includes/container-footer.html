@@ -1,0 +1,15 @@
+<footer>
+  <div class="row footer-box text-box mt-1 mb-2 pt-3 pb-3" id="footer">
+    <div class="col-sm-8 order-1">Last modified {{ ((page.source_path if page else None) | getmtime_git).strftime("%B %d, %Y") }}</div>
+    <div class="col-sm-4 order-12 text-right">
+      <script type="text/javascript">
+        //<![CDATA[
+        var username = "glenn";
+        var hostname = "glennklockwood.com";
+        var linktext = username + "@" + hostname;
+        document.write("<a href='" + "mail" + "to:" + username + "@" + hostname + "'>" + linktext + "<\/a>");
+        //]]>
+      </script>
+    </div>
+  </div>
+</footer>

@@ -1,29 +1,8 @@
 ---
-date: "2018-01-06T12:52:00-07:00"
-draft: false
-title: "Getting started with the Terasic DE10-Nano"
-last_mod: "January 6, 2018"
-parentdirs: [ 'sysadmin-howtos' ]
+title: Getting started with the Terasic DE10-Nano
+shortTitle: Terasic DE10-Nano
 ---
 
-## Table of Contents
-
-* [1. Initial Setup](#1-initial-setup)
-    * [1.1. Downloading the OS image](#1-1-downloading-the-os-image)
-    * [1.2. Resize the file system](#1-2-resize-the-file-system)
-* [2. Connecting](#2-connecting)
-    * [2.1. Serial connection](#2-1-serial-connection)
-    * [2.2. Ethernet over USB](#2-2-ethernet-over-usb)
-    * [2.3. SSH](#2-3-ssh)
-    * [2.4. VNC](#2-4-vnc)
-* [3. Basic Configuration](#3-basic-configuration)
-    * [3.1. Adding a non-root user](#3-1-adding-a-non-root-user)
-    * [3.2. Installing Software](#3-2-installing-software)
-    * [3.3. Basic Security](#3-3-basic-security)
-    * [3.4. Enabling non-root i2c, spi, and GPIO access](#3-4-enabling-non-root-i2c-spi-and-gpio-access)
-* [4. Advanced Configuration](#4-advanced-configuration)
-    * [4.1. Getting wifi working](#4-1-getting-wifi-working)
-   
 ## 1. Initial Setup
 
 My host computer is an iMac running macOS, and I used this to get my DE10-Nano
@@ -49,24 +28,20 @@ files that end with `.img` and not `.sdimg`, so I had to add the `.img`
 extension on to the uncompressed `de10-nano-image-Angstrom-v2016.12.socfpga-sdimg`
 file.
 
-<div class="shortcode">
-{{% alertbox info %}}
+{% call alert('info') %}
 Confusingly, Intel _also_ maintains a version of 
 <a href="https://www.intel.com/content/www/us/en/programmable/support/training/university/materials-software.html">Ubuntu 12.04 specifically for the DE10-Nano</a>.
 Sadly, Ubuntu 12.04 is beyond EOL, so while Intel is patching their example
 code for this image, the rest of the user environment is very old and no
 longer updated.
-{{%/alertbox%}}
-</div>
+{% endcall %}
 
-<div class="shortcode">
-{{% alertbox danger %}}
+{% call alert('danger') %}
 The SD card that shipped with my DE10-nano tends to lose its contents if left
 unpowered for a few months.  This is likely why mine came empty.  I recommend
 replacing it with an SD card from a more reputable manufacturer if you don't
 want to lose data on it over time.
-{{%/alertbox%}}
-</div>
+{% endcall %}
 
 ### 1.2. Resize the file system
 

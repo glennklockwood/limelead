@@ -1,19 +1,7 @@
 ---
-date: "2013-08-14T00:00:00-07:00"
-draft: false
-title: "Map-reduce-based Parallelism"
-shortTitle: "Map-reduced-based Parallelism"
-last_mod: "August 14, 2013"
-parentdirs: [ 'data-intensive', 'r' ]
+title: Map-reduce-based Parallelism
+order: 40
 ---
-
-## Contents
-
-* [7. Introduction](#7-introduction)
-* [7.1. Halfway to parallel](#7-1-halfway-to-parallel)
-* [7.2. Hadoop Streaming](#7-2-hadoop-streaming)
-* [7.3. RHIPE](#7-3-rhipe)
-* [7.4. RHadoop](#7-4-rhadoop)
 
 ## 7. Introduction
 

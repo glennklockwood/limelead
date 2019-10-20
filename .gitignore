@@ -1,4 +1,5 @@
-public
-setenv.sh
-.htaccess
-.DS_Store
+__pycache__
+output
+
+# all index.md files are dynamically generated
+index.md

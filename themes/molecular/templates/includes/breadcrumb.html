@@ -1,0 +1,22 @@
+{% if page %}
+<hr>
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{{ SITEURL }}/index.html">Home</a></li>
+    {% if page.path_no_ext|basename == "index" %}
+        {% set parentdirs = page.path_no_ext.split('/')[:-2] %}
+    {% else %}
+        {% set parentdirs = page.path_no_ext.split('/')[:-1] %}
+    {% endif %}
+    {% for p in parentdirs %}
+        {% set path = SITEURL + "/" + parentdirs[:loop.index]|join("/") %}
+        {% set here = path | sourcepath(page) | dir_metadata(['shortTitle', 'shorttitle', 'title']) %}
+        {% if not here|length %}
+        {%   set here = parentdirs[loop.index0] | title %}
+        {% endif %}
+        <li class="breadcrumb-item"><a href="{{ path }}/">{{ here }}</a></li>
+    {% endfor %}
+    <li class="breadcrumb-item active" aria-current="page">{{ page.shorttitle if page.shorttitle else page.title }}</li>
+  </ol>
+</nav>
+{% endif %}

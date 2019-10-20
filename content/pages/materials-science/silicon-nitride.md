@@ -1,10 +1,6 @@
 ---
-date: "2006-10-09T18:40:27-05:00"
-draft: false
-title: "Overview of Silicon Nitride"
-shortTitle: "Silicon Nitride"
-last_mod: "October 9, 2006"
-parentdirs: [ 'materials-science' ]
+title: Overview of Silicon Nitride
+shortTitle: Silicon Nitride
 ---
 
 ## Introduction

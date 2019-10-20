@@ -1,10 +1,6 @@
 ---
-date: "2006-10-09T18:40:51-05:00"
-draft: false
-title: "Statistical Design using Orthogonal Arrays"
-shortTitle: "Statistical Design"
-last_mod: "October 9, 2006"
-parentdirs: [ 'materials-science' ]
+title: Statistical Design using Orthogonal Arrays
+shortTitle: Statistical Design
 ---
 
 Statistical design is an alternative to the scientific method of checking one

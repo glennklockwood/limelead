@@ -1,7 +1,0 @@
-baseurl: "http://www.glennklockwood.com/"
-languageCode: "en-us"
-title: "Glenn K. Lockwood"
-uglyUrls: true
-pygmentsStyle: "tango"
-blackfriday:
-    plainIdAnchors: true

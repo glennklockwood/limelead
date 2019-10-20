@@ -1,0 +1,21 @@
+<!--
+<style>
+    #banner{
+        background-image:url("{{ SITEURL}}/{{ BANNER }}");
+    }
+</style>
+-->
+
+<div class="row">
+    <div class="col-sm-12 banner-box text-box mb-1 mt-2 pt-3 pb-3" id="banner">
+        {% if page %}
+          <h1>{{ page.title }}</h1>
+          {% include "includes/breadcrumb.html" %}
+        {% else %}
+          <h1>{{ SITENAME }}</h1>
+          {% if BANNER_SUBTITLE %}
+            <p class="intro">{{ BANNER_SUBTITLE }}</p>
+          {% endif %}
+        {% endif %}
+    </div>
+</div>

@@ -1,1 +1,6 @@
-pygments>=2.2.0
+bs4>=4.8.0
+markdown>=3.1.1
+pandas>=0.25.1
+pelican>=4.1.2
+tabulate>=0.8.3
+yaml>=5.1.2

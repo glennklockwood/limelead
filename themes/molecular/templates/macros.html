@@ -1,0 +1,33 @@
+{% macro figure(src, alt="", caption="") -%}
+<div class="figure-caption">
+  <figure>
+    <img src="{{ src }}" title="{{ alt }}" alt="{{ alt }}">
+    {% if caption %}
+    <figcaption>
+    <p>{{ caption }}</p>
+    </figcaption>
+    {% endif %}
+  </figure>
+</div>
+{%- endmacro %}
+
+{% macro alert(type='info') -%}
+<div class="alert alert-{{ type }}" role="alert">
+{% if type == "info" %}
+<div class="alertbox-icon"><span class="fa fa-info-circle" aria-hidden="true"></span></div>
+{% elif type == "warning" %}
+<div class="alertbox-icon"><span class="fa fa-exclamation-circle" aria-hidden="true"></span></div>
+{% endif %}
+<div class="alertbox-content">{{ caller()|md2html }}</div>
+</div>
+{%- endmacro %}
+
+{# An inset is like a footnote #}
+{% macro inset(title="", type='info') -%}
+<div class="inset">
+{% if title %}
+<div class="inset-header">{{ title }}</div>
+{% endif %}
+<div class="inset-content">{{ caller()|md2html }}</div>
+</div>
+{%- endmacro %}

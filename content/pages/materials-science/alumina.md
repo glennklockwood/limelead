@@ -1,10 +1,6 @@
 ---
-date: "2006-10-09T18:30:43-05:00"
-draft: false
-title: "Overview of Alumina"
-shortTitle: "Alumina"
-last_mod: "October 9, 2006"
-parentdirs: [ 'materials-science' ]
+title: Overview of Alumina
+shortTitle: Alumina
 ---
 
 ## Introduction

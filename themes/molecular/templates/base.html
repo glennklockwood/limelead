@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>{% block title %}{% endblock %}</title>
+    <!-- Using the latest rendering mode for IE -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" type="text/css">
+    <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}{% if THEME_STATIC_DIR %}/{% endif %}css/style.css" type="text/css">
+    <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}{% if THEME_STATIC_DIR %}/{% endif %}css/pygment.css" type="text/css">
+    <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,700,700italic,900">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <!-- TODO: add author meta stuff -->
+</head>
+
+<body>
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+  ga('create', 'UA-47255034-1', 'glennklockwood.com');
+  ga('send', 'pageview');
+</script>
+
+<!-- top-level navbar -->
+{% if NAVBAR_TOP %}
+    {% include "includes/navbar.html" %}
+{% endif %}
+<!-- end top-level navbar -->
+
+{% if PADDED_SINGLE_COLUMN_STYLE %}
+    {% set content_class='col-md-8 col-md-offset-2' %}
+{% elif not HIDE_SIDEBAR or ABOUT_ME or AVATAR %}
+    {% set content_class='col-md-9' + (' order-12' if SIDEBAR_ON_LEFT else '') %}
+    {% set sidebar_class='col-md-3' + (' order-1' if SIDEBAR_ON_LEFT else '') %}
+{% else %}
+    {% set content_class='col-lg-12' %}
+{% endif %}
+<div class="container"> <!-- container -->
+
+    <!-- container header -->
+    {% block container_header %}
+    {% include "includes/container-header.html" ignore missing %}
+    {% endblock %}
+    <!-- end container header -->
+
+    <div class="row text-box"> <!-- main row -->
+
+        <div class="{{ content_class }} content-box pt-3" id="content"> <!-- content -->
+            {% block content %}{% endblock %}
+        </div> <!-- end content -->
+
+        {% if sidebar_class %}
+        {% block sidebar %}
+        <div class="{{ sidebar_class }} sidebar-box pt-3" id="sidebar"> <!-- sidebar -->
+            <aside>
+              {% if ABOUT_ME or AVATAR %}
+                {% include 'includes/aboutme.html' %}
+              {% endif %}
+              {% if not HIDE_SIDEBAR %}
+                
+              {% endif %}
+          </aside>
+        </div> <!-- end sidebar -->
+        {% endblock sidebar %}
+        {% endif %}
+
+    </div> <!-- end main row -->
+
+    {% block container_footer %}
+    <!-- container footer -->
+    {% include "includes/container-footer.html" ignore missing %}
+    <!-- end container footer -->
+    {% endblock %}
+</div> <!-- end container -->
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+</body>
+</html>

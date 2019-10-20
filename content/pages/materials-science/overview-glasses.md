@@ -1,10 +1,6 @@
 ---
-date: "2006-10-09T00:00:00-05:00"
-draft: false
-title: "Overview of Glasses"
-shortTitle: "Glasses"
-last_mod: "October 9, 2006"
-parentdirs: [ 'materials-science' ]
+title: Overview of Glasses
+shortTitle: Glasses
 ---
 
 ## Introduction

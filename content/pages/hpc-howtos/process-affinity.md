@@ -1,24 +1,7 @@
 ---
 title: Managing Process Affinity in Linux
 shortTitle: Process Affinity
-date: 2014-06-28T00:00:00-07:00
-last_mod: "June 28, 2014"
-parentDirs: [ hpc-howtos ]
 ---
-
-## Contents
-
-* [1. Introduction](#1-introduction)
-* [2. Types of Thread Scheduling](#2-types-of-thread-scheduling)
-    * [2.1. Compact Scheduling](#2-1-compact-scheduling)
-    * [2.2. Round-Robin Scheduling](#2-2-round-robin-scheduling)
-    * [2.3. Stupid Scheduling](#2-3-stupid-scheduling)
-* [3. Defining Affinity](#3-defining-affinity)
-    * [3.1. The Linux-Portable Way (taskset)](#3-1-the-linux-portable-way-taskset)
-    * [3.2. The Other Linux-Portable Way (numactl)](#3-2-the-other-linux-portable-way-numactl)
-    * [3.3. Using OpenMP Runtime Extensions](#3-3-using-openmp-runtime-extensions)
-    * [3.4. Using OpenMP 4.0 Runtime Controls](#3-4-using-openmp-4-0-runtime-controls)
-    * [3.5. getfreesocket](#3-5-getfreesocket)
 
 ## 1. Introduction
 
@@ -53,9 +36,7 @@ These sorts of scheduling issues are best described with diagrams.  Let's
 assume we have compute nodes with two processor sockets, and each processor
 has four cores:
 
-<div class="shortcode">
-{{< figure src="scheduling-topology.png" link="scheduling-topology.png" alt="topology of a dual-socket, quad-core node" >}}
-</div>
+{{ figure(src="scheduling-topology.png", alt="topology of a dual-socket, quad-core node") }}
 
 When you run a multithreaded application with four threads (or even four 
 serial applications), Linux will _schedule_ those threads for execution
@@ -72,9 +53,7 @@ but the fact is that Linux will happily schedule your multithreaded job (or
 multiple single-thread jobs) this way if your threads behave in a way that is 
 confusing to the operating system.
 
-<div class="shortcode">
-{{< figure src="scheduling-compact.png" link="scheduling-compact.png" alt="compact scheduling" >}}
-</div>
+{{ figure(src="scheduling-compact.png", alt="compact scheduling") }}
 
 ### 2.1. Compact Scheduling
 
@@ -92,9 +71,7 @@ threads on the processor who owns that memory.
 
 ### 2.2. Round-Robin Scheduling
 
-<div class="shortcode">
-{{< figure src="scheduling-scatter.png" alt="scheduling-scatter.png" alt="scatter or round-robin scheduling" >}}
-</div>
+{{ figure(src="scheduling-scatter.png", alt="scatter or round-robin scheduling") }}
 
 Option #2 is called "scatter" or "round-robin"  scheduling and is ideal if 
 your threads are largely independent of each other and don't need to access a 
@@ -107,9 +84,7 @@ processor.
 
 ### 2.3. Stupid Scheduling
 
-<div class="shortcode">
-{{< figure src="scheduling-stupid.png" link="scheduling-stupid.png" alt="stupid scheduling" >}}
-</div>
+{{ figure(src="scheduling-stupid.png", alt="stupid scheduling") }}
 
 Option #3 and #4 are what I call "stupid" scheduling (see diagram to the 
 right) and can often be the default behavior of the Linux thread scheduler if 

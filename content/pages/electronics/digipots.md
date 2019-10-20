@@ -1,19 +1,6 @@
 ---
-date: "2016-10-29T22:38:00-07:00"
-draft: false
-last_mod: "October 29, 2016"
-title: "Experimenting with digipots and ADCs"
-shortTitle: "Experimenting with digipots and ADCs"
-parentdirs: [ "electronics" ]
+title: Experimenting with digipots and ADCs
 ---
-
-## Contents
-
-- [Introduction](#introduction)
-- [Digital Potentiometers](#digital-potentiometers)
-- [Analog-to-Digital Converters](#analog-to-digital-converters)
-- [All-digital transistor test circuit](#all-digital-transistor-test-circuit)
-- [Going forward](#going-forward)
 
 ## Introduction
 
@@ -39,9 +26,7 @@ Specifically, we can replace
 The following guide repeats the experiment on my page on [understanding bipolar
 junction transistors][my bjt page] where we built the following circuit:
 
-<div class="shortcode">
-{{< figure src="2n2222-experiment-circuit-taps.png" link="2n2222-experiment-circuit.png" alt="Transistor and potentiometer test circuit diagram taps" >}}
-</div>
+{{ figure("2n2222-experiment-circuit-taps.png", alt="Transistor and potentiometer test circuit diagram taps") }}
 
 and measured the voltages at the three taps shown to get V<sub>collector</sub>,
 V<sub>base</sub>, and V<sub>emitter</sub>.  For this set of experiments though,
@@ -56,9 +41,7 @@ potentiometer in that it has two terminals (usually connected to a source and
 ground) with a wiper terminal in between that outputs the variable resistance.
 The MCP41010 that I use is pinned as follows:
 
-<div class="shortcode">
-{{< figure src="mcp41010-pinout.png" link="mcp41010-pinout.png" alt="Pinout of the MCP41010 digital potentiometer chip" >}}
-</div>
+{{ figure("mcp41010-pinout.png", alt="Pinout of the MCP41010 digital potentiometer chip") }}
 
 Pins 5, 6, and 7 are connected exactly the same way as the three pins on a
 regular potentiometer, and V<sub>SS</dub> and V<sub>DD</sub> are connected to
@@ -68,9 +51,7 @@ To program the MCP41010 (that is, to set the resistance you want it to have),
 you send it 16-bit SPI packets not unlike I discuss on [my MAX7219 page][].
 These packets have the format:
 
-<div class="shortcode">
-{{< figure src="mcp41010-packet.png" link="mcp41010-packet.png" alt="Depiction of the MCP41010 command packet" class="width-100" >}}
-</div>
+{{ figure("mcp41010-packet.png", alt="Depiction of the MCP41010 command packet") }}
 
 where
 
@@ -110,9 +91,7 @@ sensor pins.
 
 The MCP3008 has a 16-bit SPI packet structure not unlike the MCP41010:
 
-<div class="shortcode">
-{{< figure src="mcp3008-packet.png" link="mcp3008-packet.png" alt="Depiction of the MCP3008 command packet" class="width-100" >}}
-</div>
+{{ figure("mcp3008-packet.png", alt="Depiction of the MCP3008 command packet") }}
 
 Unlike the digipot, though, communicating with the chip involves both writing
 commands (which I consider input) and reading back the result (output).
@@ -140,9 +119,7 @@ Armed the MCP41010 digipot, MCP3008 ADC, and a reasonable knowledge of how to
 program them via SPI, it's quite simple to fully digitize the transistor test
 circuit.
 
-<div class="shortcode">
-{{< figure src="2n2222-experiment-circuit-rpi.jpg" link="2n2222-experiment-circuit-rpi.jpg" alt="Transistor and potentiometer digital test circuit" >}}
-</div>
+{{ figure("2n2222-experiment-circuit-rpi.jpg", alt="Transistor and potentiometer digital test circuit") }}
 
 In the above photo, the MCP3008 ADC is in the top half of the breadboard, and
 it has red/orange/yellow/green cables connecting it to the Raspberry Pi for
@@ -165,14 +142,49 @@ matter of
 
 In Python and using my basic SPI library, it would look something like this:
 
-<script src="https://gist.github.com/glennklockwood/15a2740cf5a83e1e281c278fa8128c2e.js"></script>
+    :::python
+    #!/usr/bin/env python
+
+    """Vary resistance on a digital potentiometer and measure the effect using
+       an analog-digital converter"""
+    import spi # from https://github.com/glennklockwood/raspberrypi
+    import time
+
+    # use two independent SPI buses, but daisy chaining then is also valid
+    adc = spi.SPI(clk=18, cs=25, mosi=24, miso=23, verbose=False)
+    digipot = spi.SPI(clk=19, cs=13, mosi=26, miso=None, verbose=False)
+
+    # iterate over all possible resistance values (8 bits = 256 values)
+    for resist_val in range(256):
+        # set the resistance on the MCP41010
+        cmd = int("00010001", 2)
+        # make room for resist_val's 8 bits
+        cmd <<= 8
+        digipot.put(cmd|resist_val, bits=16)
+
+        # wait to allow voltage transients to subside
+        time.sleep(0.2)
+
+        # get the voltage from the MCP3008
+        voltages = [0, 0, 0]
+        for channel in range(len(voltages)):
+            # set the start bit, single-ended mode bit, and 3 channel select bits
+            cmd = int("11000", 2) | channel
+            # read 1 null bit, then 10 data bits
+            cmd <<= 10 + 1
+            value = adc.put_get(cmd, bits=16)
+            # mask off everything but the last 10 read bits
+            value &= 2**10 - 1
+            voltages[channel] = 3.3 * value / 1023.0
+            
+        # 10000.0 because MCP41010 is a 10 Kohm digital pot
+        print "%4.2f %4.2f %4.2f %5d" % (voltages[0], voltages[1], voltages[2],
+                                         10000.0 * resist_val / 255.0)
 
 Not only is this _much_ faster than turning a potentiometer by hand and reading
 off a voltmeter, it gives much more precise data:
 
-<div class="shortcode">
-{{< figure src="2n2222-voltage-plot-digital.png" link="2n2222-voltage-plot-digital.png" alt="Voltage at the collector, base, and emitter as base is changed, measured using digital means"  class="width-100" >}}
-</div>
+{{ figure("2n2222-voltage-plot-digital.png", alt="Voltage at the collector, base, and emitter as base is changed, measured using digital means") }}
 
 The above plot represents measurements for all 256 possible resistivities that
 the MCP41010 can provide.  The linear relationship between the voltages is

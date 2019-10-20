@@ -1,9 +1,5 @@
 ---
-date: "2015-06-18T10:30:00-07:00"
-draft: false
-title: "Cirriculum Vitae"
-last_mod: "August 26, 2015"
-parentdirs: [ ]
+title: Cirriculum Vitae
 ---
 
 <h2 class="cv-h2">Summary</h2>

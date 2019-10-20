@@ -1,9 +1,5 @@
 ---
-date: "2009-10-17T21:50:38-05:00"
-draft: false
-title: "Configuring dmake"
-last_mod: "October 17, 2009"
-parentdirs: [ 'sysadmin-howtos' ]
+title: Configuring dmake
 ---
 
 At one point I had set up my two Sun Blade 1000s to work together for

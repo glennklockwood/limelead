@@ -1,21 +1,7 @@
 ---
-date: "2014-06-28T00:00:00-07:00"
-draft: false
-title: "Parsing VCF Files with Hadoop Streaming"
-shortTitle: "Parsing VCFs with Hadoop"
-last_mod: "June 28, 2014"
-parentdirs: [ 'data-intensive', 'hadoop' ]
+title: Parsing VCF Files with Hadoop Streaming
+shortTitle: Parsing VCFs with Hadoop
 ---
-
-## Table of Contents
-
-* [1. Introduction](#1-introduction)
-* [2. Conceptual Overview](#2-conceptual-overview)
-* [3. Install Python Library as Non-Root](#3-install-python-library-as-non-root)
-* [4. The Mapper](#4-the-mapper)
-* [5. The Reducer](#5-the-reducer)
-* [6. Job Launch](#6-job-launch)
-* [7. Scaling Behavior](#7-scaling-behavior)
 
 ## 1. Introduction
 
@@ -61,9 +47,7 @@ by Hadoop.  Thus, the preprocessing step here involves reading the _top_
 of the input file and printing the header lines to stdout _until the first
 non-header line is reached_:
 
-<div class="shortcode">
-{{< figure src="vcf.png" link="vcf.png" alt="schematic of VCF file preprocessing" >}}
-</div>
+{{ figure(src="vcf.png", alt="Schematic of VCF file preprocessing") }}
 
 We copy this printed header information to a separate file that exists 
 outside of HDFS and don't bother messing with the actual VCF file's contents.

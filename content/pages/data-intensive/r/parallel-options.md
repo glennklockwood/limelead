@@ -1,10 +1,7 @@
 ---
-date: "2013-08-14T00:00:00-07:00"
-draft: false
-title: "Parallel Options for R"
-shortTitle: "Parallel Options"
-last_mod: "August 14, 2013"
-parentdirs: [ 'data-intensive', 'r' ]
+title: Parallel Options for R
+shortTitle: Parallel Options
+order: 5
 ---
 
 ## Contents
@@ -47,9 +44,7 @@ we get.   For example, the following diagram shows some random data (top left)
 and the result of applying k-means clustering from three different random 
 starting guesses:
 
-<div class="shortcode">
-{{< figure src="kmeans-cluster.png" link="kmeans-cluster.png" alt="parallel k-means concept" >}}
-</div>
+{{ figure("kmeans-cluster.png", alt="parallel k-means concept") }}
 
 We can then calculate some value (I think of it as an _energy function_) that
 represents the error in each of these local minima.  Finding the smallest
@@ -62,15 +57,12 @@ random starts to get as close as we can to this one true global minimum.
 
 The simplest example of a k-means calculation in R looks like
 
-<div class="shortcode">
-{{< highlight r "linenos=inline" >}}
-data &lt;- read.csv('dataset.csv')
+    :::r
+    data <- read.csv('dataset.csv')
 
-result &lt;- kmeans(data, centers=4, nstart=100)
+    result <- kmeans(data, centers=4, nstart=100)
 
-print(result)
-{{< /highlight >}}
-</div>
+    print(result)
 
 This code tries to find four cluster centers using 100 starting positions, 
 and the value of <var>result</var> is the k-means object containing the 
@@ -79,14 +71,12 @@ look at a couple of different ways we can parallelize this calculation.  All of
 the example codes presented here can be found in [my Parallel R GitHub 
 repository][my parallel r github repository].
 
-<div class="shortcode">
-{{% alertbox info %}}
+{% call alert("info") %}
 This guide is adapted from a talk I give, and it assumes that you already
 know how to actually run R jobs on parallel computing systems.  I wrote a guide,
 [Running R on HPC Clusters](on-hpc.html) that goes through the basics of how
 to actually run these example codes.
-{{% /alertbox %}}
-</div>
+{% endcall %}
 
 ## 2. The parallel R taxonomy
 

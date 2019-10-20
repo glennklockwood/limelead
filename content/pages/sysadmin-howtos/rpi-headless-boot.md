@@ -1,9 +1,6 @@
 ---
-date: "2017-11-25T11:00:00-07:00"
-draft: false
-title: "Configuring Raspberry Pi for Headless Boot"
-last_mod: "November 25, 2017"
-parentdirs: [ 'sysadmin-howtos' ]
+title: Configuring Raspberry Pi for Headless Boot
+shortTitle: RPi Headless Boot
 ---
 
 If a `wpa_supplicant.conf` file is located in the `/boot` directory of a freshly

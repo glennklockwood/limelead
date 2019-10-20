@@ -1,8 +1,5 @@
 ---
-date: "2010-05-01T18:36:25-05:00"
-title: "Converting Disk Block Size on Solaris"
-last_mod: "May 1, 2010"
-parentdirs: [ 'sysadmin-howtos' ]
+title: Converting Disk Block Size on Solaris
 ---
 
 One strange problem that I've come upon in buying secondhand enterprise hardware

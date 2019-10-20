@@ -1,19 +1,7 @@
 ---
-date: "2013-08-14T00:00:00-07:00"
-draft: false
-title: "foreach-based Parallelism"
-shortTitle: "foreach-based Parallelism"
-last_mod: "August 14, 2013"
-parentdirs: [ 'data-intensive', 'r' ]
+title: foreach-based Parallelism
+order: 20
 ---
-
-## Contents
-
-* [4. Introduction](#4-introduction)
-* [4.1. Halfway to parallel](#4-1-halfway-to-parallel)
-* [4.2. doMC: shared-memory parallelism](#4-2-domc-shared-memory-parallelism)
-* [4.3. doSNOW: distributed-memory parallelism](#4-3-dosnow-distributed-memory-parallelism)
-* [5. Caveats with lapply- and foreach-based parallelism](#5-caveats-with-lapply-and-foreach-based-parallelism)
 
 ## 4. Introduction
 
@@ -35,13 +23,10 @@ Perhaps it is more sensible to illustrate what this means by comparing the
 equivalent commands expressed using <code>lapply</code> and 
 <code>foreach</code>:
 
-<div class="shortcode">
-{{< highlight r >}}
-mylist &lt;- c( 1, 2, 3, 4, 5 )
-output1 &lt;- lapply( mylist, FUN=function(x) { y = x + 1; y } )
-output2 &lt;- foreach(x = mlist) %do% { y = x + 1; y }
-{{< /highlight >}}
-</div>
+    :::r
+    mylist <- c( 1, 2, 3, 4, 5 )
+    output1 <- lapply( mylist, FUN=function(x) { y = x + 1; y } )
+    output2 <- foreach(x = mlist) %do% { y = x + 1; y }
 
 Both codes iterate through every element in <var>mylist</var> and return a
 list of the same length as <var>mylist</var> containing each of the elements
@@ -59,15 +44,12 @@ foreach loop, and in fact, it is not even guaranteed to be defined.
 Going back to the simple k-means example, recall that this is what the most
 simplified (serial) version of the code would look like:
 
-<div class="shortcode">
-{{< highlight r >}}
-data &lt;- read.csv('dataset.csv')
+    :::r
+    data <- read.csv('dataset.csv')
 
-result &lt;- kmeans(data, centers=4, nstart=100)
+    result <- kmeans(data, centers=4, nstart=100)
 
-print(result)
-{{< /highlight >}}
-</div>
+    print(result)
 
 As with lapply-based parallelism, we have to take a step backwards to make
 the code amenable to parallelization.  The foreach version of the k-means code
@@ -144,9 +126,7 @@ backend you just registered.
 As one would hope, using <code>foreach</code> with the <code>doMC</code>
 parallel backend provides the same speedup as <code>mclapply</code>:
 
-<div class="shortcode">
-{{< figure src="mclapply-vs-foreach-scaling.png" link="mclapply-vs-foreach-scaling.png" alt="mclapply Scaling" >}}
-</div>
+{{ figure("mclapply-vs-foreach-scaling.png", alt="mclapply Scaling") }}
 
 The slightly greater speedup in the <code>foreach</code> case (<span 
 style="color:red">red</span> line) is not significant since the dataset I used 
@@ -216,19 +196,13 @@ the amount of memory you have in a single node** as far as how large of a
 dataset you can process.  This is because you still load the entire dataset
 into memory on the master process:
 
-<div class="shortcode">
-{{< highlight r >}}
-data &lt;- read.csv( 'dataset.csv' )
-{{< /highlight >}}
-</div>
+    :::r
+    data <- read.csv( 'dataset.csv' )
 
 and clone it across all of your nodes:
 
-<div class="shortcode">
-{{< highlight r >}}
-clusterExport(cl, c('data'))
-{{< /highlight >}}
-</div>
+    :::r
+    clusterExport(cl, c('data'))
 
 Thus, these approaches will not really help you solve problems that are too
 large to fit into memory; in such cases, you either need to turn to special

@@ -1,23 +1,8 @@
 ---
-date: "2014-02-07T00:00:00-07:00"
-draft: false
-title: "Using R on HPC Clusters"
-shortTitle: "R on HPC"
-last_mod: "August 14, 2013"
-parentdirs: [ 'data-intensive', 'r' ]
+title: Using R on HPC Clusters
+shortTitle: R on HPC
+order: 0
 ---
-
-## Contents
-
-* [1. Introduction](#1-introduction)
-* [2. Installing Libraries](#2-installing-libraries)
-    * [2.1. Most Libraries](#2-1-most-libraries)
-    * [2.2. Rmpi](#2-2-rmpi)
-* [3. Submitting R Jobs to a Cluster](#3-submitting-r-jobs-to-a-cluster)
-    * [3.1 Running Serial R Jobs](#3-1-running-serial-r-jobs)
-    * [3.2 Running Shared Memory R Jobs](#3-2-running-shared-memory-r-jobs)
-    * [3.3 Running Parallel Jobs with snow/doSNOW](#3-3-running-parallel-jobs-with-snow-dosnow)
-* [4. Trivial sample code](#4-trivial-sample-code)
 
 ## 1. Introduction
 
@@ -219,8 +204,7 @@ $ <kbd>module load gnu/4.6.1 openmpi R</kbd>
 $ <kbd>R CMD INSTALL</kbd> --configure-vars=...
 </pre>
 
-<div class="shortcode">
-{{% inset "Note about MVAPICH2" %}}
+{% call inset("Note about MVAPICH2", "info") %}
 If you log into Gordon, start an interactive job (do not run R on the login
 nodes!), and try run a snow-based script which calls <code>ClusterApply</code>,
 you may find that it just segfaults:
@@ -264,8 +248,7 @@ MVAPICH2.  Use OpenMPI when using Rmpi or its derivatives.**  You can
 do this by loading the <code>openmpi_ib</code> module before loading the 
 <code>R</code> module.
 
-{{% /inset %}}
-</div>
+{% endcall %}
 
 ## 3. Submitting R Jobs to a Cluster
 

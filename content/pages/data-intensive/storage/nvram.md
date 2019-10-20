@@ -1,11 +1,9 @@
 ---
-date: "2016-02-01T12:27:00-07:00"
-draft: false
-title: "Principles of Non-volatile RAM"
-shortTitle: "Non-volatile RAM"
-last_mod: "February 1, 2016"
-parentdirs: [ 'data-intensive', 'storage' ]
+title: Principles of Non-volatile RAM
+shortTitle: Non-volatile RAM
 ---
+
+## Introduction
 
 The information on this page has been compiled based on notes I've taken during
 various (public) vendor presentations and meetings.  I am by no means an expert

@@ -1,36 +1,13 @@
 ---
-date: "2016-11-03T19:59:00-07:00"
-draft: false
-last_mod: "November 3, 2016"
-title: "Programming the HD44780 LCD Display with Raspberry Pi"
-shortTitle: "Programming HD44780 LCD Display"
-parentdirs: [ "electronics" ]
+title: Programming the HD44780 LCD Display with Raspberry Pi
+shortTitle: Programming HD44780 LCD Display
 ---
-
-## Contents
-
-- [Introduction](#introduction)
-- [Basic physical interface](#basic-physical-interface)
-- [Basic command structure](#basic-command-structure)
-- [Initialization](#initialization)
-    - [The magical reset sequence](#the-magical-reset-sequence)
-    - [Configuring the "function set" options](#configuring-the-function-set-options)
-    - [Configuring "display on/off control" options](#configuring-display-on-off-control-options)
-    - [Clearing the display](#clearing-the-display)
-    - [Configuring the "entry mode set" options](#configuring-the-entry-mode-set-options)
-- [Writing a message](#writing-a-message)
-- [Setting the cursor position](#setting-the-cursor-position)
-- [Other commands](#other-commands)
-- [Further experimenting](#further-experimenting)
-
 
 ## Introduction
 
 The HD44780 is a chip that drives simple 16x2 LCD character displays.
 
-<div class="shortcode">
-{{< figure src="hd44780.gif" link="hd44780.gif" alt="HD44780 in action" >}}
-</div>
+{{ figure("hd44780.gif", alt="HD44780 in action") }}
 
 They are extremely inexpensive, and a fully integrated [HD44780 and LCD display
 can be purchased for under $4][oddwires page].  They provide an 8-bit parallel
@@ -54,9 +31,7 @@ The HD44780 display that I bought and used has sixteen interface pins; five
 provide power, ground, and contrast control, and eleven are used to program
 the device:
 
-<div class="shortcode">
-{{< figure src="hd44780-wiring.jpg" link="hd44780-wiring.jpg" alt="HD44780 wiring example" >}}
-</div>
+{{ figure("hd44780-wiring.jpg", alt="HD44780 wiring example") }}
 
 There are plenty of wiring guides around (e.g., the [Adafruit Character LCD
 guide][]) which are mostly complete.  However, there are a few additional points
@@ -117,26 +92,23 @@ When operating in 4-bit mode, the process to issue a command is
 
 Programmatically, a function that issues a command might look like
 
-<div class="shortcode">
-{{< highlight python >}}
-def write8_4bitmode(command, rs_value):
-    GPIO.output(PIN_RS, rs_value)
+    :::python
+    def write8_4bitmode(command, rs_value):
+        GPIO.output(PIN_RS, rs_value)
 
-    time.sleep(1e-3)
+        time.sleep(1e-3)
 
-    GPIO.output(PIN_D[4], GPIO.HIGH if ((command >> 4) & 1) > 0 else GPIO.LOW)
-    GPIO.output(PIN_D[5], GPIO.HIGH if ((command >> 5) & 1) > 0 else GPIO.LOW)
-    GPIO.output(PIN_D[6], GPIO.HIGH if ((command >> 6) & 1) > 0 else GPIO.LOW)
-    GPIO.output(PIN_D[7], GPIO.HIGH if ((command >> 7) & 1) > 0 else GPIO.LOW)
-    clock_pulse()
+        GPIO.output(PIN_D[4], GPIO.HIGH if ((command >> 4) & 1) > 0 else GPIO.LOW)
+        GPIO.output(PIN_D[5], GPIO.HIGH if ((command >> 5) & 1) > 0 else GPIO.LOW)
+        GPIO.output(PIN_D[6], GPIO.HIGH if ((command >> 6) & 1) > 0 else GPIO.LOW)
+        GPIO.output(PIN_D[7], GPIO.HIGH if ((command >> 7) & 1) > 0 else GPIO.LOW)
+        clock_pulse()
 
-    GPIO.output(PIN_D[4], GPIO.HIGH if ((command >> 0) & 1) > 0 else GPIO.LOW)
-    GPIO.output(PIN_D[5], GPIO.HIGH if ((command >> 1) & 1) > 0 else GPIO.LOW)
-    GPIO.output(PIN_D[6], GPIO.HIGH if ((command >> 2) & 1) > 0 else GPIO.LOW)
-    GPIO.output(PIN_D[7], GPIO.HIGH if ((command >> 3) & 1) > 0 else GPIO.LOW)
-    clock_pulse()
-{{< /highlight >}}
-</div>
+        GPIO.output(PIN_D[4], GPIO.HIGH if ((command >> 0) & 1) > 0 else GPIO.LOW)
+        GPIO.output(PIN_D[5], GPIO.HIGH if ((command >> 1) & 1) > 0 else GPIO.LOW)
+        GPIO.output(PIN_D[6], GPIO.HIGH if ((command >> 2) & 1) > 0 else GPIO.LOW)
+        GPIO.output(PIN_D[7], GPIO.HIGH if ((command >> 3) & 1) > 0 else GPIO.LOW)
+        clock_pulse()
 
 Pulsing the clock (`EN`) is not entirely straightforward, because the `EN` pin
 is triggered by a rising edge, but cannot be pulsed too quickly since the
@@ -154,16 +126,13 @@ looks like
 
 The `clock_pulse()` function may look something like
 
-<div class="shortcode">
-{{< highlight python >}}
-def pulse_clock(delay=1e-3):
-    time.sleep(delay)
-    GPIO.output(PIN_EN, GPIO.HIGH)
-    time.sleep(delay)
-    GPIO.output(PIN_EN, GPIO.LOW)
-    time.sleep(delay)
-{{< /highlight >}}
-</div>
+    :::python
+    def pulse_clock(delay=1e-3):
+        time.sleep(delay)
+        GPIO.output(PIN_EN, GPIO.HIGH)
+        time.sleep(delay)
+        GPIO.output(PIN_EN, GPIO.LOW)
+        time.sleep(delay)
 
 where the `delay` is critical to ensure that successive commands are not lost
 due to excessively high frequency.
@@ -171,24 +140,21 @@ due to excessively high frequency.
 When using 8-bit mode and pins `D0`-`D7` are all wired, the command sequence
 is a little simpler.  The corresponding code would look like
 
-<div class="shortcode">
-{{< highlight python >}}
-def write8_8bitmode(command, rs_value):
-    GPIO.output(PIN_RS, rs_value)
+    :::python
+    def write8_8bitmode(command, rs_value):
+        GPIO.output(PIN_RS, rs_value)
 
-    time.sleep(1e-3)
+        time.sleep(1e-3)
 
-    GPIO.output(PIN_D[0], GPIO.HIGH if ((command >> 0) & 1) > 0 else GPIO.LOW)
-    GPIO.output(PIN_D[1], GPIO.HIGH if ((command >> 1) & 1) > 0 else GPIO.LOW)
-    GPIO.output(PIN_D[2], GPIO.HIGH if ((command >> 2) & 1) > 0 else GPIO.LOW)
-    GPIO.output(PIN_D[3], GPIO.HIGH if ((command >> 3) & 1) > 0 else GPIO.LOW)
-    GPIO.output(PIN_D[4], GPIO.HIGH if ((command >> 4) & 1) > 0 else GPIO.LOW)
-    GPIO.output(PIN_D[5], GPIO.HIGH if ((command >> 5) & 1) > 0 else GPIO.LOW)
-    GPIO.output(PIN_D[6], GPIO.HIGH if ((command >> 6) & 1) > 0 else GPIO.LOW)
-    GPIO.output(PIN_D[7], GPIO.HIGH if ((command >> 7) & 1) > 0 else GPIO.LOW)
-    pulse_clock()
-{{< /highlight >}}
-</div>
+        GPIO.output(PIN_D[0], GPIO.HIGH if ((command >> 0) & 1) > 0 else GPIO.LOW)
+        GPIO.output(PIN_D[1], GPIO.HIGH if ((command >> 1) & 1) > 0 else GPIO.LOW)
+        GPIO.output(PIN_D[2], GPIO.HIGH if ((command >> 2) & 1) > 0 else GPIO.LOW)
+        GPIO.output(PIN_D[3], GPIO.HIGH if ((command >> 3) & 1) > 0 else GPIO.LOW)
+        GPIO.output(PIN_D[4], GPIO.HIGH if ((command >> 4) & 1) > 0 else GPIO.LOW)
+        GPIO.output(PIN_D[5], GPIO.HIGH if ((command >> 5) & 1) > 0 else GPIO.LOW)
+        GPIO.output(PIN_D[6], GPIO.HIGH if ((command >> 6) & 1) > 0 else GPIO.LOW)
+        GPIO.output(PIN_D[7], GPIO.HIGH if ((command >> 7) & 1) > 0 else GPIO.LOW)
+        pulse_clock()
 
 ## Initialization
 
@@ -216,29 +182,26 @@ executed in any order.
 An example of the code that would initialize the chip in 4-bit mode would look
 like this:
 
-<div class="shortcode">
-{{< highlight python >}}
-def init_4bitmode():
-    ### initialization magic sequence
-    write4(int("0011", 2))
-    write4(int("0011", 2))
-    write4(int("0011", 2))
-    write4(int("0010", 2))
+    :::python
+    def init_4bitmode():
+        ### initialization magic sequence
+        write4(int("0011", 2))
+        write4(int("0011", 2))
+        write4(int("0011", 2))
+        write4(int("0010", 2))
 
-    ### send the "function set" command to configure display dimensions
-    write8_4bitmode(int("00101100",2), rs_value=GPIO.LOW)
+        ### send the "function set" command to configure display dimensions
+        write8_4bitmode(int("00101100",2), rs_value=GPIO.LOW)
 
-    ### send the "display on/off control" command (1000) to power on the
-    ### display (0100), enable cursor (0010), and enable cursor blink (0001)
-    write8_4bitmode(int("00001111",2), rs_value=GPIO.LOW)
+        ### send the "display on/off control" command (1000) to power on the
+        ### display (0100), enable cursor (0010), and enable cursor blink (0001)
+        write8_4bitmode(int("00001111",2), rs_value=GPIO.LOW)
 
-    ### clear the display
-    write8_4bitmode(int("00000001",2), rs_value=GPIO.LOW)
+        ### clear the display
+        write8_4bitmode(int("00000001",2), rs_value=GPIO.LOW)
 
-    ### send the "entry mode set" command to set left-to-right printing (110)
-    write8_4bitmode(int("00000110",2), rs_value=GPIO.LOW)
-{{< /highlight >}}
-</div>
+        ### send the "entry mode set" command to set left-to-right printing (110)
+        write8_4bitmode(int("00000110",2), rs_value=GPIO.LOW)
 
 The following sections provide more detail about the steps in this process.
 
@@ -262,24 +225,21 @@ Specifically, this involves
 
 Note that this sequence simply leaves the low-order bits floating:
 
-<div class="shortcode">
-{{< highlight python >}}
-def write4(value):
-    """
-    special function to send only the four highest-order bits; low-order bits
-    remain floating
-    """
-    GPIO.output(PIN_RS, GPIO.LOW)
+:::python
+    def write4(value):
+        """
+        special function to send only the four highest-order bits; low-order bits
+        remain floating
+        """
+        GPIO.output(PIN_RS, GPIO.LOW)
 
-    time.sleep(1e-3)
+        time.sleep(1e-3)
 
-    GPIO.output(PIN_D[4], GPIO.HIGH if ((value >> 0) & 1) > 0 else GPIO.LOW)
-    GPIO.output(PIN_D[5], GPIO.HIGH if ((value >> 1) & 1) > 0 else GPIO.LOW)
-    GPIO.output(PIN_D[6], GPIO.HIGH if ((value >> 2) & 1) > 0 else GPIO.LOW)
-    GPIO.output(PIN_D[7], GPIO.HIGH if ((value >> 3) & 1) > 0 else GPIO.LOW)
-    pulse_clock()
-{{< /highlight >}}
-</div>
+        GPIO.output(PIN_D[4], GPIO.HIGH if ((value >> 0) & 1) > 0 else GPIO.LOW)
+        GPIO.output(PIN_D[5], GPIO.HIGH if ((value >> 1) & 1) > 0 else GPIO.LOW)
+        GPIO.output(PIN_D[6], GPIO.HIGH if ((value >> 2) & 1) > 0 else GPIO.LOW)
+        GPIO.output(PIN_D[7], GPIO.HIGH if ((value >> 3) & 1) > 0 else GPIO.LOW)
+        pulse_clock()
 
 This magic reset sequence is the only time this 4-bit write is ever used.  And
 in fact, it is not strictly necessary to use a special 4-bit write function;
@@ -287,46 +247,37 @@ the magic reset sequence to initialize 4-bit mode is actually designed in a
 way that allows you to issue two 8-bit commands in 4-bit mode to emulate the
 same sequence.  That is,
 
-<div class="shortcode">
-{{< highlight python >}}
-def init_4bitmode():
-    """
-    initialize chip into 4-bit interface mode using a special 4-bit write
-    function
-    """
-    write4(int("0011", 2))
-    write4(int("0011", 2))
-    write4(int("0011", 2))
-    write4(int("0010", 2))
-{{< /highlight >}}
-</div>
+    :::python
+    def init_4bitmode():
+        """
+        initialize chip into 4-bit interface mode using a special 4-bit write
+        function
+        """
+        write4(int("0011", 2))
+        write4(int("0011", 2))
+        write4(int("0011", 2))
+        write4(int("0010", 2))
 
 is functionally identical to
 
-<div class="shortcode">
-{{< highlight python >}}
-def init_4bitmode():
-    """
-    initialize chip into 4-bit interface mode using 8-bit sequences written
-    in 4-bit mode
-    """
-    write8_4bitmode(int("00110011", 2))
-    write8_4bitmode(int("00110010", 2))
-{{< /highlight >}}
-</div>
+    :::python
+    def init_4bitmode():
+        """
+        initialize chip into 4-bit interface mode using 8-bit sequences written
+        in 4-bit mode
+        """
+        write8_4bitmode(int("00110011", 2))
+        write8_4bitmode(int("00110010", 2))
 
 When initializing into 8-bit mode, you can simply issue regular 8-bit writes
 using `D0` through `D7`:
 
-<div class="shortcode">
-{{< highlight python >}}
-def init_8bitmode():
-    """initialize chip into 8-bit interface mode"""
-    write8_8bitmode(int("00110000", 2))
-    write8_8bitmode(int("00110000", 2))
-    write8_8bitmode(int("00110000", 2))
-{{< /highlight >}}
-</div>
+    :::python
+    def init_8bitmode():
+        """initialize chip into 8-bit interface mode"""
+        write8_8bitmode(int("00110000", 2))
+        write8_8bitmode(int("00110000", 2))
+        write8_8bitmode(int("00110000", 2))
 
 In this case, the low-order bits (`D0` - `D3`) are "don't care" bits and can
 have any value.
@@ -335,9 +286,32 @@ have any value.
 
 The "function set" command has the following form:
 
- `D7` | `D6` | `D5` | `D4` | `D3` | `D2` | `D1` | `D0` 
-:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:
-0     | 0    | 1    | _DL_ | _N_  | _F_  | -    | -
+<table class="table table-sm table-striped table-bordered" style="width: initial; margin-left: auto; margin-right: auto">
+<thead>
+<tr>
+<th style="text-align: center;"><code>D7</code></th>
+<th style="text-align: center;"><code>D6</code></th>
+<th style="text-align: center;"><code>D5</code></th>
+<th style="text-align: center;"><code>D4</code></th>
+<th style="text-align: center;"><code>D3</code></th>
+<th style="text-align: center;"><code>D2</code></th>
+<th style="text-align: center;"><code>D1</code></th>
+<th style="text-align: center;"><code>D0</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><em>DL</em></td>
+<td style="text-align: center;"><em>N</em></td>
+<td style="text-align: center;"><em>F</em></td>
+<td style="text-align: center;">-</td>
+<td style="text-align: center;">-</td>
+</tr>
+</tbody>
+</table>
 
 where
 
@@ -349,20 +323,40 @@ where
 
 A reasonable command may be
 
-<div class="shortcode">
-{{< highlight python >}}
+    :::python
     ### send the "function set" command to configure display dimensions
     write8_4bitmode(int("00101100",2), rs_value=GPIO.LOW)
-{{< /highlight >}}
-</div>
 
 ### Configuring "display on/off control" options
 
 The "display on/off control" command has the following form:
 
- `D7` | `D6` | `D5` | `D4` | `D3` | `D2` | `D1` | `D0` 
-:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:
-0     | 0    | 0    | 0    | 1    | _D_  | _C_  | _B_
+<table class="table table-sm table-striped table-bordered" style="width: initial; margin-left: auto; margin-right: auto">
+<thead>
+<tr>
+<th style="text-align: center;"><code>D7</code></th>
+<th style="text-align: center;"><code>D6</code></th>
+<th style="text-align: center;"><code>D5</code></th>
+<th style="text-align: center;"><code>D4</code></th>
+<th style="text-align: center;"><code>D3</code></th>
+<th style="text-align: center;"><code>D2</code></th>
+<th style="text-align: center;"><code>D1</code></th>
+<th style="text-align: center;"><code>D0</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><em>D</em></td>
+<td style="text-align: center;"><em>C</em></td>
+<td style="text-align: center;"><em>B</em></td>
+</tr>
+</tbody>
+</table>
 
 where
 
@@ -374,13 +368,10 @@ where
 
 A reasonable command may be
 
-<div class="shortcode">
-{{< highlight python >}}
+    :::python
     ### send the "display on/off control" command (1000) to power on the
     ### display (100), enable cursor (010), and enable cursor blink (001)
     write8_4bitmode(int("00001111",2), rs_value=GPIO.LOW)
-{{< /highlight >}}
-</div>
 
 Although not strictly required to get the chip to a usable state, the chip does
 default to a state where the display is off (`00001000`).  Thus, the display
@@ -392,19 +383,39 @@ _D_ bit to 1.
 Clearing the display is a matter of sending a single least-significant bit with
 all others set to zero:
 
- `D7` | `D6` | `D5` | `D4` | `D3` | `D2` | `D1` | `D0` 
-:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:
-0     | 0    | 0    | 0    | 0    | 0    | 0    | 1   
+<table class="table table-sm table-striped table-bordered" style="width: initial; margin-left: auto; margin-right: auto">
+<thead>
+<tr>
+<th style="text-align: center;"><code>D7</code></th>
+<th style="text-align: center;"><code>D6</code></th>
+<th style="text-align: center;"><code>D5</code></th>
+<th style="text-align: center;"><code>D4</code></th>
+<th style="text-align: center;"><code>D3</code></th>
+<th style="text-align: center;"><code>D2</code></th>
+<th style="text-align: center;"><code>D1</code></th>
+<th style="text-align: center;"><code>D0</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
 
 This also resets the cursor position to the first register so that subsequent
 characters are printed to the freshly cleared screen.  It would appear as
 
-<div class="shortcode">
-{{< highlight python >}}
+    :::python
     ### clear the display
     write8_4bitmode(int("00000001",2), rs_value=GPIO.LOW)
-{{< /highlight >}}
-</div>
 
 This is not strictly necessary to get the chip to a usable state, but it does
 make life easier.
@@ -413,9 +424,32 @@ make life easier.
 
 The "entry mode set" command has the following form:
 
- `D7` | `D6` | `D5` | `D4` | `D3` | `D2` | `D1` | `D0` 
-:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:
-0     | 0    | 0    | 0    | 0    | 1    | _I/D_| _S_
+<table class="table table-sm table-striped table-bordered" style="width: initial; margin-left: auto; margin-right: auto">
+<thead>
+<tr>
+<th style="text-align: center;"><code>D7</code></th>
+<th style="text-align: center;"><code>D6</code></th>
+<th style="text-align: center;"><code>D5</code></th>
+<th style="text-align: center;"><code>D4</code></th>
+<th style="text-align: center;"><code>D3</code></th>
+<th style="text-align: center;"><code>D2</code></th>
+<th style="text-align: center;"><code>D1</code></th>
+<th style="text-align: center;"><code>D0</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><em>I/D</em></td>
+<td style="text-align: center;"><em>S</em></td>
+</tr>
+</tbody>
+</table>
 
 where
 
@@ -426,12 +460,9 @@ where
 
 A reasonable command would be
 
-<div class="shortcode">
-{{< highlight python >}}
+    :::python
     ### send the "entry mode set" command to set left-to-right printing (110)
     write8_4bitmode(int("00000110",2), rs_value=GPIO.LOW)
-{{< /highlight >}}
-</div>
 
 Issuing this command is not strictly required to initialize the chip though.
 
@@ -441,14 +472,11 @@ Write one character at a time by pulling `RS` high and then sending the 8-bit
 ASCII representation of the character via `D0` through `D7`.  Pulsing `EN` then
 displays this character on the LCD display:
 
-<div class="shortcode">
-{{< highlight python >}}
-def printmsg(msg):
-    """write the message one character at a time"""
-    for c in msg:
-        write8_4bitmode(ord(c), rs_value=GPIO.HIGH)
-{{< /highlight >}}
-</div>
+    :::python
+    def printmsg(msg):
+        """write the message one character at a time"""
+        for c in msg:
+            write8_4bitmode(ord(c), rs_value=GPIO.HIGH)
 
 Printing a character on the display also moves the cursor (position where
 the next character will appear) over.
@@ -472,9 +500,32 @@ As described in the above section, the HD44780 addresses its characters in two
 rows, each with 40 columns.  To set the position of the input cursor, issue
 the "Set DDRAM address" command, which has the form
 
- `D7` | `D6` | `D5` | `D4` | `D3` | `D2` | `D1` | `D0` 
-:----:|:----:|:----:|:----:|:----:|:----:|:----:|:----:
- 1    |_ADD_ |_ADD_ |_ADD_ |_ADD_ |_ADD_ |_ADD_ |_ADD_
+<table class="table table-sm table-striped table-bordered" style="width: initial; margin-left: auto; margin-right: auto">
+<thead>
+<tr>
+<th style="text-align: center;"><code>D7</code></th>
+<th style="text-align: center;"><code>D6</code></th>
+<th style="text-align: center;"><code>D5</code></th>
+<th style="text-align: center;"><code>D4</code></th>
+<th style="text-align: center;"><code>D3</code></th>
+<th style="text-align: center;"><code>D2</code></th>
+<th style="text-align: center;"><code>D1</code></th>
+<th style="text-align: center;"><code>D0</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;"><em>ADD</em></td>
+<td style="text-align: center;"><em>ADD</em></td>
+<td style="text-align: center;"><em>ADD</em></td>
+<td style="text-align: center;"><em>ADD</em></td>
+<td style="text-align: center;"><em>ADD</em></td>
+<td style="text-align: center;"><em>ADD</em></td>
+<td style="text-align: center;"><em>ADD</em></td>
+</tr>
+</tbody>
+</table>
 
 where `ADD` bits encode the position (1-40 for the first row, 41-80 for the
 second).  Enabling the cursor makes it a lot easier to experiment with this

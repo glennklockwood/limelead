@@ -1,9 +1,9 @@
 ---
-date: "2010-11-05T16:56:44-05:00"
-title: "Configuring a Solaris 10 Server"
-last_mod: "March 29, 2012"
-parentdirs: [ 'sysadmin-howtos' ]
+title: Configuring a Solaris 10 Server
+shortTitle: Configuring Solaris 10
 ---
+
+## Introduction
 
 I decided to document the process of configuring a Solaris 10 server or 
 workstation over the course of the many times I've done it, and this document 
@@ -23,27 +23,6 @@ which I installed over a private network using another Solaris 10-based install
 server (`herring`).  I'll start with the Solaris 10 (u9 in this case) DVD
 downloaded to `herring` and `chrysalis` having a pair of blank disks.
 
-## Outline
-
-* [Setting up the install server](#setting-up-the-install-server)
-* [Initiating the install](#initiating-the-install)
-* [Switching from serial to SSH](#switching-from-serial-to-ssh)
-* [Using stronger cryptography](#using-stronger-cryptography)
-* [Adding new users](#adding-new-users)
-    * [No autofs](#no-autofs)
-    * [With autofs](#with-autofs)
-    * [Adding a non-root user](#adding-a-non-root-user)
-* [Configuring some core system services](#configuring-some-core-system-services)
-    * [Configuring IPfilter](#configuring-ipfilter)
-    * [Managing logs](#managing-logs)
-    * [Configuring the NTP client](#configuring-the-ntp-client)
-    * [Setting up the patching system](#setting-up-the-patching-system)
-* [Setting up system software](#setting-up-system-software)
-* [User PATHs](#user-paths)
-* [User rc dotfiles](#user-rc-dotfiles)
-    * [.bashrc](#bashrc)
-    * [.vimrc](#vimrc)
-
 ## Setting up the install server
 
 On the machine that will become the install server, the Solaris Express iso 
@@ -52,50 +31,42 @@ note, I've heard that JumpStart Enterprise Toolkit (JET) is the preferred
 way of doing network installations for many serious systems people, but I chose
 not to use it in this case for simplicity.  Anyway,
 
-<pre>
-# <kbd>lofiadm -a /home/glock/sol-10-u9-ga-sparc-dvd.iso /dev/lofi/1</kbd>
-# <kbd>mount -F hsfs /dev/lofi/1 /mnt</kbd>
-# <kbd>mkdir -p /export/install</kbd>
-</pre>
+    # lofiadm -a /home/glock/sol-10-u9-ga-sparc-dvd.iso /dev/lofi/1
+    # mount -F hsfs /dev/lofi/1 /mnt
+    # mkdir -p /export/install
 
 Sun provides a very handy and simple program to set up the install server.
 It takes a while though, as the contents of the iso have to be copied to disk.
 Grab a cup of coffee for this one.
 
-<pre>
-# <kbd>cd /mnt/Solaris_10/Tools</kbd>
-# <kbd>./setup_install_server /export/install/media</kbd>
-Verifying target directory...
-Calculating the required disk space for the Solaris_10 product
-Calculating space required for the installation boot image
-Copying the CD image to disk...
-Copying Install Boot Image hierarchy...
-Copying /boot netboot hierarchy...
-Install Server setup complete
-</pre>
+    # cd /mnt/Solaris_10/Tools
+    # ./setup_install_server /export/install/media
+    Verifying target directory...
+    Calculating the required disk space for the Solaris_10 product
+    Calculating space required for the installation boot image
+    Copying the CD image to disk...
+    Copying Install Boot Image hierarchy...
+    Copying /boot netboot hierarchy...
+    Install Server setup complete
 
 Of course, this install target has to be accessible via NFS, and NFS must be
-enabled.  Also note the Solaris 10-specific <kbd>svcadm</kbd>:
+enabled.  Also note the Solaris 10-specific `svcadm`:
 
-<pre>
-# <kbd>share -o ro,anon=0 /export/install/media</kbd>
-# <kbd>svcadm enable network/nfs/server</kbd>
-</pre>
+    # share -o ro,anon=0 /export/install/media
+    # svcadm enable network/nfs/server
 
 Setting up the install client can be trickier because of how the networking
 may be between your install server and the target client.  Both of my machines
 were on the same subnet, so I did not have to specify much witchcraft.
 
-<pre>
-# <kbd>cd /export/install/media/Solaris_10/Tools</kbd>
-# <kbd>./add_install_client -e 0:3:ba:6c:ad:28 -s 192.168.2.91:/export/install/media chrysalis sun4u</kbd>
-</pre>
+    # cd /export/install/media/Solaris_10/Tools
+    # ./add_install_client -e 0:3:ba:6c:ad:28 -s 192.168.2.91:/export/install/media chrysalis sun4u
 
 In the above case, `0:3:ba:6c:ad:28` is the install target's (`chrysalis`'s) MAC
 and `192.168.2.91` is the install server's (`herring`'s) IP address.  Specifying
 the IP is important, as I would not rely on the installation being able to
 resolve hostnames when it needs to mount the NFS share.  The
-<kbd>add_install_client</kbd> command automatically adds the specified MAC to
+`add_install_client` command automatically adds the specified MAC to
 `/etc/ethers`, but it has appeared to be additionally important to add the
 client hostname to `/etc/hosts` so that the install client can be identified by
 the install server.
@@ -106,17 +77,15 @@ On the client machine, access the console via serial, LOM, or keyboard and mouse
 and get to the OpenBoot prompt.  Drop to the ok prompt, cross your fingers, then
 attempt to boot over the network.
 
-<pre>
-ok&gt; <kbd>boot net</kbd>
-</pre>
+    ok> boot net
 
 If the install client won't boot off the network, first ensure that ipfilter
 (or whatever firewall you are using on the install server) is not blocking
 tftpd and NFS.  NFS is particularly difficult to pass through a firewall, so I
 usually toss a rule in to allow all traffic from the install client (both TCP and 
-UDP for NFS) through.  Alternatively, you can just <kbd>svcadm disable
-network/ipfilter</kbd> temporarily on the install server; just don't forget to
-turn it back on once the installation is complete!
+UDP for NFS) through.  Alternatively, you can just `svcadm disable network/ipfilter`
+temporarily on the install server; just don't forget to turn it back on once the
+installation is complete!
 
 There shouldn't be anything tricky about the install; I generally opt to use ZFS
 and mirror two disks for redundancy.  I've encountered two problems with this
@@ -126,28 +95,26 @@ that may be worth mentioning.
    recognized and mountable from a shell opened during the install process.
    This wound up being because the installer only displays disks with SMI labels
    as install targets.  One of my disks was recycled from another zpool, and as
-   a result it had an EFI label.  To rectify this, I had to <kbd>format -e</kbd>
-   to get into expert mode, then issue <kbd>label</kbd> and choose the SMI label
+   a result it had an EFI label.  To rectify this, I had to `format -e`
+   to get into expert mode, then issue `label` and choose the SMI label
    over the EFI.
 2. For whatever reason, if you want to install with ZFS as your root partition's
    filesystem, you MUST use the text-mode installer.  Since `chrysalis` was a
    net install, this was not an issue; however, if you are installing via
-   keyboard/mouse/monitor, you've got to issue <kbd>boot cdrom - text</kbd> to
+   keyboard/mouse/monitor, you've got to issue `boot cdrom - text to
    force the text mode install (the X installer is still loaded though), or just
-   unplug the mouse and <kbd>boot cdrom</kbd> to prevent X from loading at all.
+   unplug the mouse and `boot cdrom` to prevent X from loading at all.
 
 After the system was completely installed, I configured the system to get its IP
 via DHCP as well, but it appears that the installer does not completely
 configure the system properly for DHCP.  Thus, the first thing I had to do after
 the installation completed was to
 
-<pre>
-# <kbd>touch /etc/dhcp.dmfe0</kbd>
-# <kbd>init 6</kbd>
-</pre>
+    # touch /etc/dhcp.dmfe0
+    # init 6
 
 The presence of this file will instruct the system to automatically launch
-the DHCP client at boot and configure <code>dmfe0</code> with it on system boot.
+the DHCP client at boot and configure `dmfe0` with it on system boot.
 
 ## Switching from serial to SSH
 
@@ -161,42 +128,36 @@ do is enable ipfilter to cover for ssh while login-as-root is enabled.
 The first step is to establish a very simple ipfilter ruleset while still logged
 in through the serial line.  Edit `/etc/ipf/ipf.conf` and add these rules:
 
-<pre>
-pass out quick from any to any keep state
-pass in quick proto tcp from 192.168.2.2/32 to any port = 22 keep state keep frags
-block in quick all
-</pre>
+    pass out quick from any to any keep state
+    pass in quick proto tcp from 192.168.2.2/32 to any port = 22 keep state keep frags
+    block in quick all
 
 This will block everything incoming except ssh traffic coming from
 `192.168.2.2`, which is the address of my workstation from which I will ssh.
 Now enable ipfilter by issuing
 
-<pre>
-# <kbd>svcadm enable network/ipfilter</kbd>
-</pre>
+    # svcadm enable network/ipfilter
 
 and confirm that ipfilter is working correctly by then issuing
 
-<pre>
-# <kbd>svcs -a | grep ipfilter</kbd>
-</pre>
+    # svcs -a | grep ipfilter
 
 Then to allow the root user to log in over SSH, edit `/etc/ssh/sshd_config` and
 replace the line which reads
 
-<pre>PermitRootLogin no</pre>
+    PermitRootLogin no
 
 to read
 
-<pre>PermitRootLogin yes</pre>
+    PermitRootLogin yes
 
 and reload this configuration file so that root can SSH in by issuing
-<kbd>svcadm refresh ssh</kbd>.
+`svcadm refresh ssh`.
 
 Now the serial console can be abandoned and the rest of this configuration
 procedure can be carried out over SSH.  Of course, this is optional, and you can
 often stick to the serial console just as easily if you would like.  Anyway, I
-<kbd>ssh root@chrysalis</kbd> from my workstation and I'm back to where I was
+`ssh root@chrysalis` from my workstation and I'm back to where I was
 but with a better terminal.
 
 ## Using stronger cryptography
@@ -208,11 +169,11 @@ user passwords (including root!) are strictly limited to only eight characters.
 Eight-character passwords are too short for my preference, so I edit
 `/etc/security/policy.conf` and change
 
-<pre>CRYPT_DEFAULT=__unix__</pre>
+    CRYPT_DEFAULT=__unix__
 
 to
 
-<pre>CRYPT_DEFAULT=md5</pre>
+    CRYPT_DEFAULT=md5
 
 For reference,
 
@@ -273,12 +234,12 @@ For reference,
 </table>
 
 The man pages for these algorithms are also very informative, and I chose to
-use Sun's MD5 implementation simply because <kbd>man crypt_unix</kbd> suggests
+use Sun's MD5 implementation simply because `man crypt_unix` suggests
 it.  After changing this, existing passwords need to be rehashed using the new
 algorithm.  Since only the root account exists right now (this is why I do this
 before making new user accounts!), this just means issuing
 
-<pre># <kbd>passwd root</kbd></pre>
+    # passwd root
 
 ## Adding new users
 
@@ -296,17 +257,15 @@ in Solaris) are both options.
 
 To simply disable autofs, issue
 
-<pre># <kbd>svcadm disable autofs</kbd></pre>
+    # svcadm disable autofs
 
 and the `/home` directory should be released and modifiable.  In the case of ZFS
 root, it may be a good idea to make `/home` its own ZFS dataset for ease of
 management:
 
-<pre>
-# <kbd>rm -r /home</kbd>
-# <kbd>zfs destroy rpool/export/home</kbd>
-# <kbd>zfs create -o mountpoint=/home rpool/home</kbd>
-</pre>
+    # rm -r /home
+    # zfs destroy rpool/export/home
+    # zfs create -o mountpoint=/home rpool/home
 
 Of course, ZFS datasets occupy kernel memory and this may not be adviseable on
 low-memory systems.
@@ -317,11 +276,9 @@ If the native autofs setup for Solaris is desired, setting it up is pretty easy.
 The default `/etc/auto_master` should contain the necessary lines already out of
 the box:
 
-<pre>
-+auto_master
-/net            -hosts          -nosuid,nobrowse
-/home           auto_home       -nobrowse
-</pre>
+    +auto_master
+    /net            -hosts          -nosuid,nobrowse
+    /home           auto_home       -nobrowse
 
 The `+auto_master` defers to NIS maps if one exists; it can be removed if this
 server will not be using NIS.  The `/home` line is the one to keep, as it places the 
@@ -329,24 +286,20 @@ server will not be using NIS.  The `/home` line is the one to keep, as it places
 `/etc/auto_home` file.  That file is also pretty simple, and needs the following
 line added:
 
-<pre>
-*       chrysalis:/export/home/&amp;
-</pre>
+    *       chrysalis:/export/home/&
 
-<p>The first column (a <code>&ast;</code>) indicates that any directory under
-the <code>/home</code> directory, when queried, should be mapped under autofs.
-The second column (which is blank in this case) would be where the NFS flags
-(e.g., <code>-intr,nosuid,hard</code>) would be, and the third column is the
-device to mount.  The <code>&</code> symbol corresponds to the
-<code>&ast;</code> in the first line and essentially gets replaced with whatever
-value that <code>*</code> takes.  For example, you could more explicitly rewrite
-the above line as a bunch of lines, each for an individual user:</p>
+The first column (a `*`) indicates that any directory under the `/home`
+directory, when queried, should be mapped under autofs.  The second column
+(which is blank in this case) would be where the NFS flags (e.g.,
+`-intr,nosuid,hard`) would be, and the third column is the device to mount.
+The `&` symbol corresponds to the `*` in the first line and essentially gets
+replaced with whatever value that `*` takes.  For example, you could more
+explicitly rewrite the above line as a bunch of lines, each for an individual
+user:
 
-<pre>
-glock   chrysalis:/export/home/glock
-frank   chrysalis:/export/home/frank
-mary    chrysalis:/export/home/mary
-</pre>
+    glock   chrysalis:/export/home/glock
+    frank   chrysalis:/export/home/frank
+    mary    chrysalis:/export/home/mary
 
 Using the wildcard spares you the hassle of having to edit this file every
 time a new user is added; however, this also puts the entire `/home/*` under the
@@ -355,11 +308,9 @@ directories are on other devices or machines all into the same `/home`
 directory, you would (to the best of my knowledge) have to add each user
 individually, so at the very least your `auto_home` would look like:
 
-<pre>
-glock   chrysalis:/export/home/&amp;
-frank   chrysalis:/export/home/&amp;
-mary    chrysalis:/export/home/&amp;
-</pre>
+    glock   chrysalis:/export/home/&
+    frank   chrysalis:/export/home/&
+    mary    chrysalis:/export/home/&
 
 Anyway, configuring autofs and `/etc/auto_home` correctly tells the automounter
 to NFS mount `/export/home/whoever` on the server chrysalis to the local
@@ -368,7 +319,7 @@ to NFS mount `/export/home/whoever` on the server chrysalis to the local
 Once the autofs config files are as they should be, reloading autofs lets
 us assign users' home directories to, say, `/home/glock` rather than `/export/home/glock`:
 
-<pre># <kbd>svcadm restart autofs</kbd></pre>
+    # svcadm restart autofs
 
 Although this refresh isn't strictly necessary, it doesn't hurt to make sure
 you haven't entered any syntax errors by ensuring that autofs will start up
@@ -378,9 +329,7 @@ As a side note, if you are using autofs to mount homes from another Solaris
 host, don't forget to share the home directories with this new machine!  The
 way of doing this in ZFS is something like
 
-<pre>
-# <kbd>zfs set sharenfs=rw=@128.6.18.165/26:@192.168.2.0/24 rpool/export</kbd>
-</pre>
+    # zfs set sharenfs=rw=@128.6.18.165/26:@192.168.2.0/24 rpool/export
 
 Or if you want to do it the old-fashioned way, edit `/etc/dfs/dfstab` and add a
 similar line.  For mounting local volumes via autofs though, enabling NFS isn't
@@ -390,44 +339,38 @@ necessary.
 
 Now to add the first user:
 
-<pre>
-# <kbd>zfs create rpool/home/glock</kbd>
-# <kbd>useradd -d /home/glock -s /bin/bash -P 'Primary Administrator' glock</kbd>
-# <kbd>passwd glock</kbd>
-...
-# <kbd>chown -R glock:other /home/glock</kbd>
-</pre>
+    # zfs create rpool/home/glock
+    # useradd -d /home/glock -s /bin/bash -P 'Primary Administrator' glock
+    # passwd glock
+    ...
+    # chown -R glock:other /home/glock
 
 The above procedure can probably be wrapped into a script (a la
-<kbd>adduser</kbd> in Linux) for ease of use.
+`adduser` in Linux) for ease of use.
 
 In recent versions of Solaris 10 (update 8 or 9), I've found that the "Primary
 Administrator" profile doesn't always exist.  I'm not sure if this is due to a
 missing package or what, but adding the profile manually isn't very hard.  First
 edit `/etc/security/exec_attr` and add this line:
 
-<pre>
-Primary Administrator:suser:cmd:::*:uid=0;gid=0
-</pre>
+    Primary Administrator:suser:cmd:::*:uid=0;gid=0
 
 Then add this line to `/etc/security/prof_attr`:
 
-<pre>
-Primary Administrator:::Can perform all administrative tasks:auths=solaris.*,solaris.grant;help=RtPriAdmin.html
-</pre>
+    Primary Administrator:::Can perform all administrative tasks:auths=solaris.*,solaris.grant;help=RtPriAdmin.html
 
 For completeness, install the `RtPriAdmin.html` file (I used to link this file
 here, but no longer have it) specified in `/usr/lib/help/profiles/locale/C`.
 Then either add users as specified above, or add this profile to existing users
-with <kbd>usermod(1M)</kbd>:
+with `usermod(1M)`:
 
-<pre># <kbd>usermod -P 'Primary Administrator' glock</kbd></pre>
+    # usermod -P 'Primary Administrator' glock
 
 Now that a non-root user exists, root logins over ssh can be disabled again.  In
-`/etc/ssh/sshd_config`, change the <code>PermitRootLogin</code> parameter back
-to <code>no</code> and reload the sshd configuration using <kbd>svcadm refresh
-ssh</kbd>.  At this point I logged out and logged back in under my newly created
-user account, then did <kbd>pfexec su -</kbd> to get back to where I was.
+`/etc/ssh/sshd_config`, change the `PermitRootLogin` parameter back to `no` and
+reload the sshd configuration using `svcadm refresh ssh`.  At this point I
+logged out and logged back in under my newly created user account, then did
+`pfexec su -` to get back to where I was.
 
 ## Configuring some core system services
 
@@ -444,56 +387,52 @@ unique to Solaris:
 * If you didn't select the "`minimal network daemons`" group during
   installation, a bunch of daemons (notably telnet) will be running by default.
   To disable most of the unnecessary ones post-install, issue 
-  <kbd>/usr/sbin/netservices limited</kbd> as root.  This will have the same
+  `/usr/sbin/netservices limited` as root.  This will have the same
   effect as if you chose the minimal network daemons install option.
-* To quickly see what is still running, issue <kbd>netstat -an|grep LISTEN</kbd>
+* To quickly see what is still running, issue `netstat -an|grep LISTEN`
 * Cross-referencing the open ports with `/etc/services` should give you a quick
   idea of what you've got running.  If there are some mysterious services
   listening to ports of questionable necessity, you can usually find a more
-  human-readable description of SMF services by issuing <kbd>svcs -o
-  FMRI,DESC</kbd>
+  human-readable description of SMF services by issuing `svcs -o FMRI,DESC`
 
 Knowing this, you can craft a reasonably effective ruleset such as this 
 one in `/etc/ipf/ipf.conf`:
 
-<div class="shortcode">{{< highlight bash >}}
-#
-# ipf.conf
-#
-# IP Filter rules to be loaded during startup
-#
-# See ipf(4) manpage for more information on
-# IP Filter rules syntax.
+    #
+    # ipf.conf
+    #
+    # IP Filter rules to be loaded during startup
+    #
+    # See ipf(4) manpage for more information on
+    # IP Filter rules syntax.
 
-# General policies
-pass out quick from any to any keep state
-block in quick proto tcp with short
+    # General policies
+    pass out quick from any to any keep state
+    block in quick proto tcp with short
 
-### Handle connections over the external interface (bge0)
-pass in quick on bge0 from chrysalis to any keep state
+    ### Handle connections over the external interface (bge0)
+    pass in quick on bge0 from chrysalis to any keep state
 
-### Handle SSH coming in from the outside -- only allow connections from Rutgers
-block in quick on bge0 from any to any port = 22 head 1
-  pass in quick on bge0 proto tcp from 128.6.0.0/16 to any port = 22 \
-    keep state group 1
-  block return-rst in log quick on bge0 proto tcp all group 1
+    ### Handle SSH coming in from the outside -- only allow connections from Rutgers
+    block in quick on bge0 from any to any port = 22 head 1
+      pass in quick on bge0 proto tcp from 128.6.0.0/16 to any port = 22 \
+        keep state group 1
+      block return-rst in log quick on bge0 proto tcp all group 1
 
-### Apache2 from outside; let apache do the logging
-pass in quick on bge0 proto tcp from any to any port = 80 keep state
+    ### Apache2 from outside; let apache do the logging
+    pass in quick on bge0 proto tcp from any to any port = 80 keep state
 
-### Block ICMP except ping
-block in log quick on bge0 proto icmp from any to any head 2
-  pass in quick on bge0 proto icmp from any to any icmp-type echo \
-    keep state group 2
-  pass in quick on bge0 proto icmp from any to any icmp-type echorep \
-    keep state group 2
+    ### Block ICMP except ping
+    block in log quick on bge0 proto icmp from any to any head 2
+      pass in quick on bge0 proto icmp from any to any icmp-type echo \
+        keep state group 2
+      pass in quick on bge0 proto icmp from any to any icmp-type echorep \
+        keep state group 2
 
-### Bounce and log any other connection attempts from outside of Rutgers
-block return-rst in log quick on bge0 proto tcp from !128.6.0.0/16 to chrysalis
-block return-rst in quick on bge0 proto tcp all
-block in quick on bge0 all
-{{</highlight>}}</div>
-
+    ### Bounce and log any other connection attempts from outside of Rutgers
+    block return-rst in log quick on bge0 proto tcp from !128.6.0.0/16 to chrysalis
+    block return-rst in quick on bge0 proto tcp all
+    block in quick on bge0 all
 
 This ruleset really only acts on the `bge0` interface and leaves traffic on all
 others (i.e., internal-facing interfaces and the loopback interface) unfiltered.
@@ -521,10 +460,8 @@ configured properly for this to actually work.  The system logging facility's
 configuration needs to be updated accordingly.  I edited `/etc/syslog.conf` and
 added two lines:
 
-<pre>
-auth.info                       ifdef(`LOGHOST', /var/log/authlog, @loghost)
-local0.debug                    ifdef(`LOGHOST', /var/log/ipflog, @loghost)
-</pre>
+    auth.info                       ifdef(`LOGHOST', /var/log/authlog, @loghost)
+    local0.debug                    ifdef(`LOGHOST', /var/log/ipflog, @loghost)
 
 I should point out that I think there is already an auth.notice line that comes
 with Solaris in `/etc/syslog.conf`.  Either comment out that line or replace it
@@ -532,39 +469,33 @@ with the auth line above.  This will enable logging of login attempts,
 successful or otherwise.  The local0 line specifies where ipfilter should drop
 its logged output to.  Just to make sure that the log files do exist,
 
-<pre>
-# touch /var/log/ipflog &amp;&amp; chmod 600 /var/log/ipflog
-# touch /var/log/authlog &amp;&amp; chmod 600 /var/log/authlog
-</pre>
+    # touch /var/log/ipflog && chmod 600 /var/log/ipflog
+    # touch /var/log/authlog && chmod 600 /var/log/authlog
 
 Because the ipfilter and authorization logs can get large and unwieldy, it is
 also a good idea to let logadm rotate them as necessary.  To do this, issue the
 following two commands: 
 
-<pre>
-# <kbd>logadm -w /var/log/ipflog -C 4 -P 'Fri Jun 19 07:10:00 2009' -a 'kill -HUP `cat /var/run/syslog.pid`'</kbd>
-# <kbd>logadm -w /var/log/authlog -C 4 -P 'Fri Jun 19 07:10:00 2009' -a 'kill -HUP `cat /var/run/syslog.pid`'</kbd>
-</pre>
+    # logadm -w /var/log/ipflog -C 4 -P 'Fri Jun 19 07:10:00 2009' -a 'kill -HUP `cat /var/run/syslog.pid`'
+    # logadm -w /var/log/authlog -C 4 -P 'Fri Jun 19 07:10:00 2009' -a 'kill -HUP `cat /var/run/syslog.pid`'
 
-The <code>-P 'Fri Jun 19 07:10:00 2009'</code> option in these lines is just
+The `-P 'Fri Jun 19 07:10:00 2009'` option in these lines is just
 a placeholder for the date that the logs were last rotated in and can be any
 arbitrary date you want to place, as long as the format is acceptable.  The 
-<code>-C 4</code> portion specifies that logadm should juggle four files for 
+`-C 4` portion specifies that logadm should juggle four files for 
 each log (e.g., `authlog`, `authlog.0`, `authlog.1`, and `authlog.2`), and the
 `-a` option indicates that SIGHUP should be sent to logadm's PID when the
 log file is rotated to restart the daemon.  Alternatively, you can simply edit
 `/etc/logadm.conf` and add everything after the `-w` above, but using the
-<kbd>logadm</kbd> command offers syntax checking and other safeguards (or so
+`logadm` command offers syntax checking and other safeguards (or so
 says the Sun docs).
 
 Now that this is all done, you should be able to
 
-<pre>
-# <kbd>svcadm refresh system-log<br/></kbd>
-# <kbd>kill -HUP `cat /var/run/syslog.pid`</kbd>
-</pre>
+    # svcadm refresh system-log
+    # kill -HUP `cat /var/run/syslog.pid`
 
-to reload these configuration changes.  I just did <kbd>init 6</kbd> to be safe.
+to reload these configuration changes.  I just did `init 6` to be safe.
 
 ### Configuring the NTP client
 
@@ -573,34 +504,31 @@ NTP servers to establish a university-wide time.  To sync against the Rutgers
 servers, create `/etc/inet/ntp.conf` (or copy one
 of the templates in that directory) and add these lines:
 
-<pre>
-server ntp-busch.rutgers.edu    version 3
-server ntp-lcsr.rutgers.edu     version 3
-driftfile /var/ntp/ntp.drift
-</pre>
+    server ntp-busch.rutgers.edu    version 3
+    server ntp-lcsr.rutgers.edu     version 3
+    driftfile /var/ntp/ntp.drift
 
 Then
 
-<pre># <kbd>echo "0.0" &gt; /var/ntp/ntp.drift</kbd></pre>
+    # echo "0.0" &gt; /var/ntp/ntp.drift
 
 to establish the drift file.  Alternatively, it is possible
 to sync against the [U.S. ntp.org pool][ntp.org pool] list or [NIST's time
-servers][nist ntp pool].  Once configured, enable NTP with <kbd>svcadm enable
-ntp</kbd> and, after a few seconds, verify that all is well using 
-<kbd>ntpq -p</kbd>.
+servers][nist ntp pool].  Once configured, enable NTP with `svcadm enable ntp` and, after a few seconds, verify that all is well using 
+`ntpq -p`.
 
 ### Setting up the patching system
 
-<div class="shortcode">{{% alertbox "danger" %}}
+{% call alert("danger") %}
 As of December 2010, I've been having trouble using the command-line setup for
 `sconadm`.  According to Oracle, the following process should work with a valid,
 supported Sun hardware serial number and an Oracle Single Sign-On.  Even with my
 entitlement to download patches through [Oracle Support](http://support.oracle.com/),
-I could not get <kbd>sconadm</kbd> to register correctly.  Strangely enough, my
+I could not get `sconadm` to register correctly.  Strangely enough, my
 _old_ Sun contract number and SunSolve sign-on still work when registering
-through the <kbd>updatemanager</kbd> Java-based GUI, so I don't know what's
+through the `updatemanager` Java-based GUI, so I don't know what's
 supposed to work here.
-{{% /alertbox %}}</div>
+{% endcall %}
 
 If you've got a valid Sun support contract and a production machine is being
 configured here, it'd probably be a good idea to register the system for easy
@@ -609,47 +537,41 @@ Oracle acquisition, as of August 2010, establishing patch authentication
 involves first creating a temporary configuration file (like `/root/regprof`)
 and putting the following text in it:
 
-<pre>
-userName=jim@company.com
-password=somepassword
-hostName=chrysalis
-subscriptionKey=ABC123
-portalEnabled=false
-</pre>
+    userName=jim@company.com
+    password=somepassword
+    hostName=chrysalis
+    subscriptionKey=ABC123
+    portalEnabled=false
 
 Of course, you've got to already have a valid SunSolve account 
 (jim@company.com) and its password (somepassword), and you have to have a Sun
 support contract number (ABC123).  Since this file contains a plaintext password
-and contract number, the <kbd>sconadm</kbd> command requires that it have strict
+and contract number, the `sconadm` command requires that it have strict
 permissions before it'll accept it.  Thus, to register the system for updates, 
 do
 
-<pre>
-# <kbd>chmod 400 /root/regprof</kbd>
-# <kbd>sconadm register -a -r regprof</kbd>
-sconadm is running
-Authenticating user ...
-finish registration!
-# <kbd>rm /root/regprof</kbd>
-</pre>
+    # chmod 400 /root/regprof
+    # sconadm register -a -r regprof
+    sconadm is running
+    Authenticating user ...
+    finish registration!
+    # rm /root/regprof
 
 At this point you can issue
 
-<pre>
-# <kbd>smpatch analyze</kbd>
+    # smpatch analyze
 
-You have new messages. To retrieve: smpatch messages [-a]
+    You have new messages. To retrieve: smpatch messages [-a]
 
-121118-17 SunOS 5.10: Update Connection System Client 1.0.17
-125555-07 SunOS 5.10: patch behavior patch
-141588-04 SunOS 5.10: ksh,sh,pfksh,rksh,xargs patch
-119254-75 SunOS 5.10: Install and Patch Utilities Patch
-119788-10 SunOS 5.10: Sun Update Connection Proxy 1.0.9
-...
-</pre>
+    121118-17 SunOS 5.10: Update Connection System Client 1.0.17
+    125555-07 SunOS 5.10: patch behavior patch
+    141588-04 SunOS 5.10: ksh,sh,pfksh,rksh,xargs patch
+    119254-75 SunOS 5.10: Install and Patch Utilities Patch
+    119788-10 SunOS 5.10: Sun Update Connection Proxy 1.0.9
+    ...
 
 At some point you should then actually download and apply these patches
-using <kbd>smpatch update</kbd>, but this process can take a very long time and
+using `smpatch update`, but this process can take a very long time and
 I tend to patch overnight.
 
 ## Setting up system software
@@ -669,27 +591,25 @@ servers run headless.  It also requires a huge amount of RAM to install since it
 decompresses to `/tmp`, so I had to specify a few extra parameters during
 installation.  Provided I downloaded the installer to `/root`
 
-<pre>
-# <kbd>mkdir /root/tmp</kbd>
-# <kbd>bunzip2 SolarisStudio12.2-solaris-sparc-pkg-ML.tar.bz2</kbd>
-# <kbd>tar -xvf SolarisStudio12.2-solaris-sparc-pkg-ML.tar</kbd>
-# <kbd>cd SolarisStudio12.2-solaris-sparc-pkg-ML</kbd>
-# <kbd>./SolarisStudio12.2-solaris-sparc-pkg-ML.sh --non-interactive --create-symlinks --tempdir /root/tmp</kbd>
-</pre>
+    # mkdir /root/tmp
+    # bunzip2 SolarisStudio12.2-solaris-sparc-pkg-ML.tar.bz2
+    # tar -xvf SolarisStudio12.2-solaris-sparc-pkg-ML.tar
+    # cd SolarisStudio12.2-solaris-sparc-pkg-ML
+    # ./SolarisStudio12.2-solaris-sparc-pkg-ML.sh --non-interactive --create-symlinks --tempdir /root/tmp
 
-The <kbd>--non-interactive</kbd> flag skips the GUI (and in fact all user 
+The `--non-interactive` flag skips the GUI (and in fact all user 
 input) and just does what it needs to do to install, including adding the 
 optional language packs.
 
 It is worth mentioning that, in the x86 version of Solaris 10 9/10 and 
 Solaris Studio 12.2, I had additional issues where the installer would abort,
 saying I needed to install patch 119961-07, but using the included 
-<kbd>./install_patches.sh</kbd> would abort because, as it turns out, I didn't
+`./install_patches.sh` would abort because, as it turns out, I didn't
 have the `SUNWsprot` package installed (because it is not included in
 the End-User Distribution install).  Upon installing SUNWsprot and trying to
 then install 119961-07, it gave me another error about not being able to find
-the <kbd>check-install</kbd> script.  A cursory glance made it appear that the 
-<kbd>install-patches.sh</kbd> script included with Solaris Studio 12.2 is 
+the `check-install` script.  A cursory glance made it appear that the 
+`install-patches.sh` script included with Solaris Studio 12.2 is 
 broken; I simply got fed up and installed 119961-07 by hand.
 
 In addition to SUNWsprot being required pre-install (on x86 at least), there
@@ -706,14 +626,12 @@ that I've found myself needing:
 `SUNWlibm` and `SUNWlibmr` were missing in a Solaris 10 x86 install I did,
 which produced compile errors like
 
-<pre>
-"/opt/solstudio12.2/prod/include/CC/Cstd/rw/math.h", line 60: Error: Could not open include file &lt;math.h&gt;.
-</pre>
+    "/opt/solstudio12.2/prod/include/CC/Cstd/rw/math.h", line 60: Error: Could not open include file <math.h>.
 
 I'm not sure why I've never had that problem in the SPARC installs I've done.
 Also, In my notes I also have SUNWastdev (new to Solaris 10) but I don't recall
 why I needed it.  Also, installing Sun Studio from a core install requires the
-SUNWadm* packages.
+SUNWadm\* packages.
 
 ## User PATHs
 
@@ -728,13 +646,12 @@ contains the following:
 
 Then I add the following line to `/etc/profile`:
 
-<pre>
-. /etc/defaultpath
-</pre>
+    :::sh
+    . /etc/defaultpath
 
-right above the <code>export PATH</code>.  This gives all Bourne shell users
+right above the `export PATH`.  This gives all Bourne shell users
 a pretty useful path as soon as they log in.  A description of the various paths
-and the toolchains within them can be found via <kbd>man -s5 filesystem</kbd>.
+and the toolchains within them can be found via `man -s5 filesystem`.
 
 ## User rc dotfiles
 
@@ -748,9 +665,8 @@ steps for me.  My `.bashrc` looks something like this:
 Then, as per the [Bash Reference Manual][bash reference manual], "typically,
 your `~/.bash_profile` contains the line"
 
-<div class="shortcode">{{< highlight bash >}}
-if &#91; -f ~/.bashrc &#93;; then . ~/.bashrc; fi
-{{</highlight>}}</div>
+    :::bash
+    if [ -f ~/.bashrc ]; then . ~/.bashrc; fi
 
 And that's all mine contains.
 
@@ -760,25 +676,24 @@ I use vim as my editor of choice due to its flexibility over the standard
 UNIX vi.  However, that flexibility really only comes about with a good `.vimrc`
 file.  Mine is pretty basic, but here it is:
 
-<div class="shortcode">{{< highlight vim >}}
-syntax on
-set background=dark
-set hlsearch
-set expandtab
-set ruler
-set autoindent
-set backspace=indent,eol,start
+    :::vim
+    syntax on
+    set background=dark
+    set hlsearch
+    set expandtab
+    set ruler
+    set autoindent
+    set backspace=indent,eol,start
 
-" Uncomment the following on sufficiently fast systems
-"let loaded_matchparen = 1
+    " Uncomment the following on sufficiently fast systems
+    "let loaded_matchparen = 1
 
-" Uncomment the following to have Vim jump to the last position when
-" reopening a file
-if has("autocmd")
-  au BufReadPost * if line("'\"") &gt; 0 &amp;&amp; line("'\"") &lt;= line("$")
-    \| exe "normal! g'\"" | endif
-endif
-{{</highlight>}}</div>
+    " Uncomment the following to have Vim jump to the last position when
+    " reopening a file
+    if has("autocmd")
+      au BufReadPost * if line("'\"") &gt; 0 &amp;&amp; line("'\"") &lt;= line("$")
+        \| exe "normal! g'\"" | endif
+    endif
 
 
 <!-- References -->

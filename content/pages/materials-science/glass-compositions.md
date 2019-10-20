@@ -1,10 +1,6 @@
 ---
-date: "2006-10-09T18:40:38-05:00"
-draft: false
-title: "Glass Compositions"
-shortTitle: "Glass Compositions"
-last_mod: "October 9, 2006"
-parentdirs: [ 'materials-science' ]
+title: Glass Compositions
+shortTitle: Glass Compositions
 ---
 
 ## Introduction
@@ -110,8 +106,8 @@ materials often vary:
   0.118 units soda per unit soda feldspar, 0.194 units alumina per unit soda
   feldspar, and 0.687 units silica per unit soda feldspar.
 
-Knowing these factors (which are simply <mass of oxide> / <mass of raw
-material>) allows one to calculate the glass batch composition given a raw
+Knowing these factors (which are simply \<mass of oxide\> / \<mass of raw
+material\>) allows one to calculate the glass batch composition given a raw
 material composition.  For example, given
 
 - 2000 lbs sand

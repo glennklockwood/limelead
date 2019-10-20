@@ -1,8 +1,9 @@
 ---
-title: Benchmarks
-date: 2015-06-21T00:00:00-07:00
-last_mod: "June 21, 2015"
+title: Historical Performance Benchmarks
+shortTitle: Performance Benchmarks
 ---
+
+## Introduction
 
 The specific benchmark used was a molecular dynamics simulation which involved
 simulating a calcium aluminosilicate glass consisting of 6500 atoms at room
@@ -28,46 +29,34 @@ positions in memory to increase cache hit rate.  Because this optimization was
 not available at the time I started doing these benchmarks, many of the older
 systems do not have it.
 
+{% set show_cols = [('model', 'System'), ('processor', 'Processor'), ('clock', 'Clock (MHz)'), ('cache', 'Cache'), ('mem', "Memory"), ('wall_secs', "Time (sec)"), ('memreorder_secs', "Optimized Time (sec)")] %}
+
 ## SPARC Processors
 
-<div class="shortcode">
-{{< processor-benchmark-table "sparc_processors" >}}
-</div>
+{{ json2table("content/data/benchmarks/sparc_processors.json", show_cols=show_cols) }}
 
 ## MIPS Processors
 
-<div class="shortcode">
-{{< processor-benchmark-table "mips_processors" >}}
-</div>
+{{ json2table("content/data/benchmarks/mips_processors.json", show_cols=show_cols) }}
 
 ## POWER/PowerPC Processors
 
-<div class="shortcode">
-{{< processor-benchmark-table "power_processors" >}}
-</div>
+{{ json2table("content/data/benchmarks/power_processors.json", show_cols=show_cols) }}
 
 ## PA-RISC Processors
 
-<div class="shortcode">
-{{< processor-benchmark-table "parisc_processors" >}}
-</div>
+{{ json2table("content/data/benchmarks/parisc_processors.json", show_cols=show_cols) }}
 
 ## Itanium Processors
 
-<div class="shortcode">
-{{< processor-benchmark-table "ia64_processors" >}}
-</div>
+{{ json2table("content/data/benchmarks/ia64_processors.json", show_cols=show_cols) }}
 
 ## ARM Processors
 
-<div class="shortcode">
-{{< processor-benchmark-table "arm_processors" >}}
-</div>
+{{ json2table("content/data/benchmarks/arm_processors.json", show_cols=show_cols) }}
 
 ## x86 Processors
 
-<div class="shortcode">
-{{< processor-benchmark-table "x86_processors" >}}
-</div>
+{{ json2table("content/data/benchmarks/x86_processors.json", show_cols=show_cols) }}
 
 [my website's git repository]: https://github.com/glennklockwood/limelead/tree/master/data/benchmarks

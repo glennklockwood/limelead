@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}{{ page.title }}{% endblock title %}
+
+{% block content %}{{ page.content }}{% endblock content %}
+
+{% block sidebar %}
+{% if page.toc %}
+<div class="{{ sidebar_class }} sidebar-box pt-3 section-toc" id="sidebar"> <!-- sidebar -->
+  <aside>
+    {{ page.toc | drawtoc }}
+  </aside>
+</div> <!-- end sidebar -->
+{% endif %}
+{% endblock sidebar %}

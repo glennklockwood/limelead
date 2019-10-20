@@ -1,10 +1,6 @@
 ---
-date: "2016-03-21T10:39:00-07:00"
-draft: false
-title: "I/O Forwarding for Extreme-Scale Systems"
-shortTitle: "I/O Forwarding"
-last_mod: "June 23, 2016"
-parentdirs: [ 'data-intensive', 'storage' ]
+title: I/O Forwarding for Extreme-Scale Systems
+shortTitle: I/O Forwarding
 ---
 
 ## Introduction
@@ -48,9 +44,9 @@ IOFSL is an implementation developed by the I/O wizards at Argonne whose
 genesis is in ZOID, which was an open-source reimplementation of Blue Gene's
 CIOD.
 
-<div class="shortcode">
-{{< figure src="iofsl-architecture.png" link="http://www.mcs.anl.gov/research/projects/iofsl/pubs/fastos10-slides.pdf" alt="schematic of the IOFSL architecture" caption="The IOFSL Architecture" >}}
-</div>
+{{ figure("iofsl-architecture.png",
+   alt="schematic of the IOFSL architecture",
+   caption="The IOFSL Architecture") }}
 
 The above diagram describes how the client and server side of IOFSL are laid out
 and was taken from a good [slide deck on IOFSL][iofsl architecture] presented

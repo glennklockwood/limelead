@@ -1,23 +1,7 @@
 ---
-date: "2014-06-28T00:00:00-07:00"
-draft: false
-title: "Writing Hadoop Applications in Python with Hadoop Streaming"
-shortTitle: "Hadoop Streaming with Python"
-last_mod: "June 28, 2014"
-parentdirs: [ 'data-intensive', 'hadoop' ]
+title: Writing Hadoop Applications in Python with Hadoop Streaming
+shortTitle: Hadoop Streaming with Python
 ---
-
-## Contents
-
-* [1. Introduction](#1-introduction)
-* [2. Review of Hadoop on HPC](#2-review-of-hadoop-on-hpc)
-* [3. The Canonical Wordcount Example](#3-the-canonical-wordcount-example)
-    * [3.1. The Mapper](#3-1-the-mapper)
-    * [3.2. The Shuffle](#3-2-the-shuffle)
-    * [3.3. The Reducer](#3-3-the-reducer)
-    * [3.4. Running the Hadoop Job](#3-4-running-the-hadoop-job)
-    * [3.5. Adjusting Parallelism](#3-5-adjusting-parallelism)
-* [Next: Parsing VCF Files][parsing vcfs]
 
 ## 1. Introduction
 
@@ -86,18 +70,14 @@ up their values.  Since every key (word) has a value of 1, this will reduce
 our output to a list of unique keys, each with a value corresponding to that
 key's (word's) count.
 
-<div class="shortcode">
-{{< figure src="wordcount-schematic.png" link="wordcount-schematic.png" alt="schematic of wordcount in the context of map-reduce" >}}
-</div>
+{{ figure("wordcount-schematic.png", "Schematic of wordcount in the context of map-reduce") }}
 
 With Hadoop Streaming, we need to write a program that acts as the mapper
 and a program that acts as the reducer.  These applications must interface with
 input/output streams in such a way equivalent to the following series of 
 pipes:
 
-<pre>
-$ <kbd>cat input.txt | ./mapper.py | sort | ./reducer.py > output.txt</kbd>
-</pre>
+    $ cat input.txt | ./mapper.py | sort | ./reducer.py > output.txt
 
 That is, Hadoop Streaming sends raw data to the mapper via stdin, then sends 
 the mapped key/value pairs to the reducer via stdin.
@@ -107,20 +87,17 @@ the mapped key/value pairs to the reducer via stdin.
 The mapper, as described above, is quite simple to implement in Python.  It
 will look something like this:
 
-<div class="shortcode">
-{{< highlight python >}}
-#!/usr/bin/env python
+    :::python
+    #!/usr/bin/env python
 
-import sys
+    import sys
 
-for line in sys.stdin:
-    line = line.strip()
-    keys = line.split()
-    for key in keys:
-        value = 1
-        print( "%s\t%d" % (key, value) )
-{{< /highlight >}}
-</div>
+    for line in sys.stdin:
+        line = line.strip()
+        keys = line.split()
+        for key in keys:
+            value = 1
+            print( "%s\t%d" % (key, value) )
 
 where
 
@@ -153,45 +130,40 @@ These two points are important because
 The output from our mapper step will go to the reducer step sorted.  Thus,
 we can loop over all input key/pairs and apply the following logic:
 
-<pre>
-If this key is the same as the previous key,
-   add this key's value to our running total.
-Otherwise,
-    print out the previous key's name and the running total,
-    reset our running total to 0,
-    add this key's value to the running total, and
-    "this key" is now considered the "previous key"
-</pre>
+    If this key is the same as the previous key,
+       add this key's value to our running total.
+    Otherwise,
+        print out the previous key's name and the running total,
+        reset our running total to 0,
+        add this key's value to the running total, and
+        "this key" is now considered the "previous key"
 
 Translating this into Python and adding a little extra code to tighten up
 the logic, we get
 
-<div class="shortcode">
-{{< highlight python >}}
-#!/usr/bin/env python
- 
-import sys
- 
-last_key = None
-running_total = 0
- 
-for input_line in sys.stdin:
-   input_line = input_line.strip()
-   this_key, value = input_line.split("\t", 1)
-   value = int(value)
- 
-   if last_key == this_key:
-       running_total += value
-   else:
-       if last_key:
-           print( "%s\t%d" % (last_key, running_total) )
-       running_total = value
-       last_key = this_key
- 
-if last_key == this_key:
-   print( "%s\t%d" % (last_key, running_total) )
-{{< /highlight >}}
-</div>
+    :::python
+    #!/usr/bin/env python
+     
+    import sys
+     
+    last_key = None
+    running_total = 0
+     
+    for input_line in sys.stdin:
+       input_line = input_line.strip()
+       this_key, value = input_line.split("\t", 1)
+       value = int(value)
+     
+       if last_key == this_key:
+           running_total += value
+       else:
+           if last_key:
+               print( "%s\t%d" % (last_key, running_total) )
+           running_total = value
+           last_key = this_key
+     
+    if last_key == this_key:
+       print( "%s\t%d" % (last_key, running_total) )
 
 ### 3.4. Running the Hadoop Job
 
@@ -201,33 +173,27 @@ Dick) and load it into HDFS.  I purposely am renaming the copy stored in HDFS
 to <code>mobydick.txt</code> instead of the original <code>pg2701.txt</code> to
 highlight the location of the file:
 
-<pre>
-$ <kbd>wget http://www.gutenberg.org/cache/epub/2701/pg2701.txt</kbd>
-$ <kbd>hadoop dfs -mkdir wordcount</kbd>
-$ <kbd>hadoop dfs -copyFromLocal ./pg2701.txt wordcount/mobydick.txt</kbd>
-</pre>
+    $ wget http://www.gutenberg.org/cache/epub/2701/pg2701.txt
+    $ hadoop dfs -mkdir wordcount
+    $ hadoop dfs -copyFromLocal ./pg2701.txt wordcount/mobydick.txt
 
 You can verify that the file was loaded properly:
 
-<pre>
-$ <kbd>hadoop dfs -ls wordcount/mobydick.txt</kbd>
-Found 1 items
--rw-r--r--   2 glock supergroup    1257260 2013-07-17 13:24 /user/glock/wordcount/mobydick.txt
-</pre>
+    $ hadoop dfs -ls wordcount/mobydick.txt
+    Found 1 items
+    -rw-r--r--   2 glock supergroup    1257260 2013-07-17 13:24 /user/glock/wordcount/mobydick.txt
 
 **Before submitting the Hadoop job, you should make sure your mapper
 and reducer scripts actually work.**  This is just a matter of running
 them through pipes on a little bit of sample data (e.g., the first 1000 lines of
 Moby Dick):
 
-<pre>
-$ <kbd>head -n1000 pg2701.txt | ./mapper.py | sort | ./reducer.py</kbd>
-...
-young   4
-your    16
-yourself    3
-zephyr  1
-</pre>
+    $ head -n1000 pg2701.txt | ./mapper.py | sort | ./reducer.py
+    ...
+    young   4
+    your    16
+    yourself    3
+    zephyr  1
 
 Once you know the mapper/reducer scripts work without errors, we can plug
 them into Hadoop.  We accomplish this by running the Hadoop Streaming jar file 
@@ -239,49 +205,46 @@ and <code>X.Y.Z</code> is the version of Hadoop you are running.  On Gordon
 the location is <code>/opt/hadoop/contrib/streaming/hadoop-streaming-1.0.3.jar</code>,
 so our actual job launch command would look like
 
-<pre>
-$ <kbd>hadoop \</kbd>
-<kbd>    jar /opt/hadoop/contrib/streaming/hadoop-streaming-1.0.3.jar \</kbd>
-<kbd>    -mapper "<span style="color:green">python $PWD/mapper.py</span>" \</kbd>
-<kbd>    -reducer "<span style="color:green">python $PWD/reducer.py</span>" \</kbd>
-<kbd>    -input "wordcount/mobydick.txt" \</kbd>
-<kbd>    -output "wordcount/output"</kbd>
+    :::null hl_lines="13"
+    $ hadoop \
+        jar /opt/hadoop/contrib/streaming/hadoop-streaming-1.0.3.jar \
+        -mapper "python $PWD/mapper.py" \
+        -reducer "python $PWD/reducer.py" \
+        -input "wordcount/mobydick.txt" \
+        -output "wordcount/output"
 
-packageJobJar: [/scratch/glock/819550.gordon-fe2.local/hadoop-glock/data/hadoop-unjar4721749961014550860/] [] /tmp/streamjob7385577774459124859.jar tmpDir=null
-13/07/17 19:26:16 INFO util.NativeCodeLoader: Loaded the native-hadoop library
-13/07/17 19:26:16 WARN snappy.LoadSnappy: Snappy native library not loaded
-13/07/17 19:26:16 INFO mapred.FileInputFormat: Total input paths to process : 1
-13/07/17 19:26:16 INFO streaming.StreamJob: getLocalDirs(): [/scratch/glock/819550.gordon-fe2.local/hadoop-glock/data/mapred/local]
-13/07/17 19:26:16 INFO streaming.StreamJob: Running job: <span style="color:red">job_201307171926_0001</span>
-13/07/17 19:26:16 INFO streaming.StreamJob: To kill this job, run:
-13/07/17 19:26:16 INFO streaming.StreamJob: /opt/hadoop/libexec/../bin/hadoop job  -Dmapred.job.tracker=gcn-13-34.ibnet0:54311 -kill job_201307171926_0001
-13/07/17 19:26:16 INFO streaming.StreamJob: Tracking URL: http://gcn-13-34.ibnet0:50030/jobdetails.jsp?jobid=job_201307171926_0001
-</pre>
+    packageJobJar: [/scratch/glock/819550.gordon-fe2.local/hadoop-glock/data/hadoop-unjar4721749961014550860/] [] /tmp/streamjob7385577774459124859.jar tmpDir=null
+    13/07/17 19:26:16 INFO util.NativeCodeLoader: Loaded the native-hadoop library
+    13/07/17 19:26:16 WARN snappy.LoadSnappy: Snappy native library not loaded
+    13/07/17 19:26:16 INFO mapred.FileInputFormat: Total input paths to process : 1
+    13/07/17 19:26:16 INFO streaming.StreamJob: getLocalDirs(): [/scratch/glock/819550.gordon-fe2.local/hadoop-glock/data/mapred/local]
+    13/07/17 19:26:16 INFO streaming.StreamJob: Running job: job_201307171926_0001
+    13/07/17 19:26:16 INFO streaming.StreamJob: To kill this job, run:
+    13/07/17 19:26:16 INFO streaming.StreamJob: /opt/hadoop/libexec/../bin/hadoop job  -Dmapred.job.tracker=gcn-13-34.ibnet0:54311 -kill job_201307171926_0001
+    13/07/17 19:26:16 INFO streaming.StreamJob: Tracking URL: http://gcn-13-34.ibnet0:50030/jobdetails.jsp?jobid=job_201307171926_0001
 
 And at this point, the job is running.  That "tracking URL" is a bit 
 deceptive in that you probably won't be able to access it.  Fortunately, there
 is a command-line interface for monitoring Hadoop jobs that is somewhat similar
-to <code>qstat</code>.  Noting the Hadoop jobid (highlighted in 
-<span style="color:red">red</span> above), you can do:
+to <code>qstat</code>.  Noting the Hadoop jobid (highlighted above), you can do:
 
-<pre>
-$ <kbd>hadoop -status job_201307171926_0001</kbd>
-Job: job_201307171926_0001
-file: hdfs://gcn-13-34.ibnet0:54310/scratch/glock/819550.gordon-fe2.local/hadoop-glock/data/mapred/staging/glock/.staging/job_201307171926_0001/job.xml
-tracking URL: http://gcn-13-34.ibnet0:50030/jobdetails.jsp?jobid=job_201307171926_0001
-map() completion: 1.0 
-reduce() completion: 1.0
- 
-Counters: 30
-    Job Counters
-        <span style="color:red">Launched reduce tasks=1</span>
-        SLOTS_MILLIS_MAPS=16037
-        Total time spent by all reduces waiting after reserving slots (ms)=0
-        Total time spent by all maps waiting after reserving slots (ms)=0
-        <span style="color:red">Launched map tasks=2</span>
-        Data-local map tasks=2
-...
-</pre>
+    :::null hl_lines="10 14"
+    $ hadoop -status job_201307171926_0001
+    Job: job_201307171926_0001
+    file: hdfs://gcn-13-34.ibnet0:54310/scratch/glock/819550.gordon-fe2.local/hadoop-glock/data/mapred/staging/glock/.staging/job_201307171926_0001/job.xml
+    tracking URL: http://gcn-13-34.ibnet0:50030/jobdetails.jsp?jobid=job_201307171926_0001
+    map() completion: 1.0 
+    reduce() completion: 1.0
+     
+    Counters: 30
+        Job Counters
+            Launched reduce tasks=1
+            SLOTS_MILLIS_MAPS=16037
+            Total time spent by all reduces waiting after reserving slots (ms)=0
+            Total time spent by all maps waiting after reserving slots (ms)=0
+            Launched map tasks=2
+            Data-local map tasks=2
+    ...
 
 Since the hadoop streaming job runs in the foreground, you will have to
 use another terminal (with <var>HADOOP_CONF_DIR</var> properly exported) to
@@ -297,27 +260,26 @@ is not necessarily the full size of your compute resource.  The number of map
 tasks is ultimately determined by the nature of your input data due to how
 HDFS distributes chunks of data to your mappers.  You can "suggest" a number
 of mappers when you submit the job though.  Doing so is a matter of applying
-the change highlighted in <span style="color:green">green</span>:
+the change highlighted:
 
-<pre>
-$ <kbd>hadoop jar /opt/hadoop/contrib/streaming/hadoop-streaming-1.0.3.jar \</kbd>
-<kbd style="color:green">    -D mapred.map.tasks=4 \</kbd>
-<kbd>    -mapper "python $PWD/mapper.py" \</kbd>
-<kbd>    -reducer "python $PWD/reducer.py" \</kbd>
-<kbd>    -input wordcount/mobydick.txt \</kbd>
-<kbd>    -output wordcount/output</kbd>
-...
-$ <kbd>hadoop -status job_201307172000_0001</kbd>
-...
-    Job Counters
-        <span style="color:red">Launched reduce tasks=1</span>
-        SLOTS_MILLIS_MAPS=24049 
-        Total time spent by all reduces waiting after reserving slots (ms)=0
-        Total time spent by all maps waiting after reserving slots (ms)=0
-        Rack-local map tasks=1
-        <span style="color:red">Launched map tasks=4</span>
-        Data-local map tasks=3
-</pre>
+    :::null hl_lines="2 11 16" guess_lang=False
+    $ hadoop jar /opt/hadoop/contrib/streaming/hadoop-streaming-1.0.3.jar \
+        -D mapred.map.tasks=4 \
+        -mapper "python $PWD/mapper.py" \
+        -reducer "python $PWD/reducer.py" \
+        -input wordcount/mobydick.txt \
+        -output wordcount/output
+    ...
+    $ hadoop -status job_201307172000_0001
+    ...
+        Job Counters
+            Launched reduce tasks=1
+            SLOTS_MILLIS_MAPS=24049 
+            Total time spent by all reduces waiting after reserving slots (ms)=0
+            Total time spent by all maps waiting after reserving slots (ms)=0
+            Rack-local map tasks=1
+            Launched map tasks=4
+            Data-local map tasks=3
 
 Similarly, you can add <code>-D mapred.reduce.tasks=4</code> to suggest the
 number of reducers.  The reducer count is a little more flexible, and you can

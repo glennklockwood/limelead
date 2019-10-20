@@ -1,21 +1,7 @@
 ---
-date: "2016-10-24T20:45:00-07:00"
-draft: false
-last_mod: "October 24, 2016"
-title: "Understanding bipolar junction transistors"
-shortTitle: "Understanding bipolar junction transistors"
-parentdirs: [ "electronics" ]
+title: Understanding bipolar junction transistors
+shortTitle: Understanding BJTs
 ---
-
-## Contents
-
-- [Introduction](#introduction)
-- [Building a test circuit](#building-a-test-circuit)
-- [Experimenting with the test circuit](#experimenting-with-the-test-circuit)
-    - [Identifying the different transistor modes](#1-identifying-the-different-transistor-modes)
-    - [Identifying the threshold voltage](#2-identifying-the-threshold-voltage)
-- [Characterizing PNP transistors](#characterizing-pnp-transistors)
-- [Next steps](#next-steps)
 
 ## Introduction
 
@@ -56,7 +42,7 @@ built a circuit with a 10K potentiometer plugged into the base so that I could
 see at what point the transistor started conducting:
 
 <div class="shortcode">
-{{< figure src="2n2222-experiment-circuit.png" link="2n2222-experiment-circuit.png" alt="Transistor and potentiometer test circuit diagram" >}}
+{{ figure(src="2n2222-experiment-circuit.png", alt="Transistor and potentiometer test circuit diagram") }}
 </div>
 
 where
@@ -74,7 +60,7 @@ With this circuit, we can directly measure the three voltages that govern the
 behavior of our NPN transistor by tapping into the circuit at three places:
 
 <div class="shortcode">
-{{< figure src="2n2222-experiment-circuit-taps.png" link="2n2222-experiment-circuit.png" alt="Transistor and potentiometer test circuit diagram taps" >}}
+{{ figure(src="2n2222-experiment-circuit-taps.png", alt="Transistor and potentiometer test circuit diagram taps") }}
 </div>
 
 and then taking measurements as the potentiometer is swept from zero resistance
@@ -82,7 +68,7 @@ to the full 10 K&Omega;.  Using a simple multimeter is the most straightforward
 way to carry out this experiment, if a bit tedious:
 
 <div class="shortcode">
-{{< figure src="2n2222-experiment-circuit-multimeter.jpg" link="2n2222-experiment-circuit-multimeter.jpg" alt="Transistor and potentiometer test circuit implemented with a multimeter" >}}
+{{ figure(src="2n2222-experiment-circuit-multimeter.jpg", alt="Transistor and potentiometer test circuit implemented with a multimeter") }}
 </div>
 
 In the above photo, the black clamp is attached to ground, and the red clamp is
@@ -97,7 +83,7 @@ potentiometer to set V<sub>base</sub> to values ranging from 0 to 3.3 V in 0.1 V
 and measuring the other voltages gives us the following:
 
 <div class="shortcode">
-{{< figure src="2n2222-voltage-plot.png" link="2n2222-voltage-plot.png" alt="Voltage at the collector, base, and emitter as base is changed" >}}
+{{ figure(src="2n2222-voltage-plot.png", alt="Voltage at the collector, base, and emitter as base is changed") }}
 </div>
 
 There is a lot of interesting data in this diagram, so let's look at a few
@@ -116,7 +102,7 @@ Cutoff     | V<sub>base</sub> &lt; V<sub>collector</sub><br>V<sub>base</sub> &lt
 On our plot of measured data, these modes are laid out as shown:
 
 <div class="shortcode">
-{{< figure src="2n2222-voltage-plot-modes.png" link="2n2222-voltage-plot-modes.png" alt="Vbase, Vcollector, and Vemitter in different transistor modes" class="width-100" >}}
+{{ figure(src="2n2222-voltage-plot-modes.png", alt="Vbase, Vcollector, and Vemitter in different transistor modes") }}
 </div>
 
 And indeed, we can see that
@@ -147,7 +133,7 @@ transistor is still actually not passing any current.  In our measured data,
 this is happening between V<sub>base</sub> values of 0.6 V and 1.2 V:
 
 <div class="shortcode">
-{{< figure src="2n2222-voltage-plot-threshold.png" link="2n2222-voltage-plot-threshold.png" alt="Treshold voltage in the transistor active mode region" >}}
+{{ figure(src="2n2222-voltage-plot-threshold.png", alt="Treshold voltage in the transistor active mode region") }}
 </div>
 
 This minimum voltage to get any conductivity is called the _cut-in voltage_.
@@ -181,7 +167,7 @@ entire opposite of NPN modes.  And if we plug a PNP resistor (like a 2N2907)
 into our test circuit as-is and run the experiment, we get very strange results:
 
 <div class="shortcode">
-{{< figure src="2n2907-voltage-plot-naive.png" link="2n2907-voltage-plot-naive.png" alt="Voltage at the collector, base, and emitter as base is changed on a PNP transistor" >}}
+{{ figure(src="2n2907-voltage-plot-naive.png", alt="Voltage at the collector, base, and emitter as base is changed on a PNP transistor") }}
 </div>
 
 According to the above table, just about all values of V<sub>base</sub> we
@@ -212,7 +198,7 @@ our test circuit:
 Applying these three changes results in a circuit that looks like this:
 
 <div class="shortcode">
-{{< figure src="2n2907-experiment-circuit-taps.png" link="2n2907-experiment-circuit-taps.png" alt="Transistor and potentiometer test circuit diagram for PNP transistor" >}}
+{{ figure(src="2n2907-experiment-circuit-taps.png", alt="Transistor and potentiometer test circuit diagram for PNP transistor") }}
 </div>
 
 Note that because the emitter and collector are physically reversed, we must
@@ -223,7 +209,7 @@ This PNP transistor test circuit demonstrates the following relationships
 between V<sub>collector</sub>, V<sub>base</sub>, and V<sub>emitter</sub>:
 
 <div class="shortcode">
-{{< figure src="2n2907-voltage-plot.png" link="2n2907-voltage-plot.png" alt="Voltage at the collector, base, and emitter as base is changed on a PNP transistor" >}}
+{{ figure(src="2n2907-voltage-plot.png", alt="Voltage at the collector, base, and emitter as base is changed on a PNP transistor") }}
 </div>
 
 At a glance, this may look quite different from the NPN transistor voltage plot
@@ -232,7 +218,7 @@ able to see how similar PNP and NPN transistors are.  All of the same modes
 are present, as is the cut-in voltage:
 
 <div class="shortcode">
-{{< figure src="2n2907-voltage-plot-modes.png" link="2n2907-voltage-plot-modes.png" alt="Voltage at the collector, base, and emitter as base is changed on a PNP transistor" class="width-100" >}}
+{{ figure(src="2n2907-voltage-plot-modes.png", alt="Voltage at the collector, base, and emitter as base is changed on a PNP transistor") }}
 </div>
 
 The only difference, as any textbook will tell you, is that PNP transistors

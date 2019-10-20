@@ -1,14 +1,9 @@
 ---
-date: "2014-06-28T00:00:00-07:00"
-draft: false
-title: "Running Hadoop on HPC Clusters"
-shortTitle: "Hadoop on HPC"
-last_mod: "June 28, 2014"
-parentdirs: [ 'data-intensive', 'hadoop' ]
+title: Running Hadoop on HPC Clusters
+shortTitle: Hadoop on HPC
 ---
 
-<div class="shortcode">
-{{% alertbox warning %}}
+{% call alert(type="warning") %}
 This guide used to provide instructions based on
 [myHadoop 0.1](http://sourceforge.net/projects/myhadoop/) 
 (that page can be found 
@@ -19,8 +14,7 @@ This page is a placeholder which is an out-of-date user guide; myHadoop 0.2 now
 supports Spark and Hadoop 2.x which are not mentioned here.  If you are
 interested in an up-to-date version of this page, please contact me and I will
 prioritize updating it.
-{{% /alertbox %}}
-</div>
+{% endcall %}
 
 This guide assumes the following:
 
@@ -320,8 +314,7 @@ existing persistent HDFS state and adjust the resulting Hadoop cluster
 configurations accordingly.  You can use this mechanism to store data on HDFS
 even when you have no jobs running in the batch system.
 
-<div class="shortcode">
-{{% alertbox warning %}}
+{% call inset(type="warning") %}
 Use of persistent mode is not recommended, as Hadoop's performance and
 resiliency arises from the fact that HDFS resides on physically
 discrete storage devices.  By pointing all of your datanodes' HDFS blocks at
@@ -334,8 +327,7 @@ filesystem (like Lustre) as the persistent storage device; the parallelism
 underneath that filesystem may allow you to recover some of the performance
 loss because it will store your HDFS blocks on different object storage
 targets.  However, other bottlenecks and limitations also enter the picture.
-{{%/alertbox%}}
-</div>
+{% endcall %}
 
 #### IP over InfiniBand
 

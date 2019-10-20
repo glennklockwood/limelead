@@ -1,11 +1,9 @@
 ---
-date: "2015-10-21T20:45:00-07:00"
-draft: false
-title: "Principles of Object Storage"
-shortTitle: "Object Storage"
-last_mod: "May 5, 2016"
-parentdirs: [ 'data-intensive', 'storage' ]
+title: Principles of Object Storage
+shortTitle: Object Storage
 ---
+
+## Introduction
 
 _Note: This page remains under construction, and I will build on it as time
 permits.  It is currently missing (1) diagrams, (2) a complete Implementations
@@ -87,9 +85,7 @@ the database layer.  This database layer (called "[gateway][DDN gateways]" or
 front-end interface to users and typically maintains the map of an object ID
 to user-friendly metadata like an object name, access permissions, and so on.
 
-<div class="shortcode">
-{{< figure src="object-store-schematic.png" link="object-store-schematic.png" alt="schematic of object storage with gateway layer" caption="Model object storage system.  Gateway servers may have a variety of features.  For example, CIFS/NFS gateways may stage data to a local disk to facilitate file modifications, and S3 gateways are usually clustered for high-availability.  Some features (basic object metadata and ACLs) may also be integrated on each object storage node itself, and some advanced features may be layered on top of a gateway interface such as S3." >}}
-</div>
+![Schematic of an object store](object-store-schematic.png)
 
 This separation of the object store from the user-facing access interface brings
 some powerful features with it.  For example, an object store may have a 
@@ -193,9 +189,10 @@ directly with object storage servers without having to look up the location of
 an object for each read or write.  A general schematic of data flow looks like
 this:
 
-<div class="shortcode">
-{{< figure src="ceph-data-flow.png" link="ceph-data-flow.png" alt="schematic of Ceph data flow" caption="Basic Ceph data flow" >}}
-</div>
+{{ figure("ceph-data-flow.png",
+    "Schematic of Ceph data path",
+    "Basic Ceph data path")
+}}
 
 Objects are mapped to _placement groups_ using a simple hash function.
 Placement groups (PGs) are logical abstractions that map to object storage

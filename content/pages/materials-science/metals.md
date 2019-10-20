@@ -1,24 +1,7 @@
 ---
-date: "2006-10-09T18:29:05-05:00"
-draft: false
-title: "Overview of Metals"
-shortTitle: "Metals"
-last_mod: "October 9, 2006"
-parentdirs: [ 'materials-science' ]
+title: Overview of Metals
+shortTitle: Metals
 ---
-
-## Table of Contents
-
-- [Introduction](#introduction)
-- [Ferrous Alloys](#ferrous-alloys)
-- [Nonferrous Alloys](#nonferrous-alloys)
-    - [Copper Alloys](#copper-alloys)
-    - [Aluminum Alloys](#aluminum-alloys)
-    - [Other Structural Alloys](#other-structural-alloys)
-    - [Refractory Alloys](#refractory-alloys)
-    - [Superalloys](#superalloys)
-    - [Noble Metals](#noble-metals)
-- [Metal Processing](#metal-processing)
 
 ## Introduction
 

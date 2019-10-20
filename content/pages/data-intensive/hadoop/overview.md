@@ -1,24 +1,7 @@
 ---
-date: "2014-06-28T00:00:00-07:00"
-draft: false
-title: "Conceptual Overview of Map-Reduce and Hadoop"
+title: Conceptual Overview of Map-Reduce and Hadoop
 shortTitle: Overview of Hadoop
-last_mod: "October 9, 2015"
-parentdirs: [ 'data-intensive', 'hadoop' ]
 ---
-
-## Table of Contents
-
-* [1. Introduction](#1-introduction)
-* [2. Comparing Map-Reduce to Traditional Parallelism](#2-comparing-map-reduce-to-traditional-parallelism)
-    * [2.1. Traditional Parallel Applications](#2-1-traditional-parallel-applications)
-    * [2.2. Data-intensive Applications](#2-2-data-intensive-applications)
-* [3. Hadoop - A Map-Reduce Implementation](#3-hadoop-a-map-reduce-implementation)
-    * [3.1 The Magic of HDFS](#3-1-the-magic-of-hdfs)
-    * [3.2 Map-Reduce Jobs](#3-2-map-reduce-jobs)
-        * [3.2.1. The Map Step](#3-2-1-the-map-step)
-        * [3.2.2. The Reduce Step](#3-2-2-the-reduce-step)
-* [4. Summary](#4-summary)
 
 ## 1. Introduction
 
@@ -29,9 +12,9 @@ computing methods.  It only covers the broad basics and is intended to
 provide you with the information you need to follow the subsequent pages I've 
 written on:
 
-* Writing Hadoop Applications in Python using Hadoop Streaming
-* Parsing VCF files with Hadoop Streaming
-* Parallel R using Hadoop
+* [Writing Hadoop Applications in Python using Hadoop Streaming](streaming.html)
+* [Parsing VCF files with Hadoop Streaming](parsing-vcfs.html)
+* [Parallel R using Hadoop](../r/mapreduce-parallelism.html)
 
 ## 2. Comparing Map-Reduce to Traditional Parallelism
 
@@ -72,7 +55,7 @@ problems, data-intensive problems demonstrate the following features:
 To illustrate these differences, the following schematic depicts how your
 typical traditionally parallel application works.
 
-<div class="shortcode">{{<figure src="parallelism-traditional.png" link="parallelism-traditional.png" alt="program flow of a traditionally parallel problem">}}</div>
+{{ figure("parallelism-traditional.png", alt="Program flow of a traditionally parallel problem") }}
 
 The input data is stored on some sort of remote storage device (a SAN, a 
 file server serving files over NFS, a parallel Lustre or GPFS filesystem, etc; 
@@ -89,11 +72,9 @@ Upon launching a traditionally parallel application,
 * All of the parallel workers compute their chunk of the input data
 * All of the parallel workers communicate their results with each other, then continue the next iteration of the calculation
 
-<div class="shortcode">
-{{% alertbox info %}}
+{% call alert(info) %}
 NOTE: In some cases multiple workers may use a parallel I/O API like MPI-IO to collectively read input data, but the filesystem on which the input data resides must be a high-performance filesystem that can sustain the required device- and network-read bandwidth.
-{{% /alertbox %}}
-</div>
+{% endcall %}
 
 The fundamental limit to scalability here is step #1--the process of reading
 the input data (<span style="color:#00CC00;font-weight:bolder">green 
@@ -113,7 +94,7 @@ input data from disk (that pesky green arrow).  Whereas traditional parallelism
 brings _the data to the compute_, map-reduce does the opposite--it 
 brings _the compute to the data_:
 
-<div class="shortcode">{{<figure src="parallelism-mapreduce.png" link="parallelism-mapreduce.png" alt="program flow of a map-reduce parallel problem" >}}</div>
+{{ figure("parallelism-mapreduce.png", alt="program flow of a map-reduce parallel problem") }}
 
 In map-reduce, the input data is _not_ stored on a separate, high-capacity
 storage system.  Rather, the data exists in little pieces and is permanently
@@ -172,7 +153,7 @@ The magical part of HDFS is what is going on just underneath the surface.
 Although it appears to be a filesystem that contains files like any other, in
 reality those files are distributed across multiple physical compute nodes:
 
-<div class="shortcode">{{<figure src="hdfs-magic.png" link="hdfs-magic.png" alt="schematic depicting the magic of HDFS">}}</div>
+{{ figure("hdfs-magic.png", alt="schematic depicting the magic of HDFS") }}
 
 When you copy a file into HDFS as depicted above, that file is transparently
 sliced into 64 MB "chunks" and replicated three times for reliability.  Each of
@@ -183,9 +164,7 @@ with the file on HDFS still make it appear as the same single file you copied
 into HDFS initially.  Thus, HDFS handles all of the burden of slicing, 
 distributing, and recombining your data for you.
 
-<div class="shortcode">
-{{% alertbox %}}
-HDFS's chunk size and replication
+{% call inset("HDFS's chunk size and replication") %}
 The 64 MB chunk (block) size and the choice to replicate your data three 
 times are only HDFS's default values.  These decisions can be changed:
 
@@ -197,8 +176,7 @@ times are only HDFS's default values.  These decisions can be changed:
   can also be changed on a per-file basis by specifying <code>-D dfs.replication=1</code>
   on your <code>-put</code> command line, or using the <kbd>hadoop dfs 
   -setrep -w 1</kbd> command.
-{{% /alertbox %}}
-</div>
+{% endcall %}
 
 ### 3.2. Map-Reduce Jobs
 
@@ -212,7 +190,7 @@ As the name implies, map-reduce jobs are principally comprised of two steps:
 the map step and the reduce step.  The overall workflow generally looks 
 something like this:
 
-<div class="shortcode">{{<figure src="mapreduce-workflow.png" link="mapreduce-workflow.png" alt="program flow of a map-reduce application" >}}</div>
+{{ figure("mapreduce-workflow.png", alt="Program flow of a map-reduce application") }}
 
 The left half of the diagram depicts the HDFS magic described in the previous
 section, where the <kbd>hadoop dfs -copyFromLocal</kbd> command is used to move
@@ -242,14 +220,12 @@ series of key-value pairs_ with the expectation that these parsed key-value
 pairs can be analyzed meaningfully by the reduce step.  It's perfectly fine for
 duplicate keys to be emitted by mappers.
 
-<div class="shortcode">
-{{% alertbox info %}}
+{% call alert("info") %}
 The decision to split your input data along newline characters is just the
 default behavior, which assumes your input data is just an ascii text file.
 You can change how input data is split before being passed to your mapper 
 function using alternate <code>InputFormat</code>s.
-{{% /alertbox %}}
-</div>
+{% endcall %}
 
 #### 3.2.2. The Reduce Step
 
@@ -269,8 +245,7 @@ The reducers then emit key-value pairs back to HDFS where each key is unique,
 and each of these unique keys' values are the result of the reducer function's
 calculation.
 
-<div class="shortcode">
-{{% inset "The Shuffle" %}}
+{% call inset("The Shuffle") %}
 The process of sorting and distributing the mapper's output to the reducers
 can be seen as a separate step often called the "shuffle".  What really happens
 is that as mappers emit key-value pairs, the keys are passed through the
@@ -288,8 +263,7 @@ sort their keys so that a single loop over all of a reducer's keys will examine
 all the values of a single key before moving on to the next key.  As you will
 see in the tutorial on writing mappers and reducers in Python that follows,
 this is an essential property of the Hadoop streaming interface.
-{{% /inset %}}
-</div>
+{% endcall %}
 
 This might sound a little complicated or abstract without an actual problem
 or sample code to examine; it is far easier to demonstrate what the reducer 
