@@ -73,20 +73,21 @@ infrastructure and cutting-edge DNA sequencers.  My heart never left
 supercomputing though, and shortly after my one-year anniversary at 10X, I
 returned to the world of supercomputing at the [National Energy Research
 Scientific Computing Center][nersc] (NERSC) at the [Lawrence Berkeley National
-Laboratory][lbl.gov] (LBL).
+Laboratory][lbl.gov] (LBNL).
 
-## Today
+## Storage and I/O at NERSC
 
-Now at NERSC, I am a part of the [Advanced Technologies Group][nersc atg] where
-I try to envision what the future of supercomputing will have to be to meet the
-needs of scientists.  I am one of the resident experts in parallel I/O and
-new storage technologies, and the emphasis of my work is on parallel I/O system
-architectures.  This includes understanding the [low-level hardware details of
+At NERSC, I joined the [Advanced Technologies Group][nersc atg] where I helped 
+with systems design and procurement to ensure that the next generation of
+supercomputers will be able to keep pace with the demands of future scientific
+research.  I was one of the resident experts in parallel I/O and new storage
+technologies, and the emphasis of my work was on parallel I/O system
+architectures.  This included understanding the [low-level hardware details of
 non-volatile storage media][nvme page], new software technologies for
 [high-performance I/O transport][io forwarding page], optimization points
 for various parallel storage systems including Lustre, Spectrum Scale, and
-[object stores][object stores page], and where all of these technologies are
-headed in the next five to ten years.
+[object stores][object stores page], and where all of these technologies were
+going.
 
 [ru engineering]: http://soe.rutgers.edu
 [imsl]: http://glass.rutgers.edu/
