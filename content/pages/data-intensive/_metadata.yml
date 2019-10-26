@@ -20,3 +20,7 @@ content: |
     These tutorials are all designed to be driven by examples. All of the code
     samples used to illustrate points should be available via links provided on
     each tutorial page.
+links:
+  - title: Spark on Supercomputers
+    linktype: blog
+    url: https://glennklockwood.blogspot.com/2014/06/spark-on-supercomputers-few-notes.html
