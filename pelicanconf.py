@@ -40,6 +40,7 @@ PLUGINS = [
     'limeleadlib.index',
     'limeleadlib.maketoc',
     'limeleadlib.filters',
+    'limeleadlib.defaultclasses',
     'limeleadlib.jinja2content',
 #   'limeleadlib.sitemap',
 #   'limeleadlib.debug',
