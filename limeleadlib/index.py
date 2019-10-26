@@ -1,4 +1,5 @@
-"""Builds indices for directories of pages
+"""Builds an index of subpages and subdirectories for a directory.  Used to
+generate the index.html for each subdirectory and the site landing page.
 """
 
 import os
@@ -88,9 +89,25 @@ def make_dir_index(pagesubdir, pagerootdir, siterootdir):
             # ignore non-file inodes
             pass
 
+    # does this page have any external links?
+    links = get_dir_metadata(pagesubdir, 'links')
+    if links:
+        for link in links:
+            link['type'] = "link"
+            assets.append(link)
+
     # Sort assets
     def _sorter(record):
-        return (record.get('order', 0), record.get('type', ''), record.get('title', ''))
+        """Sort by order (if specified), then asset type, then asset title
+        """
+        TYPE_ORDER = {
+            'link': 'z', # always put links last
+        }
+        _type = record.get('type', '')
+        return (
+            record.get('order', 0),
+            TYPE_ORDER.get(_type, _type),
+            record.get('title', ''))
 
     return sorted(assets, key=_sorter)
 
@@ -132,7 +149,11 @@ def make_index_html_ul(pagesubdir, pagerootdir, siterootdir, hlevel=2, asset_typ
     output += "<ul>\n"
     for asset in make_dir_index(pagesubdir, pagerootdir, siterootdir):
         if asset_type is None or asset.get('type') == asset_type:
-            output += '  <li><a href="%(url)s">%(title)s</a></li>\n' % asset
+            if 'linktype' in asset:
+                asset['linktype'] = asset['linktype'].title()
+                output += '  <li><a href="%(url)s"><span style="font-weight: bold;">%(linktype)s:</span> %(title)s</a></li>\n' % asset
+            else:
+                output += '  <li><a href="%(url)s">%(title)s</a></li>\n' % asset
             found += 1
     output += "</ul>\n"
 
@@ -160,11 +181,16 @@ def make_index_md(pagesubdir, pagerootdir, siterootdir):
         output += my_metadata['content'] + "\n\n"
         # drop content from metadata in actual index since this is a giant blob of text
         del my_metadata['content']
-    if 'contentHtml' in my_metadata:
-        del my_metadata['contentHtml']
+    for drop_key in ['contentHtml', 'links']:
+        if drop_key in my_metadata:
+            del my_metadata[drop_key]
 
     for asset in make_dir_index(pagesubdir, pagerootdir, siterootdir):
-        output += "- [%(title)s](%(url)s)\n" % asset
+        if 'linktype' in asset:
+            asset['linktype'] = asset['linktype'].title()
+            output += "- [**%(linktype)s**: %(title)s](%(url)s)\n" % asset
+        else:
+            output += "- [%(title)s](%(url)s)\n" % asset
     output += "\n"
 
     # prepend metadata
