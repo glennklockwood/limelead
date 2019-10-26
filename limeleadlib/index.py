@@ -101,12 +101,15 @@ def make_dir_index(pagesubdir, pagerootdir, siterootdir):
         """Sort by order (if specified), then asset type, then asset title
         """
         TYPE_ORDER = {
-            'link': 'z', # always put links last
+            "directory": 0,
+            "file": 4,
+            "link": 8,
         }
         _type = record.get('type', '')
         return (
-            record.get('order', 0),
             TYPE_ORDER.get(_type, _type),
+            record.get('order', 0),
+            record.get('linktype', ''),
             record.get('title', ''))
 
     return sorted(assets, key=_sorter)
