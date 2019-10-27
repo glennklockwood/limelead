@@ -43,7 +43,7 @@ def apply_defaultclass(pelican_obj):
     Returns:
         str: HTML with default classes applied
     """
-    html, changes = add_defaultclasses(pelican_obj._content, 'blockquote', ['blockquote'])
+    html, changes = add_defaultclasses(pelican_obj._content, 'blockquote', ['blockquote', 'ml-4', 'p-2'])
     #if changes:
     #    print("Altered %d tag(s) in %s" % (changes, pelican_obj.source_path))
 

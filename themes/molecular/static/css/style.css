@@ -470,3 +470,13 @@ ul.cv-vertical-list {
 .section-nav ul {
     padding-left: 0;
 }
+
+.blockquote {
+    background-color: #EEEEEE44;
+    font-size: inherit;
+    border-left: 1px solid #777;
+}
+
+.blockquote > p:last-child {
+    margin-bottom: 0;
+}
