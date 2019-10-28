@@ -23,6 +23,19 @@ See `requirements.txt`.  The following packages are noteworthy:
 - tabulate: Also required to draw benchmarking performance data tables
 - yaml: Directory metadata is expressed in YAML files
 
+Setting up the environment on Raspberry Pi is straightforward:
+
+    $ sudo apt-get install python3-virtualenv python3-pandas python3-yaml \
+                           python3-tabulate python3-markdown python3-bs4
+    $ virtualenv -p python3 --system-site-packages pelican
+    $ . pelican/bin/activate
+    $ pip3 install -r requirements.txt
+
+You can also skip installing the dependency packages (pandas, yaml, markdown,
+etc) from the Raspbian repo and `pip3 install` them yourself.  However the above
+process allows you to skip the long, onerous build of Pandas that is otherwise
+required.
+
 ## Common Operations
 
 This website uses Pelican as a foundation for providing the directory structure

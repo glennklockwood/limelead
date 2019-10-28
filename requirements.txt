@@ -1,5 +1,6 @@
-beautifulsoup4>=4.8.0
-markdown>=3.1.1
+beautifulsoup4>=4.5.3
+markdown>=2.6.8
+pygments>=2.2.0
 pandas>=0.19.2
 pelican>=4.1.2
 tabulate>=0.7.7
