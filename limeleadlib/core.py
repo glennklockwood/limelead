@@ -173,18 +173,18 @@ def get_git_mtime(path):
     def _scrape_date(lines):
         for line in lines.decode().splitlines():
             if line.startswith('Date'):
-                date_str = line.split(None, 1)[-1]
-                return datetime.datetime.strptime(date_str, "%c %z")
+                date_str = line.split(None)[1]
+                return datetime.datetime.fromtimestamp(int(date_str))
         return None
 
     ret = None
     if path is not None:
         try:
-            ret = _scrape_date(subprocess.check_output(['git', 'log', path]))
+            ret = _scrape_date(subprocess.check_output(['git', 'log', '--date', 'raw', '-n', '1', path]))
         except subprocess.CalledProcessError:
             pass
 
     if not ret:
-        ret = _scrape_date(subprocess.check_output(['git', 'log']))
+        ret = _scrape_date(subprocess.check_output(['git', 'log', '--date', 'raw', '-n', '1']))
 
     return ret
