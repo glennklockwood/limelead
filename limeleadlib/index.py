@@ -197,7 +197,7 @@ def make_index_md(pagesubdir, pagerootdir, siterootdir):
     output += "\n"
 
     # prepend metadata
-    output = "---\n%s\n---\n" % yaml.dump(my_metadata).rstrip() + output
+    output = "---\n%s\n---\n" % yaml.dump(my_metadata, default_flow_style=False).rstrip() + output
     return output
 
 def make_md_indices(pelican_obj):
