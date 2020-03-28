@@ -105,6 +105,8 @@ To build the site, use
 
     $ make clean html serve
 
+Pelican will then serve the site at http://localhost:8000/.
+
 ### Publishing
 
 To publish the site, use
