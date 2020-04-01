@@ -76,6 +76,51 @@ the original bag.
 
 For whatever reason, you cannot simply do a `.from_sequence(partition_contents)`
 
+### Bag Blocksize
+
+It seems like the best way to control the granularity of bag-based workflows is
+to
+
+1. Coarsen your text files to the greatest extent possible - by default this
+   would be a bad idea, since the number of partitions matches the number of
+  files, but then...
+2. Invoke `dask.bag.read_text()` using a `blocksize=` parameter that's something
+   pretty big - 128 MiB isn't bad for parallel file systems.
+3. Rewrite all the data to new files - this is I/O intensive and
+   space-intensive, but it does store the data in a much more analysis-friendly
+   format.
+4. Reload the new files so your data is partitioned into, e.g., approximately
+   128 MiB files.
+
+Fortunately the `blocksize=` parameter seems to do the right thing when
+`blocksize` doesn't match where newlines form.  I convinced myself of this
+using the following test:
+
+    :::python
+    import dask
+    import dask.bag
+    import string
+
+    # Create a test file with differentiators around 1024-byte boundaries
+    with open('testfile.txt', 'w') as testfile:
+        for letter in range(0, 4):
+            testfile.write(string.ascii_lowercase[2*letter] 
+                           + '0' * 1022 
+                           + string.ascii_lowercase[2*letter+1])
+
+    # Iterate over a bunch of different blocksizes and ensure it does
+    # not affect the data that is ultimately loaded into memory
+    last_bag = None
+    for blocksize in (123, 512, 768, 1024, 1536, 1537, 2048, 3096):
+        this_bag = dask.bag.read_text('testfile.txt', blocksize=blocksize).compute()
+        if last_bag is None:
+            last_bag = this_bag
+        else:
+            assert(last_bag == this_bag)
+
+This is functionally equivalent to what Hadoop does in terms of rebuilding
+records (lines) that are split between two workers.
+
 ### Parquet
 
 It looks like working with Dask DataFrames is far faster than bags, and it may
