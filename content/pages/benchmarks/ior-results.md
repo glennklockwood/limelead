@@ -88,3 +88,44 @@ To summarize, the peak numbers were
 - 1,259,295.00 MiB/sec (MPI-IO shared-file read; independent I/O)
 - 13,135,292.56 IOP/sec (POSIX file-per-process write)
 - 28,260,132.42 IOP/sec (POSIX file-per-process read)
+
+## Community File System
+
+### Phase I
+
+The CFS Phase I file system was composed of seven IBM ESS GL8c appliances.
+Access between clients and servers was via FDR InfiniBand.
+
+The IOPS test was run using
+
+```
+mpirun -n 184 --map-by node ./ior -w -r -z -e -C -F -t 4k -b 1g -o /global/cfs/iorfpprandfile
+```
+
+- 28 nodes, 8 processes per node
+- 4 KiB transfers
+- 1 GiB blocks
+- 184 GiB total output size
+- random offsets, file-per-process access
+
+The peak results were
+
+- 551,934.28 write operations/sec
+- 423,413.67 read operations/sec
+
+The full performance test was run using
+
+```
+mpirun -n 408 --map-by node ./ior -w -r -e -C -F -t 1024k -b 32g -o /global/cfs/iorfppseqfile1MiB
+```
+
+- 51 nodes, 8 processes per node
+- 1 MiB transfers
+- 32 GiB blocks
+- 12.75 TiB total output size
+- sequential, file-per-process access
+
+The peak results were
+
+- 184,743.00 MiB/sec (POSIX file-per-process write)
+- 155,214.17 MiB/sec (POSIX file-per-process read)
