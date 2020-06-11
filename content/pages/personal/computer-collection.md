@@ -26,5 +26,5 @@ cloverleaf  | Raspberry Pi Model B   | 000f     | BCM2835      | ARM1176JZF-S   
 cloverfield | Raspberry Pi Model B+  | 0010     | BCM2835      | ARM1176JZF-S   | Electronics experimentation
 clovermill  | Raspberry Pi Zero W    | 9000c1   | BCM2835      | ARM1176JZF-S   | Camera
 clovermine  | Raspberry Pi 3 Model B | a02082   | BCM2835      | ARM Cortex-A53 | General purpose login, home
-cloverdale  | Raspberry Pi 4 Model B |          |              |                |
+cloverdale  | Raspberry Pi 4 Model B | c03112   | BCM2835      | ARM Cortex-A72 |
             | Terasic DE10-Nano      |          | 5CSEBA6U23I7 | ARM Cortex-A9  | FPGA experimentation
