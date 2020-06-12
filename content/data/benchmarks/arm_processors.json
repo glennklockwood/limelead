@@ -9,6 +9,7 @@
         "mem_speed":    "3.2 GB/s",
         "_mem_speed_comment": "400 MHz LPDDR2 (800 MT/sec) at 32-bit bus width",
         "wall_secs":    16459,
+        "memreorder_secs": 10000,
         "compiler":     "GNU GFortran 4.6",
         "compile_flags": "-march=armv6zk -mfpu=vfp -mfloat-abi=hard -O3 -fdefault-real-8 -mcpu=arm1176jzf-s",
         "_comment" :    "10000 seconds with reordering"
