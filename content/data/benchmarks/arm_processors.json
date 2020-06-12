@@ -94,7 +94,7 @@
         "mem":          "1024 MB",
         "mem_type":     "LPDDR4-2400",
         "mem_speed":    "",
-        "wall_secs":    847,
+        "wall_secs":    879,
         "memreorder_secs": 732,
         "compiler":     "GNU GFortran 8.3.0+rpi1",
         "compile_flags": "-march=armv8-a+crc+simd -mcpu=cortex-a72 -mtune=cortex-a72 -mfpu=vfp -marm -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8 -fopenmp",
@@ -108,7 +108,8 @@
         "mem":          "1024 MB",
         "mem_type":     "LPDDR4-2400",
         "mem_speed":    "",
-        "wall_secs":    592,
+        "wall_secs":    815,
+        "memreorder_secs": 592,
         "compiler":     "GNU GFortran 8.3.0+rpi1",
         "compile_flags": "-march=armv8-a+crc+simd -mcpu=cortex-a72 -mtune=cortex-a72 -mfpu=vfp -marm -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8 -fopenmp",
         "_comment" :    ""
@@ -121,7 +122,8 @@
         "mem":          "1024 MB",
         "mem_type":     "LPDDR4-2400",
         "mem_speed":    "",
-        "wall_secs":    589,
+        "wall_secs":    939,
+        "memreorder_secs": 589,
         "compiler":     "GNU GFortran 8.3.0+rpi1",
         "compile_flags": "-march=armv8-a+crc+simd -mcpu=cortex-a72 -mtune=cortex-a72 -mfpu=vfp -marm -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8 -fopenmp",
         "_comment" :    ""
@@ -134,7 +136,8 @@
         "mem":          "1024 MB",
         "mem_type":     "LPDDR4-2400",
         "mem_speed":    "",
-        "wall_secs":    639,
+        "wall_secs":    1146,
+        "memreorder_secs": 639,
         "compiler":     "GNU GFortran 8.3.0+rpi1",
         "compile_flags": "-march=armv8-a+crc+simd -mcpu=cortex-a72 -mtune=cortex-a72 -mfpu=vfp -marm -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8 -fopenmp",
         "_comment" :    ""
