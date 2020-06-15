@@ -253,7 +253,7 @@ Regarding /proc/fs/lustre/mds/MDS/mdt/stats, from [Andreas Dilger, September 201
 > 
 >        (sum / samples) = 1257652419050 / 611801704 = 2055usec
 
-## Page Cache Data Path
+## Data Path
 
 From [Andreas Dilger, August 2010](http://lists.lustre.org/pipermail/lustre-discuss-lustre.org/2010-August/008296.html):
 
@@ -266,3 +266,18 @@ From [Andreas Dilger, August 2010](http://lists.lustre.org/pipermail/lustre-disc
 > The OSS layer does not aggregate writes itself.  This is done on the client
 > before the writes RPCs are generated, or in the block device (elevator and
 > or cache for h/w RAID devices) at the bottom end.
+
+From [Andreas Dilger, June 2020](http://lists.lustre.org/pipermail/lustre-discuss-lustre.org/2020-June/017111.html)
+
+> > we use TBF policy to limit rpcrate coming from clients; but I do not know
+> > how to mapping of rpcrate to bandwidth or iops.
+> > For example:
+> > if I set a client's `rpcrate=10`，how much bandwith or iops the client can
+> > get in theory?
+> 
+> Currently, the TBF policies only deal with RPCs.  For most systems today, you
+> are probably using 4MB RPC size (`osc.*.max_pages_per_rpc=1024`), so if you
+> set `rpcrate=10` the clients will be able to get at most 40MB/s (assuming
+> applications do relatively linear IO).  If applications have small random
+> IOPS then `rpcrate=10` may get up to 256 4KB writes per RPC, or about 2560
+> IOPS = 10MB/s.
