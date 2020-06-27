@@ -44,6 +44,7 @@
     },
     {
         "model":        "Raspberry Pi 3",
+        "hostname":     "clovermine",
         "processor":    "ARM Cortex-A53",
         "clock":        "1200",
         "cache":        "32+32 KB",
@@ -55,7 +56,8 @@
         "memreorder_secs": 1463,
         "compiler":     "GNU GFortran 4.9.2",
         "compile_flags": "-mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8",
-        "_comment" :    "1463 / 1489 / 1569 / 1939 sec with reordering @ 1, 2, 3, and 4 threads"
+        "stream_triad_mbs": 1595.6,
+        "_comment" :    "stream_triad compiled with same compile_flags and -DSTREAM_ARRAY_SIZE=25000000; run with OMP_PROC_BIND=true; gcc 6.3.0-18+rpi1+deb9u1"
     },
     {
         "model":        "Raspberry Pi 3",
@@ -70,7 +72,8 @@
         "memreorder_secs": 1489,
         "compiler":     "GNU GFortran 4.9.2",
         "compile_flags": "-mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8",
-        "_comment" :    "1463 / 1489 / 1569 / 1939 sec with reordering @ 1, 2, 3, and 4 threads"
+        "stream_triad_mbs": 1602.4,
+        "_comment" :    "stream_triad compiled with same compile_flags and -DSTREAM_ARRAY_SIZE=25000000; run with OMP_PROC_BIND=true; gcc 6.3.0-18+rpi1+deb9u1"
     },
     {
         "model":        "Raspberry Pi 3",
@@ -85,10 +88,12 @@
         "memreorder_secs": 1939,
         "compiler":     "GNU GFortran 4.9.2",
         "compile_flags": "-mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8",
-        "_comment" :    "1463 / 1489 / 1569 / 1939 sec with reordering @ 1, 2, 3, and 4 threads"
+        "stream_triad_mbs": 1594.7,
+        "_comment" :    "stream_triad compiled with same compile_flags and -DSTREAM_ARRAY_SIZE=25000000; run with OMP_PROC_BIND=true; gcc 6.3.0-18+rpi1+deb9u1"
     },
     {
         "model":        "Raspberry Pi 4",
+        "hostname":     "cloverdale",
         "processor":    "ARM Cortex-A72",
         "clock":        "1&#215; 1500",
         "cache":        "32+48 KB",
@@ -99,10 +104,12 @@
         "memreorder_secs": 732,
         "compiler":     "GNU GFortran 8.3.0+rpi1",
         "compile_flags": "-march=armv8-a+crc+simd -mcpu=cortex-a72 -mtune=cortex-a72 -mfpu=vfp -marm -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8 -fopenmp",
-        "_comment" :    ""
+        "stream_triad_mbs": 4800.4,
+        "_comment" :    "stream_triad compiled with same compile_flags and -DSTREAM_ARRAY_SIZE=100000000; run with OMP_PROC_BIND=true"
     },
     {
         "model":        "Raspberry Pi 4",
+        "hostname":     "cloverdale",
         "processor":    "ARM Cortex-A72",
         "clock":        "2&#215; 1500",
         "cache":        "32+48 KB",
@@ -113,10 +120,12 @@
         "memreorder_secs": 592,
         "compiler":     "GNU GFortran 8.3.0+rpi1",
         "compile_flags": "-march=armv8-a+crc+simd -mcpu=cortex-a72 -mtune=cortex-a72 -mfpu=vfp -marm -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8 -fopenmp",
-        "_comment" :    ""
+        "stream_triad_mbs": 4320.9,
+        "_comment" :    "stream_triad compiled with same compile_flags and -DSTREAM_ARRAY_SIZE=100000000; run with OMP_PROC_BIND=true"
     },
     {
         "model":        "Raspberry Pi 4",
+        "hostname":     "cloverdale",
         "processor":    "ARM Cortex-A72",
         "clock":        "3&#215; 1500",
         "cache":        "32+48 KB",
@@ -127,10 +136,12 @@
         "memreorder_secs": 589,
         "compiler":     "GNU GFortran 8.3.0+rpi1",
         "compile_flags": "-march=armv8-a+crc+simd -mcpu=cortex-a72 -mtune=cortex-a72 -mfpu=vfp -marm -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8 -fopenmp",
-        "_comment" :    ""
+        "stream_triad_mbs": 4004.3,
+        "_comment" :    "stream_triad compiled with same compile_flags and -DSTREAM_ARRAY_SIZE=100000000; run with OMP_PROC_BIND=true"
     },
     {
         "model":        "Raspberry Pi 4",
+        "hostname":     "cloverdale",
         "processor":    "ARM Cortex-A72",
         "clock":        "4&#215; 1500",
         "cache":        "32+48 KB",
@@ -141,6 +152,7 @@
         "memreorder_secs": 639,
         "compiler":     "GNU GFortran 8.3.0+rpi1",
         "compile_flags": "-march=armv8-a+crc+simd -mcpu=cortex-a72 -mtune=cortex-a72 -mfpu=vfp -marm -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8 -fopenmp",
-        "_comment" :    ""
+        "stream_triad_mbs": 3749.8,
+        "_comment" :    "stream_triad compiled with same compile_flags and -DSTREAM_ARRAY_SIZE=100000000; run with OMP_PROC_BIND=true"
     }
 ]
