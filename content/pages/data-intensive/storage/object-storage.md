@@ -110,6 +110,14 @@ in the front- and back-end to balance scalability with performance and
 usability, but this flexibility is afforded by building atop object-based
 (rather than block-based) data representations.
 
+Although separating user interfaces from the underlying object representation of
+data affords flexibility, not all such gateways are [dual-access gateways][].
+Dual access (or tertiary access, or whatever else) is what allows you to access
+the same data through multiple interfaces (e.g., writing an object using PUT,
+but reading it back as if it were a file).  At best, dual-access gateways tend
+to be eventually consistent so that you do not necessarily see data through all
+gateways as soon as you write it from another.
+
 ## Object Storage Implementations
 
 _This section is very incomplete, but I hope to illustrate some specific
@@ -356,3 +364,4 @@ follow-up discussion with the creators of MarFS.  I recommend looking at a
 [Shutterfly MSST slides]: http://storageconference.us/2016/Presentations/MikeKugler.pdf
 [MarFS]: https://github.com/mar-file-system/marfs
 [MarFS MSST slides]: http://storageconference.us/2016/Slides/DavidBonnie.pdf
+[dual-access gateways]: https://dx.doi.org/10.1145/3357223.3362703
