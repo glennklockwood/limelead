@@ -40,6 +40,9 @@ def fix_md_table(html, add_table_classes=DEFAULT_TABLE_CLASSES):
     soup = bs4.BeautifulSoup(html, 'html.parser')
     for table in soup.find_all("table"):
         if add_table_classes:
+            # do not style codehilite tables (numbered lines of code)
+            if 'codehilitetable' in table.get('class', []):
+                continue
             table['class'] = table.get('class', []) + add_table_classes
             changes += 1
 
