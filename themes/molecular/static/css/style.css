@@ -272,6 +272,7 @@ tr div.codehilite pre {
 
 table.codehilitetable {
     width: 100%;
+    margin-bottom: 1.2em;
 }
 
 /* for cv page */
