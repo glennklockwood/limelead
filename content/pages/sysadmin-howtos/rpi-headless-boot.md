@@ -12,11 +12,19 @@ automatically connect to your wifi network.
 
 This `wpa_supplicant.conf` should look something like this:
 
+    ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+    update_config=1
+    country=US
+    
     network={
         ssid="my_wifi_ssid"
         psk="my_password_in_plaintext"
         key_mgmt=WPA-PSK
     }
+
+Of note, `ctrl_interface=` is required for command-line utilities to communicate
+with wpa-supplicant.  Without this, you're apt to get errors like "Could not
+connect to wpa\_supplicant."
 
 You also have to make sure that SSH is enabled on first boot to actually access
 your newly minted Pi over wifi.  To do this, put an empty file named `ssh` into
