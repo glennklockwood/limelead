@@ -34,7 +34,7 @@ body {
 }
 
 .content-box code {
-    color: inherit;
+    /* color: inherit; */
     background-color: inherit;
     font-size: inherit;
 }
@@ -96,11 +96,14 @@ body {
 .content-box pre {
     word-wrap: normal;
     overflow: auto;
-    margin: 1.2em 0em 1.2em 2.5em;
+    margin: 1.2em 0em 1.2em 2.0em;
+    background: #f8f8f8;
 }
+
 .content-box samp, code, kbd, var {
     font-family: monospace;
     font-size: 13px;
+    color: #0b0c75;
 }
 .content-box kbd {
     background-color: inherit;
@@ -255,15 +258,28 @@ tr td.code {
     width: 100%;
 }
 
+/* linenodiv = line number styling */
 tr div.linenodiv {
     width: auto;
-    background-color: #f8f8f8;
 }
+
 tr div.linenodiv pre {
-    margin: 0px;
-    padding-right: 1.5em;
-    padding-left: 1em;
+    margin: 0;
+    padding-right: 1.0em;
+    padding-left: 0em;
     color: rgba(27,31,35,.3);
+    background: transparent;
+}
+
+div.codehilite {
+    /*margin-left: 1.5em;*/
+}
+
+div.codehilite pre {
+    margin-left: 2.0em;
+    padding: 0.25em 0.5em;
+    border-radius: 10px;
+    border: 1px solid #d3d3d3;
 }
 
 tr div.codehilite pre {

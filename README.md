@@ -144,3 +144,13 @@ can be called outright, e.g.,
 The `limeleadlib.jinja2content` explicitly imports the filters and functions
 defined in `limeleadlib.filters` plugin so that they are available inside of
 Markdown documents.
+
+### Validation
+
+Any time CSS is changed, consider visually inspecting the following files for
+the functionality of some special features:
+
+- `content/pages/electronics/bmc2835-gpio.md`
+    - figure
+    - alert shortcode (info)
+    - numbered pre blocks (using `#!text`)
