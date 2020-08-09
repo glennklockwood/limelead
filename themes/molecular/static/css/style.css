@@ -240,7 +240,7 @@ div.codehilite pre {
     border: 1px solid #d3d3d3;
     background: #f8f8f8;
     padding: 0.25em 0.75em;
-    margin: 0em 0em 0em 2.0em;
+    margin: 0em 1.0em;
 }
 
 /* line-numbered code blocks  pygments - linenos=table */
