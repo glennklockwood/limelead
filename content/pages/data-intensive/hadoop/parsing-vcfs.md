@@ -1,6 +1,7 @@
 ---
 title: Parsing VCF Files with Hadoop Streaming
 shortTitle: Parsing VCFs with Hadoop
+overrideLastMod: June 28, 2014
 ---
 
 ## 1. Introduction

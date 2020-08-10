@@ -1,6 +1,7 @@
 ---
 title: Alternative Forms of Parallelism
 order: 30
+overrideLastMod: August 14, 2013
 ---
 
 ## 6. Introduction

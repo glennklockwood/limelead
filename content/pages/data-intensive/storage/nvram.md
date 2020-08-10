@@ -1,6 +1,7 @@
 ---
 title: Principles of Non-volatile RAM
 shortTitle: Non-volatile RAM
+overrideLastMod: February 1, 2016
 ---
 
 ## Introduction

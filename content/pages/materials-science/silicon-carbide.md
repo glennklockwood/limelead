@@ -1,6 +1,7 @@
 ---
 title: Overview of Silicon Carbide
 shortTitle: Silicon Carbide
+overrideLastMod: October 9, 2006
 ---
 
 ## Introduction

@@ -2,6 +2,7 @@
 title: 6. The Radial Distribution Function
 shortTitle: Radial Distribution Functions
 order: 60
+overrideLastMod: September 28, 2012
 ---
 
 ## Definition of the Radial Distribution Function

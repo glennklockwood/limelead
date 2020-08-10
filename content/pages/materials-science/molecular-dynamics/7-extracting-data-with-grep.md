@@ -2,6 +2,7 @@
 title: 7. Extracting Data from Output with grep
 shortTitle: Extracting Data with grep
 order: 70
+overrideLastMod: May 16, 2012
 ---
 
 It is admittedly tedious and repetitive to scan through output files for every

@@ -2,6 +2,7 @@
 title: Parallel Options for R
 shortTitle: Parallel Options
 order: 5
+overrideLastMod: August 14, 2013
 ---
 
 ## Contents

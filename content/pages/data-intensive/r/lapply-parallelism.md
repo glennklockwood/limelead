@@ -1,6 +1,7 @@
 ---
 title: lapply-based Parallelism
 order: 10
+overrideLastMod: August 14, 2013
 ---
 
 ## 3. Introduction

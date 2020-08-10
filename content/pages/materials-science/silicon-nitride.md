@@ -1,6 +1,7 @@
 ---
 title: Overview of Silicon Nitride
 shortTitle: Silicon Nitride
+overrideLastMod: October 9, 2006
 ---
 
 ## Introduction

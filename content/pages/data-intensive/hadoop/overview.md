@@ -1,6 +1,7 @@
 ---
 title: Conceptual Overview of Map-Reduce and Hadoop
 shortTitle: Overview of Hadoop
+overrideLastMod: October 9, 2015
 ---
 
 ## 1. Introduction

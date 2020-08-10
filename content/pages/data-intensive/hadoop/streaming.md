@@ -1,6 +1,7 @@
 ---
 title: Writing Hadoop Applications in Python with Hadoop Streaming
 shortTitle: Hadoop Streaming with Python
+overrideLastMod: June 28, 2014
 ---
 
 ## 1. Introduction

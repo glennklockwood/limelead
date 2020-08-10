@@ -1,6 +1,7 @@
 ---
 title: Statistical Design using Orthogonal Arrays
 shortTitle: Statistical Design
+overrideLastMod: October 9, 2006
 ---
 
 Statistical design is an alternative to the scientific method of checking one

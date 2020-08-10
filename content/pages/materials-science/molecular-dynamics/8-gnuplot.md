@@ -2,6 +2,7 @@
 title: 8. Plotting Data with gnuplot
 shortTitle: Plotting Data with gnuplot
 order: 80
+overrideLastMod: May 16, 2012
 ---
 
 We use a program called [gnuplot](http://www.gnuplot.info/) to quickly

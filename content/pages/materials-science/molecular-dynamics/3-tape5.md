@@ -2,6 +2,7 @@
 title: 3. Editing tape5
 shortTitle: Editing tape5
 order: 30
+overrideLastMod: April 3, 2012
 ---
 
 ## The Important Parts
