@@ -1,0 +1,26 @@
+title: Molecular Dynamics Tutorial
+content: |
+    I wrote this tutorial while I was a graduate student at the [Interfacial
+    Molecular Science Laboratory (IMSL)](http://glass.rutgers.edu) for the
+    undergraduate interns who would join our lab.  Their internship was often their
+    first exposure to simulation techniques or even UNIX/Linux systems, so these
+    material assume zero working knowledge of technical computing.
+
+    The tutorial material is highly specific to the software and computing
+    environment we had at the lab, but some budding materials science researcher
+    may find the introduction interesting nonetheless.  This tutorial could also
+    be easily converted to use an open-source MD code such as [LAMMPS](https://lammps.sandia.gov/);
+    all the same principles would apply even though the syntax is different.
+
+    What follows below and in subsequent pages are the tutorial materials as they
+    were written in 2012.
+
+    ---
+
+    This tutorial is aimed to equip the new researcher with the basics of working
+    with the molecular dynamics code and related research tools used at the
+    Interfacial Molecular Science Laboratory at Rutgers.  It is a general procedure
+    that has been put to new students for decades and provides hands-on experience
+    in configuring and running molecular dynamics simulations.
+
+    ## Contents
