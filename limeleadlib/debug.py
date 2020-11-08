@@ -15,7 +15,10 @@ def print_interface(*args, **kwargs):
         print("Positional argument %d" % index)
         print("Type: %s" % type(arg))
         print("================================================================================")
-        pp.pprint(arg.__dict__)
+        if isinstance(arg, str):
+            pp.pprint(arg)
+        else:
+            pp.pprint(arg.__dict__)
 
     for key, value in kwargs.items():
         print("================================================================================")
@@ -35,9 +38,10 @@ def print_context_page(*args):
 
 def register():
 #   pelican.signals.initialized.connect(print_interface)
+#   pelican.signals.finalized.connect(print_interface)
 #   pelican.signals.generator_init.connect(print_interface)
 #   pelican.signals.page_generator_context.connect(print_interface)
-    pelican.signals.page_generator_init.connect(print_interface)
+#   pelican.signals.page_generator_init.connect(print_interface)
 #   pelican.signals.page_generator_finalized.connect(print_interface)
 #   pelican.signals.page_generator_finalized.connect(print_context_page)
 #   pelican.signals.page_generator_write_page.connect(print_interface)
@@ -45,3 +49,4 @@ def register():
 #   pelican.signals.static_generator_preread.connect(print_interface)
 #   pelican.signals.static_generator_context.connect(print_interface)
 #   pelican.signals.content_object_init.connect(print_interface)
+    pelican.signals.content_written.connect(print_interface)
