@@ -6,6 +6,28 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    {% if page and AUTHOR_TWITTER %}
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="{{ AUTHOR_TWITTER }}">
+    <meta property="og:url" content="{{ SITEURL }}/{{ page.url }}">
+    <meta property="og:title" content="{{ page.title[:70]|e }}">
+    {% if page.description %}
+        {% if page.description|length > 197 %}
+    <meta property="og:description" content="{{ (page.description|striptags)[:197] }}...">
+        {% else %}
+    <meta property="og:description" content="{{ page.description|striptags }}">
+        {% endif %}
+    {% else %}
+    <meta property="og:description" content="{{ (page.content|striptags)[:197] }}...">
+    {% endif %}
+    {% if page.image %}
+    <meta property="og:image" content="{{ SITEURL }}/{{ page.image }}">
+    {% else %}
+    <meta property="og:image" content="{{ SITEURL }}/{{ AUTHOR_PHOTO }}">
+    {% endif %}
+    {% else %}
+    <!-- not a page -->
+    {% endif %}
 
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}{% if THEME_STATIC_DIR %}/{% endif %}css/style.css" type="text/css">

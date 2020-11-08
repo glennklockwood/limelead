@@ -3,8 +3,10 @@
 from __future__ import unicode_literals
 
 AUTHOR = 'Glenn K. Lockwood'
+AUTHOR_TWITTER = '@glennklockwood'
+AUTHOR_PHOTO = "me2.jpg" # relative to SITEURL
 SITENAME = 'Glenn K. Lockwood'
-SITEURL = ''
+SITEURL = 'https://www.glennklockwood.com'
 TIMEZONE = 'America/Los_Angeles'
 DEFAULT_LANG = 'en'
 
