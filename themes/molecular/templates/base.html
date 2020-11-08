@@ -11,17 +11,17 @@
     <meta name="twitter:creator" content="{{ AUTHOR_TWITTER }}">
     <meta property="og:url" content="{{ SITEURL }}/{{ page.url }}">
     <meta property="og:title" content="{{ page.title[:70]|e }}">
-    {% if page.description %}
-        {% if page.description|length > 197 %}
-    <meta property="og:description" content="{{ (page.description|striptags)[:197] }}...">
+    {% if page.metadata.description %}
+        {% if page.metadata.description|length > 197 %}
+    <meta property="og:description" content="{{ (page.metadata.description|rstrip|striptags)[:197] }}...">
         {% else %}
-    <meta property="og:description" content="{{ page.description|striptags }}">
+    <meta property="og:description" content="{{ page.metadata.description|rstrip|striptags }}">
         {% endif %}
-    {% else %}
-    <meta property="og:description" content="{{ (page.content|striptags)[:197] }}...">
+    {% elif page.content %}
+    <meta property="og:description" content="{{ (page.content|rstrip|striptags)[:197] }}...">
     {% endif %}
-    {% if page.image %}
-    <meta property="og:image" content="{{ SITEURL }}/{{ page.image }}">
+    {% if page.metadata.image %}
+    <meta property="og:image" content="{{ SITEURL }}/{{ page.metadata.image }}">
     {% else %}
     <meta property="og:image" content="{{ SITEURL }}/{{ AUTHOR_PHOTO }}">
     {% endif %}

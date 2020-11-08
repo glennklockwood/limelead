@@ -91,6 +91,7 @@ FILTERS = {
     'getmtime': lambda x: datetime.datetime.fromtimestamp(os.path.getmtime(x)),
     'getmtime_git': get_git_mtime,
     'md2html': md2html,
+    'rstrip': lambda x: (x).rstrip(' .'),
 }
 
 FUNCTIONS = {

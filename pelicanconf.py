@@ -44,6 +44,7 @@ PLUGINS = [
     'limeleadlib.filters',
     'limeleadlib.defaultclasses',
     'limeleadlib.jinja2content',
+    'limeleadlib.twittercard',
 #   'limeleadlib.sitemap',
 #   'limeleadlib.debug',
 ]
