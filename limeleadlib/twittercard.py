@@ -36,7 +36,7 @@ def set_card_meta(pelican_obj):
 def set_card_metas(page_generator_write_page, content):
     if not content._content:
         return
-    content._content = set_card_meta(content)
+    set_card_meta(content)
 
 def register():
     pelican.signals.page_generator_write_page.connect(set_card_metas)
