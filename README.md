@@ -28,8 +28,14 @@ Setting up the environment on Raspberry Pi is straightforward:
     $ sudo apt-get install python3-virtualenv python3-pandas python3-yaml \
                            python3-tabulate python3-markdown python3-bs4
     $ virtualenv -p python3 --system-site-packages pelican
+    # 
     $ . pelican/bin/activate
     $ pip3 install -r requirements.txt
+
+For newer distributions with newer Pythons, you may need to use the following
+instead to set up a virtualenv:
+
+    $ python3 -mvenv --system-site-packages pelican
 
 You can also skip installing the dependency packages (pandas, yaml, markdown,
 etc) from the Raspbian repo and `pip3 install` them yourself.  However the above
