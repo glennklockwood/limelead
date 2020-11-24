@@ -32,13 +32,11 @@ Commercial NAND flash storage chips come in two flavors:
 
 - **floating gate** cells store data on a second floating gate on a
   transistor.  This floating gate is a conductor and is electrically isolated
-  from the transistor using a relatively thick insulator.  Floating gate NAND
-  has historically been the technology of choice in planar (2D) NAND devices.
+  from the transistor using a relatively thick insulator.
 
 - **charge trap** cells also store data on a floating gate on a transistor.
   Unlike floating gate cells though, this gate is effectively a pure insulator
-  so that electrons that are stuck there stay there forever.  Charge trap is
-  the preferred technology for 3D NAND devices.
+  so that electrons that are stuck there stay there forever.
 
 These NAND cells are programmed (that is, data is saved to them) by sparking
 the gap between the insulating floating gate and its transistor.  This
@@ -51,8 +49,20 @@ The effects of this damage are different in floating gate and charge trap;
 because floating gate stores its electrons on a conductive floating gate, any
 short circuit that forms as a result of damage will cause the entire cell to
 become useless.  Conversely, charge trap cells are unable to fully drain in
-the presence of a small short circuit and are therefore more durable.  However,
-charge trap cells are more expensive to manufacture than floating gate cells.
+the presence of a small short circuit and are therefore more durable.  Here's
+a handy comparison table of the two:
+
+Property     | Charge Trap       | Floating Gate
+-------------|-------------------|----------------
+durability   | better            | worse
+retention    | worse             | better
+cell density | worse             | better
+mfr cost     | higher            | lower
+vendors      | SK Hynix, Samsung | Intel, Micron
+
+Floating gate cells were originally designed for planar (2D) NAND, whereas
+charge trap entered the market later as the industry was transitioning to 3D
+NAND.
 
 Modern 2D NAND relies on roughly 80 electrons trapped on the floating gate to
 store its data--a 1 or 0 value.  Leaky gates can cause data loss over years as
@@ -90,6 +100,11 @@ of planar (2D) NAND are scale down so poorly that 2D NAND is simply not
 economical below 16 nm lithographic processes.  However the move to 3D NAND
 has allowed larger lithographic feature sizes to be used, improving the
 performance and endurance of 3D NAND relative to state-of-the art planar NAND.
+
+Because higher-level cell types (especially QLC) are more "fragile," the
+durability of a cell becomes more important.  It follows that floating gate is
+often easier to implement QLC--it is more durable that charge trap, meaning
+it can preserve the integrity of all four bits per cell for longer.
 
 ### Flash Translation Layer
 
