@@ -26,7 +26,7 @@ def sourcepath2relpath(sourcepath, rootpath):
     """
     return sourcepath[len(os.path.commonpath([rootpath, sourcepath]))+1:].lstrip("/")
 
-def make_dir_index(pagesubdir, pagerootdir, siterootdir):
+def make_dir_index(pagesubdir, pagerootdir, siterootdir, include_drafts=False):
     """Creates a list of index entries for a directory
 
     Given a path, builds a list containing the metadata of each asset and a fully
@@ -51,6 +51,7 @@ def make_dir_index(pagesubdir, pagerootdir, siterootdir):
             should be created
         pagerootdir (str): Full path to the root directory of the page sources
         siterootdir (str): The SITEURL for the published site
+        include_drafts (bool): Include pages with status: draft in index?
 
     Returns:
         list: List of dictionaries, where each dictionary contains the metadata
@@ -71,11 +72,13 @@ def make_dir_index(pagesubdir, pagerootdir, siterootdir):
         and inode.endswith('.md') \
         and os.path.basename(inode) != "index.md":
             metadata = get_page_metadata(inode)
-            metadata.update({
-                "url": "%s/%s" % (siterootdir, relpath.rsplit('.', 1)[0] + ".html"),
-                "type": "file",
-            })
-            assets.append(metadata)
+            if metadata.get("status", "null").lower() != "draft" \
+            or include_drafts:
+                metadata.update({
+                    "url": "%s/%s" % (siterootdir, relpath.rsplit('.', 1)[0] + ".html"),
+                    "type": "file",
+                })
+                assets.append(metadata)
 
         # if this file/dir is a dir
         elif os.path.isdir(inode):
@@ -128,6 +131,7 @@ def make_index_html_ul(pagesubdir, pagerootdir, siterootdir, hlevel=2, asset_typ
         hlevel (int or str): Which heading level to create the index heading.
             If zero, do not draw heading.  If a string, literally print this
             instead of a heading (should include h tags if desired).
+        asset_type (str or None): If set, only display assets of given type
 
     Returns:
         str: An HTML string that will generate a link to this file
