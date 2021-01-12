@@ -27,9 +27,28 @@ configuration.
 
 This containerized ecosystem is branded as [NVIDIA GPU-Accelerated Containers][]
 or NGC, and anyone can browse their "App Store" equivalent, the [NGC Catalog][].
+I set up the CLI client using the instructions in the [NGC Overview][] which
+involved
+
+1. Downloading the `ngc` binary for ARM64
+2. Creating an NGC account using my Google account
+3. Generating an NGC API key
+4. Running `ngc config set` and punching in my API key
+5. Running `ngc diag all` to make sure everything worked
+
+Once you've got this set up, you can access NGC without having to click around
+the NGC website.  For example, the NVIDIA DLI [Getting Started with AI on
+Jetson Nano course][nvdli course] tells you to retrieve the latest tag for the
+`dli-nano-ai` container from the website so you can fetch and run the course's
+container.  Instead, you can do
+
+    $ ngc registry image list 'nvidia/dli/dli-nano-ai:*'
+
+to get all the available tags.
 
 [NVIDIA GPU-Accelerated Containers]: https://www.nvidia.com/en-us/gpu-cloud/containers/
 [NGC Catalog]: https://ngc.nvidia.com/
+[NGC Overview]: https://docs.nvidia.com/ngc/ngc-overview/index.html
 
 ## System Setup
 
@@ -56,7 +75,8 @@ can use since Docker apparently relies on extended attributes which NFS does
 not support.
 
 The big offender of capacity consumption is `/var/lib/docker`.  After installing
-the NVIDIA Deep Learning Institute image for the XYZ course,
+the NVIDIA Deep Learning Institute image for the [Getting Started with AI on
+Jetson Nano course][nvdli course],
 
     root@jetson:/var/lib/docker# du -hs *
     20K     builder
@@ -80,3 +100,4 @@ SSD is perfectly possible by editing `/etc/docker/daemon.json`.
 
 [1]: https://stackoverflow.com/questions/54214613/error-creating-overlay-mount-to-a-nfs-mount
 [2]: https://forums.docker.com/t/store-images-in-non-default-locations/77882
+[nvdli course]: https://courses.nvidia.com/courses/course-v1:DLI+S-RX-02+V2/about
