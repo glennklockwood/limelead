@@ -31,15 +31,17 @@ software suites.  For example,
   there's [no supported easy install for it on Jetson](https://github.com/rapidsai/cusignal/issues/8).
 - [DALI][] is a collection of tools for data loading.  Again, [no support for it
   on Jetson yet](https://forums.developer.nvidia.com/t/dali-python-library-on-jetson-nano/142651).
-- [OpenACC][] offers a programming model and runtime for pragma-based GPU
+- OpenACC offers a programming model and runtime for pragma-based GPU
   acceleration of C and Fortran apps.  [No easy support for Jetson yet](https://forums.developer.nvidia.com/t/jetson-nano-and-hpc-sdk/160750).
 
-I also found that a lot of NVIDIA tools only support Pascal-generation or newer
-GPUs.
+I also found that a lot of analytics tools only support Pascal-generation or
+newer GPUs.  There may be ways to get all of this running by building and
+installing things by hand, but I was expecting a friendlier experience from a
+single-board computer.
 
-There may be ways to get all of this running by building and installing things
-by hand, but I was expecting a friendlier experience from a board aimed at
-educators.
+It seems like Jetson is really geared towards machine vision and robotics and
+not as a general platform for learning the NVIDIA software ecosystem for other
+things like high-performance computing and data analytics.
 
 [sd-image]: https://developer.nvidia.com/jetson-nano-sd-card-image
 [Getting Started docs]: https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit
@@ -65,20 +67,20 @@ Seems like a pretty big oversight in creating a flawless out-of-box experience.
 
 ### NVIDIA GPU Cloud - Containerized Applications
 
-NVIDIA can treat the Jetson Nano's runtime like a substrate for running
-containerized environments which is a big departure from most Raspberry Pi-like
-single-board computers and traditional HPC environments.  Logging into the
-Jetson Nano itself gives you a pretty minimal environment--shells, text editors,
-and basic Linux stuff are there, but no precreated Python environments,
-TensorFlow, or anything like that.
+You can Jetson Nano's OS environment like a substrate for running containerized
+environments which is a big departure from most Raspberry Pi-like single-board
+computers and traditional HPC environments.  Logging into the Jetson Nano itself
+gives you a pretty minimal environment--shells, text editors, and basic Linux
+stuff are there, but no precreated Python environments, TensorFlow, or anything
+like that.
 
-Instead, you are meant to launch application containers that drop you in a
-system that has all of the necessary bells and whistles required to develop and
-execute applications in a well-defined environment.  This is much closer to
-what one would expect in a cloud computing environment: you choose the entire
-software ecosystem you need as an all-inclusive appliance, press go, and don't
-fuss with any software dependencies, compilation, or environment-specific
-configuration.
+Instead of installing all your own libraries and tools though, you can launch
+application _containers_ that drop you in a system that has all of the necessary
+bells and whistles required to develop and execute applications in a
+well-defined environment.  This is much closer to what one would expect in a
+cloud computing environment: you choose the entire software stack you need as
+an all-inclusive appliance, press go, and don't fuss with any software
+dependencies, compilation, or environment-specific configuration.
 
 This containerized ecosystem is branded as [NVIDIA GPU-Accelerated Containers][]
 or NGC, and anyone can browse their "App Store" equivalent, the [NGC
@@ -101,9 +103,28 @@ container.  Instead, you can do
 
 to get all the available tags.
 
+Sadly, NGC seems to be quite new, and most of the containers hosted on
+it are not compatible with ARM.  
+
+As far as I can tell, there are only [a couple containers in NGC that will
+actually work on Jetson][arm-containers]:
+
+1. [DLI Getting Started with AI on Jetson Nano][] - the container used for the
+   course that is copackaged with the Nano
+2. [CUDA for Arm64][] - CUDA, which also ships with Jetson Nano's OS image
+
+NGC has a label system you could use to search for containers matching a
+certain criteria (like "supports ARM64..."), but they aren't used consistently
+so you kind of have to wade through a combination of labels and container names
+to figure out what NGC offerings may work.  In addition, you have to read each
+container's README because many only work with Pascal or newer GPUs.
+
 [NVIDIA GPU-Accelerated Containers]: https://www.nvidia.com/en-us/gpu-cloud/containers/
 [ngc]: https://ngc.nvidia.com/
 [NGC Overview]: https://docs.nvidia.com/ngc/ngc-overview/index.html
+[arm-containers]: https://ngc.nvidia.com/catalog/containers?orderBy=modifiedDESC&pageNumber=0&query=%20label%3A%22Arm64%22&quickFilter=containers&filters=
+[DLI Getting Started with AI on Jetson Nano]: https://ngc.nvidia.com/catalog/containers/nvidia:dli:dli-nano-ai
+[CUDA for Arm64]: https://ngc.nvidia.com/catalog/containers/nvidia:cuda-arm64
 
 ## System Setup
 
