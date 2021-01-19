@@ -115,7 +115,66 @@ container.  Instead, you can do
 
 to get all the available tags.
 
-Sadly, NGC seems to be quite new, and most of the containers hosted on it are
+#### Installing Images
+
+You can then retrieve images.  
+
+    $ sudo ~glock/bin/ngc registry image pull nvidia/l4t-ml:r32.4.4-py3
+    Logging in to https://nvcr.io... login successful.
+    r32.4.4-py3: Pulling from nvidia/l4t-ml
+
+You have to do this as root because the `ngc` command talks to Docker, and
+Docker in JetPack has to be run as root.
+
+It's not clear to me what the advantage of using the `ngc` command to pull
+images is versus just calling `docker` directly.  It doesn't look like `ngc`
+keeps any local information about what images have already been pulled.
+See below.
+
+#### Running Images
+
+Once you've pulled an image from NGC,
+
+```bash
+sudo docker run \
+    --runtime nvidia \
+    -it \
+    --rm \
+    --network host \
+    --volume "$HOME/nvdli-data:/nvdli-nano/data" \
+    --device /dev/video0 \
+    "nvcr.io/nvidia/l4t-ml:r32.4.4-py3"
+```
+
+where
+
+- `-it` means run the container interactively
+- `--rm` means delete the container when it is complete
+- `--network host` means the container will open ports on host itself
+- `--volume` establishes a bind mount between the local host and the container
+- `--device` passes the USB camera into container for image capture
+
+The exact image name (`nvcr.io/nvidia/l4t-ml:...`) is just the image name from
+the previous step (`ngc registry image pull ...`) with `nvcr.io/` prepended.
+
+For what it's worth, the `sudo docker run ...` command will work even if you
+don't `ngc registry image pull` beforehand.  So again, I'm not sure what value
+the NGC pull command does.
+
+#### Caveats
+
+You may have to explicitly name a tag or else you get an error like this:
+
+    $ sudo ~glock/bin/ngc registry image pull nvidia/l4t-ml
+    Logging in to https://nvcr.io... login successful.
+    Error: manifest for nvcr.io/nvidia/l4t-ml:latest not found: manifest unknown: manifest unknown
+
+I think this is because specific containers only work with specific versions of
+JetPack.  It would be nice if `ngc` could detect this automatically.
+
+#### Finding Containers
+
+NGC seems to be quite new though, and most of the containers hosted on it are
 not compatible with ARM or Jetson Nano.  I could only find a couple containers
 that will actually work on Jetson:
 
