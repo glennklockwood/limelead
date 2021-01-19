@@ -116,8 +116,8 @@ container.  Instead, you can do
 to get all the available tags.
 
 Sadly, NGC seems to be quite new, and most of the containers hosted on it are
-not compatible with ARM or Jetson Nano.  It looks like there are only [a
-couple containers in NGC that will actually work on Jetson][arm-containers]:
+not compatible with ARM or Jetson Nano.  I could only find a couple containers
+that will actually work on Jetson:
 
 1. [DLI Getting Started with AI on Jetson Nano][] - the container used for the
    course that is copackaged with the Nano
@@ -129,10 +129,15 @@ so you kind of have to wade through a combination of labels and container names
 to figure out what NGC offerings may work.  In addition, you have to read each
 container's README because many only work with Pascal or newer GPUs.
 
+I've had success looking for the following labels:
+
+- [L4T](https://ngc.nvidia.com/catalog/containers?orderBy=modifiedDESC&pageNumber=0&query=%20label%3A%22ARM%22&quickFilter=containers&filters=)
+- [ARM](https://ngc.nvidia.com/catalog/containers?orderBy=modifiedDESC&pageNumber=0&query=%20label%3A%22Arm64%22&quickFilter=containers&filters=)
+- [ARM64](https://ngc.nvidia.com/catalog/containers?orderBy=modifiedDESC&pageNumber=0&query=%20label%3A%22L4T%22&quickFilter=containers&filters=) - this has a lot of containers that seem to be meant for non-Jetson systems though
+
 [NVIDIA GPU-Accelerated Containers]: https://www.nvidia.com/en-us/gpu-cloud/containers/
 [ngc]: https://ngc.nvidia.com/
 [NGC Overview]: https://docs.nvidia.com/ngc/ngc-overview/index.html
-[arm-containers]: https://ngc.nvidia.com/catalog/containers?orderBy=modifiedDESC&pageNumber=0&query=%20label%3A%22Arm64%22&quickFilter=containers&filters=
 [DLI Getting Started with AI on Jetson Nano]: https://ngc.nvidia.com/catalog/containers/nvidia:dli:dli-nano-ai
 [CUDA for Arm64]: https://ngc.nvidia.com/catalog/containers/nvidia:cuda-arm64
 
