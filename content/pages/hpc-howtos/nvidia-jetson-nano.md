@@ -1,7 +1,6 @@
 ---
 title: Getting started with the NVIDIA Jetson Nano
 shortTitle: NVIDIA Jetson Nano
-status: draft
 ---
 
 This page is a work in progress and catalogs my thoughts in getting started
@@ -13,17 +12,17 @@ with the [NVIDIA Jetson Nano Developer Kit][].
 
 I set up the NVIDIA Jetson Nano with the official [Jetson Nano Developer Kit
 SD Card Image][sd-image] according to the [Getting Started docs][].  NVIDIA's
-nomenclature is quite confusing; I think this image is called "JetPack" and it
-includes:
+nomenclature is a little confusing; I think this image is called "JetPack" and
+it includes:
 
 1. An Ubuntu-based OS with all the NVIDIA drivers called "L4T"
-2. CUDA, although you wouldn't know without digging
+2. CUDA (although you wouldn't know without digging)
 3. Docker and support for containerized applications from [NVIDIA GPU
    Cloud][ngc] (NGC)
 
-The documentation provided by NVIDIA is equally confusing because it turns out
-that NVIDIA doesn't really support Jetson with a lot of its high-profile
-software suites.  For example,
+NVIDIA doesn't seem to provide strong support Jetson with a lot of its
+high-profile software suites outside of learning and machine vision.  For
+example,
 
 - [DIGITS][] is a collection of Python tools for deep learning, but there is [no
   supported easy install for it on Jetson](https://forums.developer.nvidia.com/t/can-i-install-digits-on-jetson/40872).
@@ -34,14 +33,14 @@ software suites.  For example,
 - OpenACC offers a programming model and runtime for pragma-based GPU
   acceleration of C and Fortran apps.  [No easy support for Jetson yet](https://forums.developer.nvidia.com/t/jetson-nano-and-hpc-sdk/160750).
 
-I also found that a lot of analytics tools only support Pascal-generation or
+I also found that many analytics tools only support Pascal-generation or
 newer GPUs.  There may be ways to get all of this running by building and
 installing things by hand, but I was expecting a friendlier experience from a
 single-board computer.
 
-It seems like Jetson is really geared towards machine vision and robotics and
-not as a general platform for learning the NVIDIA software ecosystem for other
-things like high-performance computing and data analytics.
+It looks to me like Jetson is really geared towards machine vision and robotics;
+it is not as a general platform for learning the NVIDIA software ecosystem for
+other things like high-performance computing and data analytics.
 
 [sd-image]: https://developer.nvidia.com/jetson-nano-sd-card-image
 [Getting Started docs]: https://developer.nvidia.com/embedded/learn/get-started-jetson-nano-devkit
@@ -52,7 +51,7 @@ things like high-performance computing and data analytics.
 ### CUDA Support
 
 The Jetson Nano SD image comes with CUDA preinstalled, but trying to use it on
-a fresh install just throws an error:
+a fresh install throws an error:
 
     glock@jetson:~$ nvcc
     -bash: nvcc: command not found
@@ -63,26 +62,39 @@ environment](https://forums.developer.nvidia.com/t/cuda-nvcc-not-found/118068/2)
     export PATH=/usr/local/cuda/bin${PATH:+:${PATH}}
     export LD_LIBRARY_PATH=/usr/local/cuda/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 
-Seems like a pretty big oversight in creating a flawless out-of-box experience.
+This struck me as a big oversight in creating a flawless out-of-box experience,
+but it's easy enough to fix.  I made the following script and stuck it in
+`/etc/profile.d/cuda.sh` for my Ansible setter-upper:
+
+```bash
+if [ -n "${BASH_VERSION-}" ]; then
+    if [[ $PATH != */usr/local/cuda/bin* ]]; then
+        export PATH=/usr/local/cuda/bin${PATH:+:${PATH}}
+    fi
+    if [[ $LD_LIBRARY_PATH != */usr/local/cuda/lib64* ]]; then
+        export LD_LIBRARY_PATH=/usr/local/cuda/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+    fi
+fi
+```
 
 ### NVIDIA GPU Cloud - Containerized Applications
 
 You can Jetson Nano's OS environment like a substrate for running containerized
 environments which is a big departure from most Raspberry Pi-like single-board
 computers and traditional HPC environments.  Logging into the Jetson Nano itself
-gives you a pretty minimal environment--shells, text editors, and basic Linux
-stuff are there, but no precreated Python environments, TensorFlow, or anything
-like that.
+gives you a lean environment--shells, text editors, and basic Linux stuff are
+there, but there are no precreated Python environments, TensorFlow, etc.
 
 Instead of installing all your own libraries and tools though, you can launch
 application _containers_ that drop you in a system that has all of the necessary
 bells and whistles required to develop and execute applications in a
-well-defined environment.  This is much closer to what one would expect in a
-cloud computing environment: you choose the entire software stack you need as
-an all-inclusive appliance, press go, and don't fuss with any software
-dependencies, compilation, or environment-specific configuration.
+well-defined environment.  This is closer to what one would expect in a cloud
+computing environment: you choose the entire software stack you need as an
+all-inclusive appliance, press go, and don't fuss with any software
+dependencies, compilation, or environment-specific configuration.  It's quite
+nice.
 
-This containerized ecosystem is branded as [NVIDIA GPU-Accelerated Containers][]
+This containerized ecosystem is branded as [NVIDIA GPU-Accelerated Cloud][]
 or NGC, and anyone can browse their "App Store" equivalent, the [NGC
 Catalog][ngc].  I set up the CLI client using the instructions in the
 [NGC Overview][] which involved
@@ -103,11 +115,9 @@ container.  Instead, you can do
 
 to get all the available tags.
 
-Sadly, NGC seems to be quite new, and most of the containers hosted on
-it are not compatible with ARM.  
-
-As far as I can tell, there are only [a couple containers in NGC that will
-actually work on Jetson][arm-containers]:
+Sadly, NGC seems to be quite new, and most of the containers hosted on it are
+not compatible with ARM or Jetson Nano.  It looks like there are only [a
+couple containers in NGC that will actually work on Jetson][arm-containers]:
 
 1. [DLI Getting Started with AI on Jetson Nano][] - the container used for the
    course that is copackaged with the Nano
@@ -140,15 +150,16 @@ rt2800usb | 148f:5370 Ralink Technology, Corp. RT5370 Wireless Adapter
 They work and can hold a connection, but the packet loss on both is > 15% and
 the latency is quite variable.  These were both cheap dongles with no external
 antenna, and the connection quality (loss and variability) did improve when the
-Jetson was adjacent to my wifi router, but I do wonder if the Jetson's physical
-design interferes with cheap USB dongles' small antennae.
+Jetson was adjacent to my wifi router.  I do wonder if the Jetson's physical
+design interferes with cheap USB dongles' small antennae though, as both of these
+dongles are rock-solid on Raspberry Pi.
 
 ### Capacity Management
 
 NVIDIA recommends using an SD card with at least 32 GB, and that's no joke--the
 reliance on container images to provide a software environment not only takes
 up a lot of space, but imposes constraints on what sort of external storage you
-can use since Docker apparently relies on extended attributes which NFS does
+can use.  This is because Docker relies on extended attributes which NFS does
 not support.
 
 The big offender of capacity consumption is `/var/lib/docker`.  After installing
@@ -172,8 +183,8 @@ Jetson Nano course][nvdli course],
 and the [`overlay2` directory cannot be relocated to NFS][1] due to its
 dependence on xattr support.
 
-It sounds like [relocating the entire docker data directory][2] to an external
-SSD is perfectly possible by editing `/etc/docker/daemon.json`.
+[Relocating the entire docker data directory][2] to an external SSD should be
+perfectly possible by editing `/etc/docker/daemon.json`.
 
 [1]: https://stackoverflow.com/questions/54214613/error-creating-overlay-mount-to-a-nfs-mount
 [2]: https://forums.docker.com/t/store-images-in-non-default-locations/77882
