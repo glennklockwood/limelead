@@ -6,6 +6,10 @@ shortTitle: NVIDIA Jetson Nano
 This page is a work in progress and catalogs my thoughts in getting started
 with the [NVIDIA Jetson Nano Developer Kit][].
 
+For system setup stuff, I am maintaining [an Ansible playbook for configuring
+Jetson Nano post-install](https://github.com/glennklockwood/rpi-ansible/blob/jetson-nano/jetson.yml)
+too.
+
 [NVIDIA Jetson Nano Developer Kit]: https://developer.nvidia.com/embedded/jetson-nano-developer-kit
 
 ## User Environment
@@ -194,7 +198,7 @@ I've had success looking for the following labels:
 - [ARM](https://ngc.nvidia.com/catalog/containers?orderBy=modifiedDESC&pageNumber=0&query=%20label%3A%22Arm64%22&quickFilter=containers&filters=)
 - [ARM64](https://ngc.nvidia.com/catalog/containers?orderBy=modifiedDESC&pageNumber=0&query=%20label%3A%22L4T%22&quickFilter=containers&filters=) - this has a lot of containers that seem to be meant for non-Jetson systems though
 
-[NVIDIA GPU-Accelerated Containers]: https://www.nvidia.com/en-us/gpu-cloud/containers/
+[NVIDIA GPU-Accelerated Cloud]: https://www.nvidia.com/en-us/gpu-cloud/containers/
 [ngc]: https://ngc.nvidia.com/
 [NGC Overview]: https://docs.nvidia.com/ngc/ngc-overview/index.html
 [DLI Getting Started with AI on Jetson Nano]: https://ngc.nvidia.com/catalog/containers/nvidia:dli:dli-nano-ai
