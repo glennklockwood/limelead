@@ -140,7 +140,7 @@ See below.
 Once you've pulled an image from NGC,
 
 ```bash
-sudo docker run \
+docker run \
     --runtime nvidia \
     -it \
     --rm \
@@ -161,7 +161,7 @@ where
 The exact image name (`nvcr.io/nvidia/l4t-ml:...`) is just the image name from
 the previous step (`ngc registry image pull ...`) with `nvcr.io/` prepended.
 
-For what it's worth, the `sudo docker run ...` command will work even if you
+For what it's worth, the `docker run ...` command will work even if you
 don't `ngc registry image pull` beforehand.  So again, I'm not sure what value
 the NGC pull command does.
 
@@ -205,6 +205,24 @@ I've had success looking for the following labels:
 [CUDA for Arm64]: https://ngc.nvidia.com/catalog/containers/nvidia:cuda-arm64
 
 ## System Setup
+
+### User Setup
+
+When you first boot up a fresh SD card, the Jetson installer asks you to create
+a new user which becomes uid 1000.
+
+To be able to run the `docker` command without sudo, you have to add this user
+to the `docker` group.
+
+    sudo usermod -a -G docker glock
+
+Bear in mind that membership in this docker group is equivalent to root access.
+See the [Manage Docker as a non-root user page][] in the Docker docs for more
+information, and see how I [add the default user to the docker group in
+Ansible][add-user-to-docker-group].
+
+[Manage Docker as a non-root user page]: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
+[add-user-to-docker-group]: https://github.com/glennklockwood/rpi-ansible/commit/2833140ebd27c77c1ec87bfb1ef30ad97ec27ab2
 
 ### Wifi
 
