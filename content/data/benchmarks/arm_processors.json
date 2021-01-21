@@ -154,5 +154,61 @@
         "compile_flags": "-march=armv8-a+crc+simd -mcpu=cortex-a72 -mtune=cortex-a72 -mfpu=vfp -marm -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8 -fopenmp",
         "stream_triad_mbs": 3749.8,
         "_comment" :    "stream_triad compiled with same compile_flags and -DSTREAM_ARRAY_SIZE=100000000; run with OMP_PROC_BIND=true"
+    },
+    {
+        "model":        "NVIDIA Jetson Nano",
+        "hostname":     "jetson",
+        "processor":    "ARM Cortex-A57",
+        "clock":        "1&#215; 1430",
+        "cache":        "32+48 KB<br>2 MB",
+        "mem":          "4096 MB",
+        "mem_type":     "DDR4-1600 MB",
+        "mem_speed":    "25.6 GB/s",
+        "wall_secs":    876,
+        "memreorder_secs": 778,
+        "compiler":     "GNU Fortran (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0",
+        "compile_flags": "-mcpu=cortex-a57 -mtune=cortex-a57 -O3 -fdefault-real-8 -fdefault-double-8"
+    },
+    {
+        "model":        "NVIDIA Jetson Nano",
+        "hostname":     "jetson",
+        "processor":    "ARM Cortex-A57",
+        "clock":        "2&#215; 1430",
+        "cache":        "32+48 KB<br>2 MB",
+        "mem":          "4096 MB",
+        "mem_type":     "DDR4-1600 MB",
+        "mem_speed":    "25.6 GB/s",
+        "wall_secs":    738,
+        "memreorder_secs": 592,
+        "compiler":     "GNU Fortran (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0",
+        "compile_flags": "-mcpu=cortex-a57 -mtune=cortex-a57 -O3 -fdefault-real-8 -fdefault-double-8"
+    },
+    {
+        "model":        "NVIDIA Jetson Nano",
+        "hostname":     "jetson",
+        "processor":    "ARM Cortex-A57",
+        "clock":        "3&#215; 1430",
+        "cache":        "32+48 KB<br>2 MB",
+        "mem":          "4096 MB",
+        "mem_type":     "DDR4-1600 MB",
+        "mem_speed":    "25.6 GB/s",
+        "wall_secs":    707,
+        "memreorder_secs": 541,
+        "compiler":     "GNU Fortran (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0",
+        "compile_flags": "-mcpu=cortex-a57 -mtune=cortex-a57 -O3 -fdefault-real-8 -fdefault-double-8"
+    },
+    {
+        "model":        "NVIDIA Jetson Nano",
+        "hostname":     "jetson",
+        "processor":    "ARM Cortex-A57",
+        "clock":        "4&#215; 1430",
+        "cache":        "32+48 KB<br>2 MB",
+        "mem":          "4096 MB",
+        "mem_type":     "DDR4-1600 MB",
+        "mem_speed":    "25.6 GB/s",
+        "wall_secs":    667,
+        "memreorder_secs": 528,
+        "compiler":     "GNU Fortran (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0",
+        "compile_flags": "-mcpu=cortex-a57 -mtune=cortex-a57 -O3 -fdefault-real-8 -fdefault-double-8"
     }
 ]
