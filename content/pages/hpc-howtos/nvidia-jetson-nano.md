@@ -119,27 +119,64 @@ container.  Instead, you can do
 
 to get all the available tags.
 
-#### Installing Images
+## Docker on Jetson Nano
 
-You can then retrieve images.  
+All of the following assumes that you have added yourself to the `docker` group
+on your Jetson Nano.  See the [user setup](##user-setup) section below for
+more information.
 
-    $ sudo ~glock/bin/ngc registry image pull nvidia/l4t-ml:r32.4.4-py3
+### Finding Containers
+
+Forewarning: NGC seems to be quite new, and most of the containers hosted on
+it are not compatible with ARM or Jetson Nano.  I could only find a couple
+containers that will actually work on Jetson:
+
+1. [DLI Getting Started with AI on Jetson Nano][] - the container used for the
+   course that is copackaged with the Nano
+2. [CUDA for Arm64][] - CUDA, which also ships with Jetson Nano's OS image
+
+NGC has a label system you could use to search for containers matching a
+certain criteria (like "supports ARM64..."), but they aren't used consistently
+so you kind of have to wade through a combination of labels and container names
+to figure out what NGC offerings may work.  In addition, you have to read each
+container's README because many only work with Pascal or newer GPUs.
+
+I've had success looking for the following labels:
+
+- [L4T](https://ngc.nvidia.com/catalog/containers?orderBy=modifiedDESC&pageNumber=0&query=%20label%3A%22ARM%22&quickFilter=containers&filters=)
+- [ARM](https://ngc.nvidia.com/catalog/containers?orderBy=modifiedDESC&pageNumber=0&query=%20label%3A%22Arm64%22&quickFilter=containers&filters=)
+- [ARM64](https://ngc.nvidia.com/catalog/containers?orderBy=modifiedDESC&pageNumber=0&query=%20label%3A%22L4T%22&quickFilter=containers&filters=) - this has a lot of containers that seem to be meant for non-Jetson systems though
+
+That all said, you can repurpose a lot of these images to create your own
+containerized development or execution environments on Jetson Nano.
+
+### Installing Images
+
+Once you know what image you want to retrieve,
+
+    $ ngc registry image pull nvidia/l4t-ml:r32.4.4-py3
     Logging in to https://nvcr.io... login successful.
     r32.4.4-py3: Pulling from nvidia/l4t-ml
-
-You have to do this as root because the `ngc` command talks to Docker, and
-Docker in JetPack has to be run as root.
 
 It's not clear to me what the advantage of using the `ngc` command to pull
 images is versus just calling `docker` directly.  It doesn't look like `ngc`
 keeps any local information about what images have already been pulled.
-See below.
 
-#### Running Images
+You may also have to explicitly name a tag or else you get an error like this:
+
+    $ ngc registry image pull nvidia/l4t-ml
+    Logging in to https://nvcr.io... login successful.
+    Error: manifest for nvcr.io/nvidia/l4t-ml:latest not found: manifest unknown: manifest unknown
+
+I think this is because specific containers only work with specific versions of
+JetPack.  It would be nice if `ngc` could detect this automatically.
+
+### Running Images - Services
 
 Once you've pulled an image from NGC,
 
 ```bash
+#!/usr/bin/env bash
 docker run \
     --runtime nvidia \
     -it \
@@ -165,44 +202,88 @@ For what it's worth, the `docker run ...` command will work even if you
 don't `ngc registry image pull` beforehand.  So again, I'm not sure what value
 the NGC pull command does.
 
-#### Caveats
+### Running Images - Interactive
 
-You may have to explicitly name a tag or else you get an error like this:
+These images are also good for running GPU-accelerated code interactively.  To
+run the NVIDIA DLI container as an interactive environment, you can do something
+like:
 
-    $ sudo ~glock/bin/ngc registry image pull nvidia/l4t-ml
-    Logging in to https://nvcr.io... login successful.
-    Error: manifest for nvcr.io/nvidia/l4t-ml:latest not found: manifest unknown: manifest unknown
+```bash
+#!/usr/bin/env bash
+docker run \
+    --runtime nvidia \
+    -it \
+    --rm \
+    --network host \
+    --volume "$HOME:$HOME" \
+    --volume "/etc/passwd:/etc/passwd:ro" \
+    --volume "/etc/group:/etc/group:ro" \
+    --volume "/etc/shadow:/etc/shadow:ro" \
+    --volume "/etc/gshadow:/etc/gshadow:ro" \
+    -u $(id -u ${USER}):$(getent group video | awk -F: '{print $3}') \
+    --device /dev/video0 \
+    "nvcr.io/nvidia/dli/dli-nano-ai:v2.0.1-r32.4.4"
+```
 
-I think this is because specific containers only work with specific versions of
-JetPack.  It would be nice if `ngc` could detect this automatically.
+Note that we expose users and groups from our jetson nano inside the container.
+This prevents us from accidentally creating root-owned files on our host as we
+play inside the container and is achived by
 
-#### Finding Containers
+1. Mounting our home directory into the container
+2. Mounting the passwd and group files into the container
+3. Lauching our shell with the UID of our host account and the GID of video
 
-NGC seems to be quite new though, and most of the containers hosted on it are
-not compatible with ARM or Jetson Nano.  I could only find a couple containers
-that will actually work on Jetson:
+Making the container run as the `video` group is necessary to allow the shell
+to utilize the GPU.  If you don't do this, you would have to first run
 
-1. [DLI Getting Started with AI on Jetson Nano][] - the container used for the
-   course that is copackaged with the Nano
-2. [CUDA for Arm64][] - CUDA, which also ships with Jetson Nano's OS image
+    $ newgrp video
 
-NGC has a label system you could use to search for containers matching a
-certain criteria (like "supports ARM64..."), but they aren't used consistently
-so you kind of have to wade through a combination of labels and container names
-to figure out what NGC offerings may work.  In addition, you have to read each
-container's README because many only work with Pascal or newer GPUs.
+from inside the container after launch.
 
-I've had success looking for the following labels:
+Also note that in the exact example above, you'll get this error:
 
-- [L4T](https://ngc.nvidia.com/catalog/containers?orderBy=modifiedDESC&pageNumber=0&query=%20label%3A%22ARM%22&quickFilter=containers&filters=)
-- [ARM](https://ngc.nvidia.com/catalog/containers?orderBy=modifiedDESC&pageNumber=0&query=%20label%3A%22Arm64%22&quickFilter=containers&filters=)
-- [ARM64](https://ngc.nvidia.com/catalog/containers?orderBy=modifiedDESC&pageNumber=0&query=%20label%3A%22L4T%22&quickFilter=containers&filters=) - this has a lot of containers that seem to be meant for non-Jetson systems though
+    /bin/bash: /var/log/jupyter.log: Permission denied
 
-[NVIDIA GPU-Accelerated Cloud]: https://www.nvidia.com/en-us/gpu-cloud/containers/
-[ngc]: https://ngc.nvidia.com/
-[NGC Overview]: https://docs.nvidia.com/ngc/ngc-overview/index.html
-[DLI Getting Started with AI on Jetson Nano]: https://ngc.nvidia.com/catalog/containers/nvidia:dli:dli-nano-ai
-[CUDA for Arm64]: https://ngc.nvidia.com/catalog/containers/nvidia:cuda-arm64
+This is just a result of Jupyter trying to start up as a non-root user.  It can
+be ignored.
+
+### Running Images - docker-compose
+
+If you want to use `docker-compose` instead of the big long `docker run`
+command, create a `docker-compose.yml` file that looks like this:
+
+```yaml
+version: "3"
+services:
+  app:
+    image: "nvcr.io/nvidia/dli/dli-nano-ai:v2.0.1-r32.4.4"
+    user: "1000:44"
+    working_dir: $HOME
+    devices:
+      - /dev/video0
+    volumes:
+      - /etc/group:/etc/group:ro
+      - /etc/passwd:/etc/passwd:ro
+      - /etc/shadow:/etc/shadow:ro
+      - /etc/gshadow:/etc/gshadow:ro
+      - $HOME:$HOME
+    stdin_open: true
+    tty: true
+    entrypoint: /bin/bash
+```
+
+Then you can simply run
+
+    $ docker-compose run --rm app
+
+This avoids the jupyter.log error because you aren't bothering to run it.
+
+Note that
+
+1. This assumes you have made the `nvidia` runtime the system default.  See
+   [Docker Setup](#docker-setup) below for how to do this.
+2. Install docker-compose before attempting using `apt install docker-compose`.
+   docker-compose version 1.17.1 is sufficient.
 
 ## System Setup
 
@@ -221,8 +302,33 @@ See the [Manage Docker as a non-root user page][] in the Docker docs for more
 information, and see how I [add the default user to the docker group in
 Ansible][add-user-to-docker-group].
 
+You should also make sure your new user is a member of the `video` group so that
+you can access the GPU.
+
 [Manage Docker as a non-root user page]: https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user
 [add-user-to-docker-group]: https://github.com/glennklockwood/rpi-ansible/commit/2833140ebd27c77c1ec87bfb1ef30ad97ec27ab2
+
+### Docker Setup
+
+You should set the default docker runtime system-wide to be `nvidia` so that you
+don't have to explicitly use ``--runtime nvidia`` every time run a container.
+Edit `/etc/docker/daemon.json` and add a `default-runtime` key:
+
+```json
+{
+    "runtimes": {
+        "nvidia": {
+            "path": "nvidia-container-runtime",
+            "runtimeArgs": []
+        }
+    },
+    "default-runtime": "nvidia"
+}
+```
+
+Then
+
+    $ sudo service docker restart
 
 ### Wifi
 
@@ -272,6 +378,12 @@ dependence on xattr support.
 [Relocating the entire docker data directory][2] to an external SSD should be
 perfectly possible by editing `/etc/docker/daemon.json`.
 
+[NVIDIA GPU-Accelerated Cloud]: https://www.nvidia.com/en-us/gpu-cloud/containers/
+[ngc]: https://ngc.nvidia.com/
+[NGC Overview]: https://docs.nvidia.com/ngc/ngc-overview/index.html
+[DLI Getting Started with AI on Jetson Nano]: https://ngc.nvidia.com/catalog/containers/nvidia:dli:dli-nano-ai
+[CUDA for Arm64]: https://ngc.nvidia.com/catalog/containers/nvidia:cuda-arm64
 [1]: https://stackoverflow.com/questions/54214613/error-creating-overlay-mount-to-a-nfs-mount
 [2]: https://forums.docker.com/t/store-images-in-non-default-locations/77882
 [nvdli course]: https://courses.nvidia.com/courses/course-v1:DLI+S-RX-02+V2/about
+
