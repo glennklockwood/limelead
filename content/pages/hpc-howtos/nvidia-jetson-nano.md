@@ -125,7 +125,7 @@ All of the following assumes that you have added yourself to the `docker` group
 on your Jetson Nano.  See the [user setup](##user-setup) section below for
 more information.
 
-### Finding Containers
+### Finding Images
 
 Forewarning: NGC seems to be quite new, and most of the containers hosted on
 it are not compatible with ARM or Jetson Nano.  I could only find a couple
@@ -171,7 +171,7 @@ You may also have to explicitly name a tag or else you get an error like this:
 I think this is because specific containers only work with specific versions of
 JetPack.  It would be nice if `ngc` could detect this automatically.
 
-### Running Images - Services
+### Running Containerized Services
 
 Once you've pulled an image from NGC,
 
@@ -202,7 +202,7 @@ For what it's worth, the `docker run ...` command will work even if you
 don't `ngc registry image pull` beforehand.  So again, I'm not sure what value
 the NGC pull command does.
 
-### Running Images - Interactive
+### Running Containers as Non-Root
 
 These images are also good for running GPU-accelerated code interactively.  To
 run the NVIDIA DLI container as an interactive environment, you can do something
@@ -247,7 +247,7 @@ Also note that in the exact example above, you'll get this error:
 This is just a result of Jupyter trying to start up as a non-root user.  It can
 be ignored.
 
-### Running Images - docker-compose
+### Running Containers with docker-compose
 
 If you want to use `docker-compose` instead of the big long `docker run`
 command, create a `docker-compose.yml` file that looks like this:
