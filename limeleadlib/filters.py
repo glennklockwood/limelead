@@ -7,7 +7,7 @@ limeleadlib.jinja2content plugin where there is no Pelican context explicitly
 available during rendering.
 """
 import os
-import json
+import yaml
 import datetime
 
 import pelican
@@ -32,7 +32,10 @@ def md2html(md_content, settings):
     _md = markdown.Markdown(**settings)
     return _md.convert(md_content)
 
-def json2table(datafile, show_cols, tablefmt='html'):
+def json2table(*args, **kwargs):
+    return yaml2table(*args, **kwargs)
+
+def yaml2table(datafile, show_cols, tablefmt='html'):
     """Converts contents of a JSON data file into an ASCII table
 
     Takes a JSON encoded list of dictionaries, converts it into a Pandas
@@ -59,7 +62,7 @@ def json2table(datafile, show_cols, tablefmt='html'):
     Returns:
         str: HTML representation of _datafile_ in the given ASCII encoding
     """
-    from_dict = json.load(open(datafile, 'r'))
+    from_dict = yaml.load(open(datafile, 'r'))
 
     dataframe = pandas.DataFrame.from_dict(from_dict).fillna(value="")
 
@@ -97,4 +100,5 @@ FILTERS = {
 FUNCTIONS = {
     "json2table": json2table,
     "includefile": lambda x: open(x, 'r').read(),
+    "yaml2table": json2table,
 }

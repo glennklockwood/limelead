@@ -57,6 +57,6 @@ systems do not have it.
 
 ## x86 Processors
 
-{{ json2table("content/data/benchmarks/x86_processors.json", show_cols=show_cols) }}
+{{ yaml2table("content/data/benchmarks/x86_processors.yaml", show_cols=show_cols) }}
 
 [my website's git repository]: https://github.com/glennklockwood/limelead/tree/master/content/data/benchmarks
