@@ -83,11 +83,12 @@ fi
 
 ### NVIDIA GPU Cloud - Containerized Applications
 
-You can Jetson Nano's OS environment like a substrate for running containerized
-environments which is a big departure from most Raspberry Pi-like single-board
-computers and traditional HPC environments.  Logging into the Jetson Nano itself
-gives you a lean environment--shells, text editors, and basic Linux stuff are
-there, but there are no precreated Python environments, TensorFlow, etc.
+You can think of Jetson Nano's OS environment like a substrate for running
+containerized environments which is a big departure from most Raspberry Pi-like
+single-board computers and traditional HPC environments.  Logging into the
+Jetson Nano itself gives you a lean environment--shells, text editors, and
+basic Linux stuff are there, but there are no precreated Python environments,
+TensorFlow, etc.
 
 Instead of installing all your own libraries and tools though, you can launch
 application _containers_ that drop you in a system that has all of the necessary
@@ -282,8 +283,8 @@ Note that
 
 1. This assumes you have made the `nvidia` runtime the system default.  See
    [Docker Setup](#docker-setup) below for how to do this.
-2. Install docker-compose before attempting using `apt install docker-compose`.
-   docker-compose version 1.17.1 is sufficient.
+2. Install docker-compose using `apt install docker-compose` before attempting
+   the above.  docker-compose version 1.17.1 is sufficient.
 
 ## System Setup
 
