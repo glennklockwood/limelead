@@ -12,6 +12,7 @@ SSH_HOST=webhost
 SSH_PORT=22
 SSH_TARGET_DIR=~/glennklockwood.com/
 
+PORT=8000
 
 DEBUG ?= 0
 ifeq ($(DEBUG), 1)
