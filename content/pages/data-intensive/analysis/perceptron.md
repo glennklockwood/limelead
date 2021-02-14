@@ -3,23 +3,9 @@ title: Implementing a Neural Network
 mathjax: True
 ---
 
-
-
-
-```python
-%matplotlib inline
-```
-
-
-```python
-import numpy
-import pandas
-import matplotlib
-```
-
 ## Introduction
 
-This walk-through of creating a simple neural network to predict outputs given an input is derived from [Neural Networks from Scratch with Python Code and Math in Detail](https://medium.com/towards-artificial-intelligence/building-neural-networks-from-scratch-with-python-code-and-math-in-detail-i-536fae5d7bbf).  I found that walk-through a bit confusing, so I made this notebook to help me walk through each step and understand it.
+This walk-through of creating a simple neural network to predict outputs given an input is derived from [Neural Networks from Scratch with Python Code and Math in Detail](https://medium.com/towards-artificial-intelligence/building-neural-networks-from-scratch-with-python-code-and-math-in-detail-i-536fae5d7bbf).  I found that walk-through a bit confusing, so I made this notebook to help me walk through each step and understand it.  If you're viewing this in webpage form, you can find the [actual Jupyter Notebook in GitHub](https://github.com/glennklockwood/limelead/blob/master/notebooks/perceptron.ipynb).
 
 Here, we build an extremely simple neural network based on a linear model (a [perceptron](https://en.wikipedia.org/wiki/Perceptron)) that classifies an input as one thing or another based on a couple of input parameters.
 
@@ -32,7 +18,6 @@ Specifically, we're going to create a model of a simple OR gate with two inputs 
 And we want to create a model, $f(x)$, that takes two inputs ($x$) and returns either a 0 or 1 based on the value of those inputs.
 
 Let's first build a set of observations that capture this behavior as if we were experimenting with an OR gate ourselves:
-
 
 ```python
 inputs = pandas.DataFrame(
@@ -64,7 +49,6 @@ The model we're using to predict our output values, $f(x, w)$, is based on a lin
 
 $ y = x \cdot w + b $
 
-
 where
 
 - $x$ are our observed inputs (the _independent_ variables)
@@ -78,7 +62,6 @@ Before we do that though, we have to shove this $y(x)$ through an "activation fu
 $ A(x) = \frac{1}{1 + e^{-x}} $
 
 Which can be defined in Python as follows:
-
 
 ```python
 def sigmoid(x):
@@ -94,14 +77,10 @@ def d_sigmoid(x):
 matplotlib.pyplot.plot(numpy.arange(-10, 10, 0.1), sigmoid(numpy.arange(-10, 10, 0.1)))
 matplotlib.pyplot.grid()
 matplotlib.pyplot.title("Sigmoid activation function")
-pass
 ```
 
-
-    
-![png](perceptron_6_0.png)
-    
-
+{{ figure( "perceptron_6_0.png",
+    alt="Sigmoid activation function") }}
 
 Because we're nesting our linear function in an activation function, $f(x, w)$ looks pretty gnarly if you expand it out:
 
@@ -138,8 +117,8 @@ print(pandas.DataFrame(weights, index=inputs.columns, columns=["weight"]))
 
     Setting initial weights to random values.
                weight
-    input 1  0.239794
-    input 2  0.309183
+    input 1  0.447232
+    input 2  0.801852
 
 
 Our bias parameter $b$ and learning rate (hyper)parameter $R$ are both scalar values.
@@ -157,7 +136,7 @@ learning_rate = 0.05
 print("Setting learning rate to {} based on prior experience.".format(learning_rate))
 ```
 
-    Setting starting bias to a random value: 0.343374
+    Setting starting bias to a random value: 0.895816
     Setting learning rate to 0.05 based on prior experience.
 
 
@@ -224,16 +203,16 @@ for i in range(NUM_EPOCHS):
         print("error at step {:5d}: {:10.2e}".format(i, error.sum()))
 ```
 
-    error at step     0:  -4.06e-01
-    error at step  1000:   3.62e-02
-    error at step  2000:   1.00e-02
-    error at step  3000:   3.96e-03
-    error at step  4000:   1.83e-03
-    error at step  5000:   8.85e-04
-    error at step  6000:   4.12e-04
-    error at step  7000:   1.53e-04
-    error at step  8000:   2.52e-06
-    error at step  9000:  -8.84e-05
+    error at step     0:   2.44e-01
+    error at step  1000:   3.55e-02
+    error at step  2000:   9.84e-03
+    error at step  3000:   3.91e-03
+    error at step  4000:   1.80e-03
+    error at step  5000:   8.74e-04
+    error at step  6000:   4.07e-04
+    error at step  7000:   1.50e-04
+    error at step  8000:   5.24e-07
+    error at step  9000:  -8.97e-05
 
 
 We now have an optimal set of weights $w$.  To make predictions using these weights, we just run our inputs through $ f(x, w) = A(y(x)) = A(x \cdot w + b)$:
@@ -255,9 +234,9 @@ print(predicted_output)
 
                    predicted output
     observation #                  
-    0                      0.041045
-    1                      0.979417
-    2                      0.979412
+    0                      0.040973
+    1                      0.979463
+    2                      0.979437
     3                      0.999981
 
 
@@ -274,13 +253,7 @@ print(pandas.concat((
 
                    input 1  input 2  true output  predicted output
     observation #                                                 
-    0                    0        0            0          0.041045
-    1                    0        1            1          0.979417
-    2                    1        0            1          0.979412
+    0                    0        0            0          0.040973
+    1                    0        1            1          0.979463
+    2                    1        0            1          0.979437
     3                    1        1            1          0.999981
-
-
-
-```python
-
-```
