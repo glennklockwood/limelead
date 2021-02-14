@@ -6,28 +6,9 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    {% if page and AUTHOR_TWITTER %}
-    <meta name="twitter:card" content="summary">
-    <meta name="twitter:creator" content="{{ AUTHOR_TWITTER }}">
-    <meta property="og:url" content="{{ SITEURL }}/{{ page.url }}">
-    <meta property="og:title" content="{{ page.title[:70]|e }}">
-    {% if page.metadata.description %}
-        {% if page.metadata.description|length > 197 %}
-    <meta property="og:description" content="{{ (page.metadata.description|rstrip|striptags)[:197] }}...">
-        {% else %}
-    <meta property="og:description" content="{{ page.metadata.description|rstrip|striptags }}">
-        {% endif %}
-    {% elif page.content %}
-    <meta property="og:description" content="{{ (page.content|rstrip|striptags)[:197] }}...">
-    {% endif %}
-    {% if page.metadata.image %}
-    <meta property="og:image" content="{{ SITEURL }}/{{ page.metadata.image }}">
-    {% else %}
-    <meta property="og:image" content="{{ SITEURL }}/{{ AUTHOR_PHOTO }}">
-    {% endif %}
-    {% else %}
-    <!-- not a page -->
-    {% endif %}
+
+    {% block page_heading %}
+    {% endblock %}
 
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" type="text/css">
     <link rel="stylesheet" href="{{ SITEURL }}/{{ THEME_STATIC_DIR }}{% if THEME_STATIC_DIR %}/{% endif %}css/style.css" type="text/css">
@@ -35,6 +16,7 @@
     <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,700,700italic,900">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <!-- TODO: add author meta stuff -->
+
 </head>
 
 <body>

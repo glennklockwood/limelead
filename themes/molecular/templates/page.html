@@ -2,6 +2,35 @@
 
 {% block title %}{{ page.title }}{% endblock title %}
 
+{% block page_heading %}
+    {% if AUTHOR_TWITTER %}
+    <meta name="twitter:card" content="summary">
+    <meta name="twitter:creator" content="{{ AUTHOR_TWITTER }}">
+    <meta property="og:url" content="{{ SITEURL }}/{{ page.url }}">
+    <meta property="og:title" content="{{ page.title[:70]|e }}">
+    {% if page.metadata.description %}
+        {% if page.metadata.description|length > 197 %}
+    <meta property="og:description" content="{{ (page.metadata.description|rstrip|striptags)[:197] }}...">
+        {% else %}
+    <meta property="og:description" content="{{ page.metadata.description|rstrip|striptags }}">
+        {% endif %}
+    {% elif page.content %}
+    <meta property="og:description" content="{{ (page.content|rstrip|striptags)[:197] }}...">
+    {% endif %}
+    {% if page.metadata.image %}
+    <meta property="og:image" content="{{ SITEURL }}/{{ page.metadata.image }}">
+    {% else %}
+    <meta property="og:image" content="{{ SITEURL }}/{{ AUTHOR_PHOTO }}">
+    {% endif %}
+    {% endif %}
+
+    {% if page.metadata.mathjax %}
+    <script>MathJax = { tex: { inlineMath: [["$", "$"]] }, svg: { fontCache: "global" } };</script>
+    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+    {% endif %}
+
+{% endblock page_heading %}
+
 {% block content %}{{ page.content }}{% endblock content %}
 
 {% block sidebar %}
