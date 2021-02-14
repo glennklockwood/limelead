@@ -1,4 +1,5 @@
 PY?=python3
+SED?=sed
 PELICAN?=pelican
 PELICANOPTS=
 
@@ -42,7 +43,21 @@ help:
 	@echo 'Set the RELATIVE variable to 1 to enable relative urls                    '
 	@echo '                                                                          '
 
-html:
+#
+#  Super hacky piece to convert very specific Jupyter notebooks into very
+#  specific Markdown pages.  This is an imperfect process and usually requires
+#  hand-hacking, but it's better than nothing right now.
+#
+content/pages/data-intensive/analysis/perceptron.md: notebooks/perceptron.ipynb
+	jupyter nbconvert --to markdown "$<" \
+	&& mv -v notebooks/perceptron.md "$@" \
+	&& mkdir -p content/static/data-intensive/analysis \
+	&& mv -v notebooks/perceptron_files/* content/static/data-intensive/analysis/ \
+	&& $(SED) -i 's#perceptron_files/##g' "$@" \
+	&& $(SED) -i '0,/^# \(.*\)/{s//---\ntitle: \1\nmathjax: True\n---\n\n/}' "$@" \
+	&& rmdir notebooks/perceptron_files
+
+html: content/pages/data-intensive/analysis/perceptron.md
 	$(PELICAN) $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
 
 clean:
