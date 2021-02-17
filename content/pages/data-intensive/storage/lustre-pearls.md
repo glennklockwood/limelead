@@ -281,3 +281,15 @@ From [Andreas Dilger, June 2020](http://lists.lustre.org/pipermail/lustre-discus
 > applications do relatively linear IO).  If applications have small random
 > IOPS then `rpcrate=10` may get up to 256 4KB writes per RPC, or about 2560
 > IOPS = 10MB/s.
+
+## Architectural Design Decisions
+
+From [Andreas, February 2021](http://lists.lustre.org/pipermail/lustre-devel-lustre.org/2021-February/010217.html):
+
+> > I am curious to find the reason behind 'pre-create object' for a new file/directory creation.
+>
+> Yes, precreating OST objects avoids latency, but it is as much for network latency as it is for disk latency.  For ldiskfs the inode allocation is in memory and journaled, so does not depend on seek latency at all. 
+> 
+> Another reason to precreate objects is to ensure that the OST does not run out of inodes for files that the MDS already created.  For ldiskfs this is an issue because the number of OST inodes is fixed at format time. For ZFS it is an issue because regular file IO can consume all the space and prevent inode allocation. 
+> 
+> Finally, object precreation simplifies recovery because we have a good idea whether/which objects should exist or not after a server restart. 
