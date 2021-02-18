@@ -50,6 +50,8 @@ print(pandas.concat((inputs, ground_truth), axis=1))
 
 ## Defining our model
 
+### Linear model
+
 The model we're using to predict our output values, $f(x, w)$, is based on a linear model $y(x)$ at its core:
 
 $ y(x) = x \cdot w + b $
@@ -62,12 +64,27 @@ where
 
 The magic of this model is in figuring out what values for our empirical parameters, $w$ and $b$, result in the model producing our true outputs for each set of given inputs.
 
+
 ```python
 def linear(x, weights, bias):
     """Linear model function
     """
     return numpy.dot(x, weights) + bias
 ```
+
+{% call alert(type="info") %}
+In our specific case, we have two inputs, so the actual model will be
+
+$ \boldsymbol{y}(x_1, x_2) = x_1 w_1 + x_2 w_2 + b $
+
+or more generally,
+
+$ y(\boldsymbol{x}) = \boldsymbol{x} \cdot \boldsymbol{w} + b $
+
+The lattermost form is the most rigorous, but I will just refer to _vectors_ like $\boldsymbol{x}$ and $\boldsymbol{w}$ as $x$ and $w$ hereafter to match how they are represented in Python.
+{% endcall %}
+
+### Activation function
 
 We also have to shove this $y(x)$ through an "activation function" $A(x)$ to make so the model can only return values between 0 (off) and 1 (on) though.  We arbitrarily choose a sigmoid function to accomplish this:
 
@@ -93,19 +110,22 @@ matplotlib.pyplot.grid()
 matplotlib.pyplot.title("Sigmoid activation function")
 ```
 
-{{ figure( "perceptron_8_0.png",
-    alt="Sigmoid activation function") }}
+ {{ figure( "perceptron_28_0.png",
+    alt="Comparing activation functions") }}
 
 Because we're nesting our linear function in an activation function, $f(x, w)$ looks pretty gnarly if you expand it out:
 
-$ f(x, w) = A(y(x)) = A(x \cdot w + b) = \frac{1}{1 + e^{-x \cdot w - b}} $
+$ f(x, w) = A(y({x})) = A({x} \cdot {w} + b) = \frac{1}{1 + e^{-{x} \cdot {w} - b}} $
 
-But I like to really think of our model as $ y = x \cdot w + b $ with some special sauce splashed on top to make sure our output values aren't unbounded.  If we didn't have an activation function, our linear model $y(x)$ would predict values that could go to infinity which
+But I like to really think of our model as $ y({x}) = {x} \cdot {w} + b $ with some special sauce splashed on top to make sure our output values aren't unbounded.  If we didn't have an activation function, our linear model $y(x)$ would predict values that could go to infinity which
 
 1. doesn't represent the reality of the true outputs (we know that they can only vary from 0 to 1)
 2. will cause our model to not _converge_ (approach the right answer) very well
 
-You can confirm this yourself by defining `sigmoid(x)` to just `return x` and `d_sigmoid(x)` to return `1`.
+
+{% call alert(type="info") %}
+You can see the effect of the activation function by removing it.  To do so, define `sigmoid(x)` to just `return x` and `d_sigmoid(x)` to return `1`.
+{% endcall %}
 
 Now that we have a model in mind, we have to figure out how to _parameterize_ to get values for our weights 
 
@@ -336,9 +356,10 @@ pass
 
 
     
-{{ figure( "perceptron_28_0.png",
+ {{ figure( "perceptron_28_0.png",
     alt="Comparing activation functions") }}
 
+   
 
 
 Just as before, we also set initial weights and biases for the linear part of our model.  This isn't strictly necessary with PyTorch since it will automatically initialize them to random values, but we initialize our PyTorch model with the same weights and biases as our hand-rolled version so that we can compare the gradient descent processes and make sure we are getting numerically identical results and behavior.
@@ -419,7 +440,7 @@ print("{:d} iterations took {:.1f} seconds".format(NUM_ITERATIONS, time.time() -
     error at step  9000:   2.14e-02
     Final weights: [9.98578506 9.98589032]
     Final bias:    -4.52752860008788
-    10000 iterations took 8.1 seconds
+    10000 iterations took 8.2 seconds
 
 
 Because of the implicit changes triggered by this _autograd_ functionality, we have to be _explicit_ when we don't want it to kick in by wrapping such tensor operations in `with torch.no_grad():`.  PyTorch's builtin gradient descent "optimizer" that we use takes care of this for us in this case.  Exactly how PyTorch's _autograd_ functionality works is illustrated very well in [A Gentle Introduction to torch.autograd](https://pytorch.org/tutorials/beginner/blitz/autograd_tutorial.html).
