@@ -110,7 +110,8 @@ matplotlib.pyplot.grid()
 matplotlib.pyplot.title("Sigmoid activation function")
 ```
 
-{{ figure( "perceptron_8_0.png", alt="Comparing activation functions") }}
+ {{ figure( "perceptron_28_0.png",
+    alt="Comparing activation functions") }}
 
 Because we're nesting our linear function in an activation function, $f(x, w)$ looks pretty gnarly if you expand it out:
 
@@ -256,7 +257,7 @@ print("{:d} iterations took {:.1f} seconds".format(NUM_ITERATIONS, time.time() -
     error at step  9000:   2.14e-02
     Final weights: [9.98578506 9.98589032]
     Final bias:    -4.52752860008788
-    10000 iterations took 1.7 seconds
+    10000 iterations took 1.6 seconds
 
 
 We now have an optimal set of weights $w$.  To make predictions using these weights, we just run our inputs through $ f(x, w) = A(y(x)) = A(x \cdot w + b)$:
@@ -288,12 +289,11 @@ and we strap this on to our truth table to see how we did compared to the true o
 
 
 ```python
-full_results = pandas.concat((
+print(pandas.concat((
     inputs,
     ground_truth,
     predicted_output),
-    axis=1)
-print(full_results)
+    axis=1))
 ```
 
                    input 1  input 2  true output  predicted output
@@ -356,9 +356,10 @@ pass
 
 
     
-{{ figure( "perceptron_28_0.png", alt="Comparing activation functions") }}
+ {{ figure( "perceptron_28_0.png",
+    alt="Comparing activation functions") }}
 
-    
+   
 
 
 Just as before, we also set initial weights and biases for the linear part of our model.  This isn't strictly necessary with PyTorch since it will automatically initialize them to random values, but we initialize our PyTorch model with the same weights and biases as our hand-rolled version so that we can compare the gradient descent processes and make sure we are getting numerically identical results and behavior.
@@ -368,14 +369,14 @@ Just as before, we also set initial weights and biases for the linear part of ou
 numpy.random.seed(seed=1) # use same initial seed as before
 with torch.no_grad():
     # torch.rand() is faster, but we use numpy to re-use the same random starting weights/biases
-    model[0].weight = torch.nn.Parameter(torch.from_numpy(numpy.random.rand(1, inputs.shape[1]).astype(numpy.float32)))
+    model[0].weight = torch.nn.Parameter(torch.from_numpy(numpy.random.rand(1, inputs.shape[1])))
     print("Starting weights: {}".format(model[0].weight.flatten()))
-    model[0].bias = torch.nn.Parameter(torch.from_numpy(numpy.random.rand(1, 1).astype(numpy.float32)))
+    model[0].bias = torch.nn.Parameter(torch.from_numpy(numpy.random.rand(1, 1)))
     print("Starting bias: {}".format(model[0].bias.flatten()))
 ```
 
-    Starting weights: tensor([0.4170, 0.7203], requires_grad=True)
-    Starting bias: tensor([0.0001], requires_grad=True)
+    Starting weights: tensor([0.4170, 0.7203], dtype=torch.float64, requires_grad=True)
+    Starting bias: tensor([0.0001], dtype=torch.float64, requires_grad=True)
 
 
 With our model defined and our initial weights and biases set, we can apply gradient descent.  A couple of notes:
@@ -393,8 +394,8 @@ This last point is probably the most important thing PyTorch gives us to simplif
 
 ```python
 # pytorch is more sensitive about types, so we explicitly cast our integer input arrays as float64
-inputs_tensor = torch.from_numpy(inputs.to_numpy(dtype=numpy.float32))
-truth_tensor = torch.from_numpy(ground_truth.to_numpy(dtype=numpy.float32).reshape(-1, 1))
+inputs_tensor = torch.from_numpy(inputs.to_numpy(dtype=numpy.float64))
+truth_tensor = torch.from_numpy(ground_truth.to_numpy(dtype=numpy.float64).reshape(-1, 1))
 
 # use PyTorch's implementation of our loss = abs(f0 - f)
 loss = torch.nn.L1Loss(reduction='sum')
@@ -437,9 +438,9 @@ print("{:d} iterations took {:.1f} seconds".format(NUM_ITERATIONS, time.time() -
     error at step  7000:   2.79e-02
     error at step  8000:   2.43e-02
     error at step  9000:   2.14e-02
-    Final weights: [9.985788 9.985894]
-    Final bias:    -4.52752685546875
-    10000 iterations took 8.1 seconds
+    Final weights: [9.98578506 9.98589032]
+    Final bias:    -4.52752860008788
+    10000 iterations took 8.2 seconds
 
 
 Because of the implicit changes triggered by this _autograd_ functionality, we have to be _explicit_ when we don't want it to kick in by wrapping such tensor operations in `with torch.no_grad():`.  PyTorch's builtin gradient descent "optimizer" that we use takes care of this for us in this case.  Exactly how PyTorch's _autograd_ functionality works is illustrated very well in [A Gentle Introduction to torch.autograd](https://pytorch.org/tutorials/beginner/blitz/autograd_tutorial.html).
@@ -504,9 +505,9 @@ Nothing special as far as initializing weights and defining our loss and optimiz
 # reinitialize weights
 numpy.random.seed(seed=1)
 with torch.no_grad():
-    model[0].weight = torch.nn.Parameter(torch.from_numpy(numpy.random.rand(1, inputs.shape[1]).astype(numpy.float32)))
+    model[0].weight = torch.nn.Parameter(torch.from_numpy(numpy.random.rand(1, inputs.shape[1])))
     print("Starting weights: {}".format(model[0].weight.flatten()))
-    model[0].bias = torch.nn.Parameter(torch.from_numpy(numpy.random.rand(1, 1).astype(numpy.float32)))
+    model[0].bias = torch.nn.Parameter(torch.from_numpy(numpy.random.rand(1, 1)))
     print("Starting bias: {}".format(model[0].bias.flatten()))
 
 # define our loss function and optimizer
@@ -514,8 +515,8 @@ loss = torch.nn.L1Loss(reduction='sum')
 optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
 ```
 
-    Starting weights: tensor([0.4170, 0.7203], requires_grad=True)
-    Starting bias: tensor([0.0001], requires_grad=True)
+    Starting weights: tensor([0.4170, 0.7203], dtype=torch.float64, requires_grad=True)
+    Starting bias: tensor([0.0001], dtype=torch.float64, requires_grad=True)
 
 
 We just have to make sure to send our model and input tensors to the GPU before we begin.  Everything else remains as it was, and all calls to our model will execute on the GPU since that's where we copied it.
@@ -524,8 +525,8 @@ We just have to make sure to send our model and input tensors to the GPU before 
 ```python
 # send everything to the GPU!
 model = model.to(device)
-inputs_tensor = torch.from_numpy(inputs.to_numpy(dtype=numpy.float32)).to(device)
-truth_tensor = torch.from_numpy(ground_truth.to_numpy(dtype=numpy.float32).reshape(-1, 1)).to(device)
+inputs_tensor = torch.from_numpy(inputs.to_numpy(dtype=numpy.float64)).to(device)
+truth_tensor = torch.from_numpy(ground_truth.to_numpy(dtype=numpy.float64).reshape(-1, 1)).to(device)
 
 model.train()
 x = inputs_tensor
@@ -556,150 +557,9 @@ print("{:d} iterations took {:.1f} seconds".format(NUM_ITERATIONS, time.time() -
     error at step  7000:   2.79e-02
     error at step  8000:   2.43e-02
     error at step  9000:   2.14e-02
-    Final weights: [9.985788 9.985894]
-    Final bias:    -4.52752685546875
-    10000 iterations took 23.1 seconds
+    Final weights: [9.98578506 9.98589032]
+    Final bias:    -4.52752860008788
+    10000 iterations took 22.9 seconds
 
 
 You may notice that this took _even longer_ on the GPU--again, because this is such an algorithmically simple problem, the high-throughput capability of the GPU isn't able to shine.
-
-## Limitations
-
-Our model of this OR gate is quite limited in the context of binary classification:
-
-1. The "binary" part means that all outputs must be one outcome or the other, 1 or 0
-2. The "linear" part means that a straight line must separate all results into 1s or 0s for the model to work
-
-If we plot our model along its two x dimensions:
-
-$ y_1(x_1) = x_1 w_1 + b $
-
-$ y_2(x_2) = x_2 w_2 + b $
-
-and also plot our four observations, we can see that our the OR gate follows these two criteria which is why they work with our linear model:
-
-
-```python
-x = numpy.arange(-0.1, 1.1, 0.1)
-w1, w2 = [x.item() for x in next(model.parameters()).flatten()]
-b = list(model.parameters())[-1].item()
-
-fig, ax = matplotlib.pyplot.subplots()
-ax.set_xlabel("Input ($x_1$ or $x_2$)")
-ax.set_ylabel("Output ($y_1$ or $y_2$)")
-
-ax.plot(x, w1 * x + b, linestyle='-', linewidth=2, label='$y_1(x_1)$')
-ax.scatter(full_results['input 1'], full_results['predicted output'], label="$x_1$", marker='o', s=100)
-
-ax.plot(x, w2 * x + b, linestyle='--', linewidth=5, label='$y2(x2)$')
-ax.scatter(full_results['input 2'], full_results['predicted output'], label="$x_2$", marker='x', s=100)
-
-for row in full_results[['input 1', 'predicted output']].itertuples():
-    ax.text(row[1] + 0.1,
-            row[2] + (0.1 if row[0] % 2 else -0.1), 'obs. {}'.format(row[0]),
-            ha="right")
-
-ax.set_ylim(-0.1, 1.2)
-ax.legend()
-ax.set_axisbelow(True)
-ax.grid()
-```
-
-
-    
-{{ figure( "perceptron_46_0.png", alt="Plotting our model vs. actual data") }}
-    
-
-
-Consider what would have happened if an observation occurred at $x_1 = 0.2$ and $x_2 = 0$ with an output of 1; there would be no way a straight line could be drawn that would cleanly separate the existing observations _and_ this new observation, and the model would not work.  Fortunately, OR gates don't show this behavior.
-
-This becomes more evident if you have more than just two inputs.  For example, [Neural Networks from Scratch with Python Code and Math in Detail](https://medium.com/towards-artificial-intelligence/building-neural-networks-from-scratch-with-python-code-and-math-in-detail-i-536fae5d7bbf) proposes a "case study" with this dataset which is _not_ linearly separable:
-
-
-```python
-import io
-
-input_csv = """
-person,loss of smell,weight loss,runny nose,body pain,positive?
-1,1,0,0,1,1
-2,1,0,0,0,1
-3,0,0,1,1,0
-4,0,1,0,0,0
-5,1,1,0,0,1
-6,0,0,1,1,1
-7,0,0,0,1,0
-8,0,0,1,0,0
-"""
-
-dataset = pandas.read_csv(io.StringIO(input_csv), index_col="person")
-inputs = dataset.iloc[:,:-1].to_numpy().astype('float32')
-ground_truth = dataset.iloc[:,-1].to_numpy().reshape(-1, 1).astype('float32')
-print("Dataset:")
-print(dataset)
-```
-
-    Dataset:
-            loss of smell  weight loss  runny nose  body pain  positive?
-    person                                                              
-    1                   1            0           0          1          1
-    2                   1            0           0          0          1
-    3                   0            0           1          1          0
-    4                   0            1           0          0          0
-    5                   1            1           0          0          1
-    6                   0            0           1          1          1
-    7                   0            0           0          1          0
-    8                   0            0           1          0          0
-
-
-Close examination shows that person 3 and person 6 have identical inputs but a different output (`positive?`).  This breaks the linear model if you run it through a perceptron:
-
-
-```python
-# convert our inputs into tensors
-inputs_tensor = torch.from_numpy(inputs)
-truth_tensor = torch.from_numpy(ground_truth.reshape(-1, 1))
-
-# define our model, loss function, and optimizer
-model = torch.nn.Sequential(
-    torch.nn.Linear(inputs.shape[1], 1),
-    torch.nn.Sigmoid())
-loss = torch.nn.L1Loss(reduction='sum')
-optimizer = torch.optim.SGD(model.parameters(), lr=learning_rate)
-
-# train our model
-model.train()
-for i in range(NUM_ITERATIONS):
-    f = model(inputs_tensor)
-    error = loss(f, truth_tensor)
-    optimizer.zero_grad()
-    error.backward()
-    optimizer.step()
-```
-
-
-```python
-# predict outputs based on our final weights
-model.eval()
-predicted_output = model(inputs_tensor).detach().numpy()
-predicted_output = pandas.DataFrame(
-    predicted_output,
-    columns=["prediction"],
-    index=dataset.index)
-predicted_output = pandas.concat((dataset['positive?'], predicted_output), axis=1)
-predicted_output['error'] = predicted_output['positive?'] - predicted_output['prediction']
-print(predicted_output.sort_values('error', ascending=False))
-```
-
-            positive?  prediction     error
-    person                                 
-    6               1    0.000130  0.999870
-    1               1    0.998182  0.001818
-    5               1    0.998182  0.001818
-    2               1    0.999651  0.000349
-    3               0    0.000130 -0.000130
-    8               0    0.000681 -0.000681
-    4               0    0.002378 -0.002378
-    7               0    0.002378 -0.002378
-
-
-And indeed, person 6's predicted prognosis is completely wrong because the model cannot handle being trained on identical inputs that have different outputs.  These _nonlinearities_ in behavior are what necessitate more sophisticated neural networks than simple perceptrons and what drive us to use neural networks with _hidden layers_.
