@@ -607,12 +607,11 @@ ax.grid()
 
 
     
-![png](perceptron_46_0.png)
 {{ figure( "perceptron_46_0.png", alt="Plotting our model vs. actual data") }}
     
 
 
-Consider what would have happened if an observation occurred at $x_1 = 0.6$ and $x_2 = 0$ with an output of 1; there would be no way a straight line could be drawn that would cleanly separate the existing observations _and_ this new observation, and the model would not work.  Fortunately, OR gates don't show this behavior.
+Consider what would have happened if an observation occurred at $x_1 = 0.2$ and $x_2 = 0$ with an output of 1; there would be no way a straight line could be drawn that would cleanly separate the existing observations _and_ this new observation, and the model would not work.  Fortunately, OR gates don't show this behavior.
 
 This becomes more evident if you have more than just two inputs.  For example, [Neural Networks from Scratch with Python Code and Math in Detail](https://medium.com/towards-artificial-intelligence/building-neural-networks-from-scratch-with-python-code-and-math-in-detail-i-536fae5d7bbf) proposes a "case study" with this dataset which is _not_ linearly separable:
 
