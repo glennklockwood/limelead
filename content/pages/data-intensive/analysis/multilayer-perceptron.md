@@ -6,13 +6,13 @@ mathjax: True
 
 ## Introduction
 
-This walk-through was inspired by [Building Neural Networks with Python Code and Math in Detail  Part II](https://pub.towardsai.net/building-neural-networks-with-python-code-and-math-in-detail-ii-bbe8accbf3d1) and follows my walk-through of building a perceptron.  We will not rehash concepts covered previously and instead move quickly through the parts of building this neural network that follow the same pattern as building a perceptron.
+This walk-through was inspired by [Building Neural Networks with Python Code and Math in Detail  Part II](https://pub.towardsai.net/building-neural-networks-with-python-code-and-math-in-detail-ii-bbe8accbf3d1) and follows my walk-through of [building a perceptron]({filename}perceptron.md).  We will not rehash concepts covered previously and instead move quickly through the parts of building this neural network that follow the same pattern as building a perceptron.
 
 As with the perceptron guide, we first implementing our model using only numpy, then go on to implement it using PyTorch to understand what PyTorch is doing mathematically.
 
 ## Problem Statement
 
-As with our previous perceptron, we will be modeling a logical OR gate with two inputs ($x_1$ and $x_2$), one output ($f$).  Unlike before though, we will create a _multilayer perceptron_ where we chain two linear models together instead of using just one.
+As with our previous perceptron, we will be modeling a logical OR gate with two inputs ($x\_{1}$ and $x\_{2}$), one output ($f$).  Unlike before though, we will create a _multilayer perceptron_ where we chain two linear models together instead of using just one.
 
 First let's get our input loaded.  This time, we'll use a CSV as our input since this is a pretty common data format that we would expect to encounter in the real world.  We load it into a Pandas DataFrame, then peel off the last column to use as our ground-truth results.  The first two columns then become our input:
 
@@ -113,7 +113,6 @@ We also have to randomly assign weights again.  Each layer has its own weights t
 numpy.random.seed(seed=1)
 weights_hidden = numpy.random.rand(inputs.shape[1], NUM_NEURONS_HIDDEN)
 weights_output = numpy.random.rand(NUM_NEURONS_HIDDEN, 1)
-# bias = numpy.random.rand(1)[0]
 bias = 0.0
 
 print("Starting hidden layer weights:\n{}\n".format(weights_hidden))
@@ -415,7 +414,7 @@ print("{:d} iterations took {:.1f} seconds".format(NUM_ITERATIONS, time.time() -
     Final weights:
       hidden: [ 1.6670684  1.6665915  2.4345472  2.2916615 -1.5066769 -1.5068121]
       output: [ 0.70570666  2.0473638  -4.128679  ]
-    10000 iterations took 10.2 seconds
+    10000 iterations took 10.6 seconds
 
 
 Once again, prediction is equally straightforward.  We switch our model from training mode to evaluation mode, then run our inputs through it to get our predictions.
@@ -446,3 +445,212 @@ print(output)
     3                 1       0       1    0.849022  0.150978
     4                 1       1       1    0.925358  0.074642
 
+
+## Where Multilayer Shines: The XOR Gate
+
+We showed above that our multilayer perceptron neural network is worse than the single perceptron case; in the same number of training iterations, our multilayer perceptron had much higher error.  If this is the case, what is the benefit of using a hidden layer at all?
+
+The single perceptron is ideally suited to model OR gates because OR gates are _linearly separable_, and single perceptrons are only able to model such linearly separable behavior.  If we want to see where the multilayer perceptron does shine, let's look at a _non-linearly separable_ logic gate: the XOR gate.
+
+First define our truth table which we will use for both models:
+
+
+```python
+xor_input_csv = """
+observation,input1,input2,output
+1,0,0,0
+2,0,1,1
+3,1,0,1
+4,1,1,0
+"""
+
+xor_dataset = pandas.read_csv(io.StringIO(xor_input_csv), index_col="observation")
+xor_inputs = xor_dataset.iloc[:,:-1].to_numpy().astype('float32')
+xor_ground_truth = xor_dataset.iloc[:,-1].to_numpy().reshape(-1, 1).astype('float32')
+
+xor_inputs_tensor = torch.from_numpy(xor_inputs)
+xor_truth_tensor = torch.from_numpy(xor_ground_truth.reshape(-1, 1))
+
+print(xor_dataset)
+```
+
+                 input1  input2  output
+    observation                        
+    1                 0       0       0
+    2                 0       1       1
+    3                 1       0       1
+    4                 1       1       0
+
+
+Then we define both our single perceptron network and the multilayer perceptron.
+
+The single perceptron is identical to the one we made in the [previous perceptron walk-through]({filename}perceptron.md); it has two inputs, one output, two weights, a bias, and we use the total absolute error (`torch.nn.L1Loss`).
+
+The multilayer perceptron is the same one we just created; it has two inputs, one output, a hidden layer with three features and a total of five weights, _no bias_, and we use the mean-squared error (`torch.nn.MSELoss`).
+
+
+```python
+torch.manual_seed(0)
+
+single_perceptron = torch.nn.Sequential(
+    torch.nn.Linear(xor_inputs.shape[1], 1),
+    torch.nn.Sigmoid(),
+)
+
+multilayer_perceptron = torch.nn.Sequential(
+    torch.nn.Linear(xor_inputs.shape[1], NUM_NEURONS_HIDDEN),
+    torch.nn.Sigmoid(),
+    torch.nn.Linear(NUM_NEURONS_HIDDEN, 1, bias=False),
+    torch.nn.Sigmoid()
+)
+```
+
+Because the multilayer perceptron is slower to converge on good weights, we dial up the number of iterations on both networks here to let them do their best to find their optimal weights.
+
+
+```python
+NUM_ITERATIONS = 50000
+```
+
+Let's also track the error throughout training so we can visualize how quickly each model converges on good weights.
+
+
+```python
+errors = {
+    'single perceptron': [],
+    'multilayer perceptron': []
+}
+```
+
+
+```python
+loss = torch.nn.L1Loss(reduction='sum')
+optimizer = torch.optim.SGD(single_perceptron.parameters(), lr=LEARNING_RATE)
+
+# train network
+single_perceptron.train()
+t0 = time.time()
+for i in range(NUM_ITERATIONS):
+    f = single_perceptron(xor_inputs_tensor)
+    error = loss(f, xor_truth_tensor)
+    if i % (NUM_ITERATIONS / 100) == 0:
+        errors['single perceptron'].append((i, error))
+    optimizer.zero_grad()
+    error.backward()
+    optimizer.step()
+print("{:d} iterations took {:.1f} seconds".format(NUM_ITERATIONS, time.time() - t0))
+print("Final error: {:.2g}\n".format(error))
+
+# predict outputs
+single_perceptron.eval()
+predicted_output = single_perceptron(xor_inputs_tensor).detach().numpy()
+predicted_output = pandas.DataFrame(
+    predicted_output,
+    columns=["prediction"],
+    index=xor_dataset.index)
+output = pandas.concat((xor_dataset, predicted_output), axis=1)
+output['error'] = output['output'] - output['prediction']
+
+print("Predicted vs. actual outputs for the single perceptron network:")
+print(output)
+```
+
+    50000 iterations took 39.9 seconds
+    Final error: 1
+    
+    Predicted vs. actual outputs for the single perceptron network:
+                 input1  input2  output    prediction     error
+    observation                                                
+    1                 0       0       0  1.231995e-03 -0.001232
+    2                 0       1       1  9.983570e-01  0.001643
+    3                 1       0       1  1.666987e-09  1.000000
+    4                 1       1       0  8.205257e-04 -0.000821
+
+
+We can see that our single perceptron neural network completely failed to predict one of the inputs.  If you start with different random weights, you'll see that exactly which input comes out completely wrong is random--this is because there's nothing particularly tricky about predicting any one input; rather, the combination of all inputs are not linearly separable, so the best our model can do is correctly predict three out of the four.
+
+How does our multilayer perceptron fare by comparison?
+
+
+```python
+loss = torch.nn.MSELoss(reduction='mean')
+optimizer = torch.optim.SGD(multilayer_perceptron.parameters(), lr=LEARNING_RATE)
+
+# train network
+multilayer_perceptron.train()
+t0 = time.time()
+for i in range(NUM_ITERATIONS):
+    f = multilayer_perceptron(xor_inputs_tensor)
+    error = loss(f, xor_truth_tensor)
+    if i % (NUM_ITERATIONS / 100) == 0:
+        errors['multilayer perceptron'].append((i, error))
+    optimizer.zero_grad()
+    error.backward()
+    optimizer.step()
+print("{:d} iterations took {:.1f} seconds".format(NUM_ITERATIONS, time.time() - t0))
+print("Final error: {:.2g}\n".format(error))
+
+# predict outputs
+multilayer_perceptron.eval()
+predicted_output = multilayer_perceptron(xor_inputs_tensor).detach().numpy()
+predicted_output = pandas.DataFrame(
+    predicted_output,
+    columns=["prediction"],
+    index=xor_dataset.index)
+output = pandas.concat((xor_dataset, predicted_output), axis=1)
+output['error'] = output['output'] - output['prediction']
+
+print("Predicted vs. actual outputs for the multilayer perceptron network:")
+print(output)
+```
+
+    50000 iterations took 58.0 seconds
+    Final error: 0.07
+    
+    Predicted vs. actual outputs for the multilayer perceptron network:
+                 input1  input2  output  prediction     error
+    observation                                              
+    1                 0       0       0    0.049976 -0.049976
+    2                 0       1       1    0.926449  0.073551
+    3                 1       0       1    0.925168  0.074832
+    4                 1       1       0    0.517742 -0.517742
+
+
+We no longer have one of the four predictions be completely wrong anymore!  However, one is still looking pretty messed up, so this multilayer perceptron still isn't quite sufficient for modeling our XOR gate.
+
+If we plot how the error varied over the course of training, we can get a little more insight into how the network is learning:
+
+
+```python
+import matplotlib
+import matplotlib.pyplot
+
+fig, ax = matplotlib.pyplot.subplots()
+for key, values in errors.items():
+    iterations, error = zip(*values)
+    ax.plot(iterations, error, label=key)
+ax.set_yscale("log")
+ax.set_ylabel("Total Error")
+ax.set_xlabel("Training Iteration")
+ax.legend()
+ax.grid()
+```
+
+
+    
+![png](multilayer-perceptron_38_0.png)
+    
+
+
+This tells us two interesting things:
+
+1. The single perceptron converges very quickly, but it converges on a set of weights that results in a high overall error.
+2. The multilayer perceptron spends quite a while just flapping around and not really getting anywhere before it finds a path to start converging on some better weights.
+
+This tells us that the single perceptron network was unlikely to ever get close to a lower error no matter how much we trained.  By comparison, the multilayer perceptron's error was still dropping when we stopped training at 50,000 steps by comparison which means we still had room to improve.  However, the rate at which error was dropping looks like it started leveling off, and we were unlikely to get substantially lower error by training more.
+
+This is pretty dissatisfying because our results, despite being better than the single perceptron case, still had a value that was pretty far off the mark.  Does this mean that multilayer perceptrons aren't any good at modeling this XOR gate?  Does it mean that this particular multilayer perceptron is no good and we should try a different number of neurons or loss function?
+
+It turns out the answer is NO!  For example, try starting with different random weights by changing the `torch.manual_seed(0)` statement above to `torch.manual_seed(1)`.  When I did this, I wound up with four final predictions that were all within 0.10 of the ground truth!  Relatedly, try an extra feature (neuron) to your hidden layer.  This will scramble your starting weights and add change the behavior of this learning rate.  When I did this, I wound up getting a much lower error.
+
+This speaks to how _artisinal_ this process of designing neural networks to model phenomena like OR or XOR gates can be.  Your model might give you bad results because it woke up on the wrong side of the bed (had bad starting weights) or its hidden layer had a bad hyperparameter (you chose too many or too few features).  Searching for the right hyperparameters to get your model to return good predictions consistently can be a huge task by itself.  Maybe it's possible to develop a good sense of the right place to start when designing neural network for specific scenarios, but until you develop that sixth sense, it may be easier to start with someone else's neural network architecture for a similar problem and begin tweaking from there.
