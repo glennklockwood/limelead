@@ -1,5 +1,6 @@
 ---
 title: Implementing a Neural Network
+order: 100
 mathjax: True
 ---
 
@@ -357,7 +358,7 @@ pass
   {{ figure( "perceptron_27_0.png",
     alt="Comparing activation functions") }}
 
-   
+
 
 
 Just as before, we also set initial weights and biases for the linear part of our model.  This isn't strictly necessary with PyTorch since it will automatically initialize them to random values, but we initialize our PyTorch model with the same weights and biases as our hand-rolled version so that we can compare the gradient descent processes and make sure we are getting numerically identical results and behavior.

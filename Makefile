@@ -57,7 +57,7 @@ content/pages/data-intensive/analysis/perceptron.md: notebooks/perceptron.ipynb
 	&& mkdir -p content/static/data-intensive/analysis \
 	&& mv -v notebooks/perceptron_files/* content/static/data-intensive/analysis/ \
 	&& $(SED) -i 's#perceptron_files/##g' "$@" \
-	&& $(SED) -i '0,/^# \(.*\)/{s//---\ntitle: \1\nmathjax: True\n---\n\n/}' "$@" \
+	&& $(SED) -i '0,/^# \(.*\)/{s//---\ntitle: \1\norder: 10\nmathjax: True\n---\n\n/}' "$@" \
 	&& $(SED) -i 's/\([^\]\)_{/\1\\_{/g' "$@" \
 	&& rmdir notebooks/perceptron_files) || rm "$@"
 
@@ -67,7 +67,7 @@ content/pages/data-intensive/analysis/multilayer-perceptron.md: notebooks/multil
 	&& mkdir -p content/static/data-intensive/analysis \
 	&& (test ! -d notebooks/multilayer-perceptron_files || mv -v notebooks/multilayer-perceptron_files/* content/static/data-intensive/analysis/) \
 	&& $(SED) -i 's#multilayer-perceptron_files/##g' "$@" \
-	&& $(SED) -i '0,/^# \(.*\)/{s//---\ntitle: \1\nmathjax: True\n---\n\n/}' "$@" \
+	&& $(SED) -i '0,/^# \(.*\)/{s//---\ntitle: \1\norder: 15\nmathjax: True\n---\n\n/}' "$@" \
 	&& $(SED) -i 's/\([^\]\)_{/\1\\_{/g' "$@" \
 	&& (test ! -d notebooks/multilayer-perceptron_files || rmdir notebooks/multilayer-perceptron_files)) || rm "$@"
 

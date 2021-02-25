@@ -1,6 +1,7 @@
 ---
 title: Dask in Practice
 shortTitle: Dask
+order: 100
 ---
 
 These are notes I took while doing the work for a paper I wrote that analyzed a

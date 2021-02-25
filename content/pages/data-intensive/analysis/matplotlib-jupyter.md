@@ -1,6 +1,7 @@
 ---
 title: Working with Jupyter and Matplotlib
 shortTitle: Jupyter and Matplotlib
+order: 900
 ---
 Here are some notes I've taken about using Jupyter Lab and its integrations with
 matplotlib.

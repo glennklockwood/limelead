@@ -1,5 +1,6 @@
 ---
 title: Implementing a Multilayer Neural Network
+order: 150
 mathjax: True
 ---
 
