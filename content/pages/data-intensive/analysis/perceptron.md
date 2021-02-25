@@ -1,6 +1,6 @@
 ---
-title: Implementing a Neural Network
-order: 100
+title: Implementing the Simplest Neural Network
+order: 10
 mathjax: True
 ---
 
