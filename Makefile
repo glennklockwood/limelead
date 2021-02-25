@@ -6,7 +6,7 @@ PELICANOPTS=
 BASEDIR=$(CURDIR)
 INPUTDIR=$(BASEDIR)/content
 OUTPUTDIR=$(BASEDIR)/output
-CONFFILE=$(BASEDIR)/pelicanconf.py
+CONFFILE?=$(BASEDIR)/pelicanconf.py
 PUBLISHCONF=$(BASEDIR)/publishconf.py
 
 SSH_HOST=webhost
@@ -43,21 +43,35 @@ help:
 	@echo 'Set the RELATIVE variable to 1 to enable relative urls                    '
 	@echo '                                                                          '
 
+NOTEBOOKS = content/pages/data-intensive/analysis/perceptron.ipynb \
+            content/pages/data-intensive/analysis/multilayer-perceptron.ipynb
+
 #
 #  Super hacky piece to convert very specific Jupyter notebooks into very
 #  specific Markdown pages.  This is an imperfect process and usually requires
 #  hand-hacking, but it's better than nothing right now.
 #
 content/pages/data-intensive/analysis/perceptron.md: notebooks/perceptron.ipynb
-	jupyter nbconvert --to markdown "$<" \
+	(jupyter nbconvert --to markdown "$<" \
 	&& mv -v notebooks/perceptron.md "$@" \
 	&& mkdir -p content/static/data-intensive/analysis \
 	&& mv -v notebooks/perceptron_files/* content/static/data-intensive/analysis/ \
 	&& $(SED) -i 's#perceptron_files/##g' "$@" \
 	&& $(SED) -i '0,/^# \(.*\)/{s//---\ntitle: \1\nmathjax: True\n---\n\n/}' "$@" \
-	&& rmdir notebooks/perceptron_files
+	&& $(SED) -i 's/\([^\]\)_{/\1\\_{/g' "$@" \
+	&& rmdir notebooks/perceptron_files) || rm "$@"
 
-html: content/pages/data-intensive/analysis/perceptron.md
+content/pages/data-intensive/analysis/multilayer-perceptron.md: notebooks/multilayer-perceptron.ipynb
+	(jupyter nbconvert --to markdown "$<" \
+	&& mv -v notebooks/multilayer-perceptron.md "$@" \
+	&& mkdir -p content/static/data-intensive/analysis \
+	&& (test ! -d notebooks/multilayer-perceptron_files || mv -v notebooks/multilayer-perceptron_files/* content/static/data-intensive/analysis/) \
+	&& $(SED) -i 's#multilayer-perceptron_files/##g' "$@" \
+	&& $(SED) -i '0,/^# \(.*\)/{s//---\ntitle: \1\nmathjax: True\n---\n\n/}' "$@" \
+	&& $(SED) -i 's/\([^\]\)_{/\1\\_{/g' "$@" \
+	&& (test ! -d notebooks/multilayer-perceptron_files || rmdir notebooks/multilayer-perceptron_files)) || rm "$@"
+
+html: $(NOTEBOOKS:ipynb=md)
 	$(PELICAN) $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
 
 clean:
