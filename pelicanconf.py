@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*- #
 from __future__ import unicode_literals
+import os
 
 AUTHOR = 'Glenn K. Lockwood'
 AUTHOR_TWITTER = '@glennklockwood'
 AUTHOR_PHOTO = "me2.jpg" # relative to SITEURL
 SITENAME = 'Glenn K. Lockwood'
-SITEURL = 'https://www.glennklockwood.com'
+SITEURL = os.environ.get('SITEURL', 'https://www.glennklockwood.com')
 TIMEZONE = 'America/Los_Angeles'
 DEFAULT_LANG = 'en'
 
