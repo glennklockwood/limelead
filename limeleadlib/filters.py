@@ -32,6 +32,33 @@ def md2html(md_content, settings):
     _md = markdown.Markdown(**settings)
     return _md.convert(md_content)
 
+def flatten_results(records):
+    """Flattens nested list of benchmark records into a list of flat records
+
+    Args:
+        records (list): List of dictionaries, optionally containing the
+            'results' key which contains a list of key-value pairs to combine
+            with the parent keys/values to generate flat records.
+
+    Returns:
+        list: List of dictionaries suitable to be passed to
+        pandas.DataFrame.from_dict().
+    """
+    flattened = []
+    for record in records:
+        if 'results' in record:
+            print('yup')
+            for result in record['results']:
+                tmp_record = record.copy()
+                del tmp_record['results']
+                tmp_record.update(result)
+                flattened.append(tmp_record)
+        else:
+            flattened.append(record)
+    return flattened
+
+
+
 def json2table(*args, **kwargs):
     return yaml2table(*args, **kwargs)
 
@@ -64,7 +91,7 @@ def yaml2table(datafile, show_cols, tablefmt='html'):
     """
     from_dict = yaml.load(open(datafile, 'r'))
 
-    dataframe = pandas.DataFrame.from_dict(from_dict).fillna(value="")
+    dataframe = pandas.DataFrame.from_dict(flatten_results(from_dict)).fillna(value="")
 
     show_cols_keys = [x[0] for x in show_cols if x[0] in dataframe.columns]
 
