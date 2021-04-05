@@ -162,7 +162,7 @@
         "clock":        "1&#215; 1430",
         "cache":        "32+48 KB<br>2 MB",
         "mem":          "4096 MB",
-        "mem_type":     "DDR4-1600 MB",
+        "mem_type":     "DDR4-1600",
         "mem_speed":    "25.6 GB/s",
         "wall_secs":    876,
         "memreorder_secs": 778,
@@ -176,7 +176,7 @@
         "clock":        "2&#215; 1430",
         "cache":        "32+48 KB<br>2 MB",
         "mem":          "4096 MB",
-        "mem_type":     "DDR4-1600 MB",
+        "mem_type":     "DDR4-1600",
         "mem_speed":    "25.6 GB/s",
         "wall_secs":    738,
         "memreorder_secs": 592,
@@ -190,7 +190,7 @@
         "clock":        "3&#215; 1430",
         "cache":        "32+48 KB<br>2 MB",
         "mem":          "4096 MB",
-        "mem_type":     "DDR4-1600 MB",
+        "mem_type":     "DDR4-1600",
         "mem_speed":    "25.6 GB/s",
         "wall_secs":    707,
         "memreorder_secs": 541,
@@ -204,11 +204,50 @@
         "clock":        "4&#215; 1430",
         "cache":        "32+48 KB<br>2 MB",
         "mem":          "4096 MB",
-        "mem_type":     "DDR4-1600 MB",
+        "mem_type":     "DDR4-1600",
         "mem_speed":    "25.6 GB/s",
         "wall_secs":    667,
         "memreorder_secs": 528,
         "compiler":     "GNU Fortran (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0",
         "compile_flags": "-mcpu=cortex-a57 -mtune=cortex-a57 -O3 -fdefault-real-8 -fdefault-double-8"
+    },
+    {
+        "model":        "MacBook Air M1 (Rosetta)",
+        "hostname":     "-",
+        "processor":    "Apple M1",
+        "cache":        "192 KiB + 128 KiB / 12 MiB<br>128 KiB + 64 KiB / 4 MiB",
+        "mem":          "16384 MB",
+        "mem_type":     "LPDDR4X-4266",
+        "mem_speed":    "-",
+        "compiler":     "GNU Fortran (Spack GCC) 10.2.0",
+        "compile_flags": "-mtune=westmere -O3 -fdefault-real-8 -fdefault-double-8",
+        "compile_flags_comment": "-mcpu=native -mtune=native on M1 came up as Westmere",
+        "results": [
+            {
+                "clock":            "1&#215; 3200",
+                "wall_secs":        118,
+                "memreorder_secs":  108
+            },
+            {
+                "clock":            "2&#215; 3200",
+                "wall_secs":        93,
+                "memreorder_secs":  83
+            },
+            {
+                "clock":            "3&#215; 3200",
+                "wall_secs":        84,
+                "memreorder_secs":  77
+            },
+            {
+                "clock":            "4&#215; 3200",
+                "wall_secs":        78,
+                "memreorder_secs":  73
+            },
+            {
+                "clock":            "8&#215; 3200",
+                "wall_secs":        80,
+                "memreorder_secs":  78
+            }
+        ]
     }
 ]
