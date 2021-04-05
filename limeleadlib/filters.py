@@ -47,7 +47,6 @@ def flatten_results(records):
     flattened = []
     for record in records:
         if 'results' in record:
-            print('yup')
             for result in record['results']:
                 tmp_record = record.copy()
                 del tmp_record['results']
