@@ -1031,3 +1031,28 @@
   clock: "64&#215; 2000"
   wall_secs: 303
   memreorder_secs: 302
+- model: "Mac Mini 8,2"
+  processor: "Intel I7-8700B"
+  cache: "32K+32K<br>6&#215;256K<br>12M"
+  mem: "64 GB"
+  mem_type: "DDR4-21300"
+  mem_speed: "-"
+  compiler: "GNU Fortran (Spack GCC) 10.2.0"
+  hostname: "-"
+  compile_flags: "-mcpu=native -mtune=skylake -O3 -fdefault-real-8 -fdefault-double-8"
+  results:
+    - clock: "1&#215; 3200"
+      wall_secs: 169
+      memreorder_secs: 100
+    - clock: "2&#215; 3200"
+      wall_secs: 127
+      memreorder_secs: 96
+    - clock: "3&#215; 3200"
+      wall_secs: 113
+      memreorder_secs: 96
+    - clock: "4&#215; 3200"
+      wall_secs: 107
+      memreorder_secs: 104
+    - clock: "6&#215; 3200"
+      wall_secs: 109
+      memreorder_secs: 137
