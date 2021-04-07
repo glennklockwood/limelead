@@ -55,8 +55,8 @@ The following affects what information is actually presented to you:
 
 - `--nolive` disables a curses-like live update screen that pops up for long-running test phases
 
-It's worth noting that the order of these options is not important.  elbencho
-will always order the tests in the sensible way (create dirs, create files,
-write files, delete files, delete dirs).
+The order of these options is not important.  elbencho will always order the
+tests in the sensible way (create dirs, create files, write files, delete files,
+delete dirs).
 
 [elbencho]: https://github.com/breuner/elbencho
