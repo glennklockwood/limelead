@@ -27,6 +27,8 @@ mkdir elbencho.seq.1M
     --sync \
     --mkdirs \
     --write \
+    --delfiles \
+    --deldirs \
     --nolive
 ```
 
@@ -46,9 +48,15 @@ The following define what tests to actually run:
 
 - `--mkdirs` creates a directory in which each thread creates files
 - `--write` performs a write test
+- `--delfiles` deletes the files created during the `--write` phase
+- `--deldirs` deletes the directories created during the `--mkdirs` phase
 
 The following affects what information is actually presented to you:
 
 - `--nolive` disables a curses-like live update screen that pops up for long-running test phases
+
+It's worth noting that the order of these options is not important.  elbencho
+will always order the tests in the sensible way (create dirs, create files,
+write files, delete files, delete dirs).
 
 [elbencho]: https://github.com/breuner/elbencho
