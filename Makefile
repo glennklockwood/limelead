@@ -46,13 +46,13 @@ help:
 NOTEBOOKS = content/pages/data-intensive/analysis/perceptron.ipynb \
             content/pages/data-intensive/analysis/multilayer-perceptron.ipynb
 
-BENCHMARK_FILES = content/data/benchmarks/arm_processors.json \
-                  content/data/benchmarks/mips_processors.json \
-                  content/data/benchmarks/power_processors.json \
+BENCHMARK_FILES = content/data/benchmarks/arm_processors.yaml \
+                  content/data/benchmarks/mips_processors.yaml \
+                  content/data/benchmarks/power_processors.yaml \
                   content/data/benchmarks/x86_processors.yaml \
-                  content/data/benchmarks/ia64_processors.json \
-                  content/data/benchmarks/parisc_processors.json \
-                  content/data/benchmarks/sparc_processors.json
+                  content/data/benchmarks/ia64_processors.yaml \
+                  content/data/benchmarks/parisc_processors.yaml \
+                  content/data/benchmarks/sparc_processors.yaml
 #
 #  Super hacky piece to convert very specific Jupyter notebooks into very
 #  specific Markdown pages.  This is an imperfect process and usually requires

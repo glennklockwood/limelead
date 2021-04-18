@@ -39,27 +39,27 @@ systems do not have it.
 
 ## SPARC Processors
 
-{{ json2table("content/data/benchmarks/sparc_processors.json", show_cols=show_cols) }}
+{{ yaml2table("content/data/benchmarks/sparc_processors.yaml", show_cols=show_cols) }}
 
 ## MIPS Processors
 
-{{ json2table("content/data/benchmarks/mips_processors.json", show_cols=show_cols) }}
+{{ yaml2table("content/data/benchmarks/mips_processors.yaml", show_cols=show_cols) }}
 
 ## POWER/PowerPC Processors
 
-{{ json2table("content/data/benchmarks/power_processors.json", show_cols=show_cols) }}
+{{ yaml2table("content/data/benchmarks/power_processors.yaml", show_cols=show_cols) }}
 
 ## PA-RISC Processors
 
-{{ json2table("content/data/benchmarks/parisc_processors.json", show_cols=show_cols) }}
+{{ yaml2table("content/data/benchmarks/parisc_processors.yaml", show_cols=show_cols) }}
 
 ## Itanium Processors
 
-{{ json2table("content/data/benchmarks/ia64_processors.json", show_cols=show_cols) }}
+{{ yaml2table("content/data/benchmarks/ia64_processors.yaml", show_cols=show_cols) }}
 
 ## ARM Processors
 
-{{ json2table("content/data/benchmarks/arm_processors.json", show_cols=show_cols) }}
+{{ yaml2table("content/data/benchmarks/arm_processors.yaml", show_cols=show_cols) }}
 
 ## x86 Processors
 

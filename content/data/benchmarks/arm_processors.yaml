@@ -1,0 +1,211 @@
+---
+- model:        "Raspberry Pi Model B"
+  processor:    "ARM1176JZF-S"
+  clock:        "700"
+  cache:        "32+32 KB"
+  mem:          "512 MB"
+  mem_type:     "LPDDR2"
+  mem_speed:    "3.2 GB/s"
+  _mem_speed_comment: "400 MHz LPDDR2 (800 MT/sec) at 32-bit bus width"
+  wall_secs:    16459
+  memreorder_secs: 10000
+  compiler:     "GNU GFortran 4.6"
+  compile_flags: "-march=armv6zk -mfpu=vfp -mfloat-abi=hard -O3 -fdefault-real-8 -mcpu=arm1176jzf-s"
+  _comment :    "10000 seconds with reordering"
+- model:        "Terasic DE10-Nano"
+  processor:    "ARM Cortex-A9"
+  clock:        "800"
+  cache:        "32+32K<br>512K"
+  mem:          "1024 MB"
+  mem_type:     "DDR3-400"
+  mem_speed:    "6.4 GB/s"
+  wall_secs:    3639
+  memreorder_secs: 2501
+  compiler:     "GNU GFortran 4.6"
+  compile_flags: "-mabi=aapcs-linux -march=armv7-a -mtune=cortex-a9 -mcpu=cortex-a9 -mfpu=neon -mfloat-abi=hard -mstructure-size-boundary=0x20 -O3 -fdefault-real-8 -fdefault-double-8"
+  memreorder_compile_flags: "-mabi=aapcs-linux -march=armv7-a -mtune=cortex-a9 -mcpu=cortex-a9 -mfpu=neon -mfloat-abi=hard -mstructure-size-boundary=0x20 -O3 -fdefault-real-8 -fdefault-double-8"
+- model:        "Terasic DE10-Nano"
+  processor:    "ARM Cortex-A9"
+  clock:        "2&#215; 800"
+  cache:        "32+32K<br>512K"
+  mem:          "1024 MB"
+  mem_type:     "DDR3-400"
+  mem_speed:    "6.4 GB/s"
+  wall_secs:    3203
+  memreorder_secs: 2011
+  compiler:     "GNU GFortran 4.6"
+  compile_flags: "-mabi=aapcs-linux -march=armv7-a -mtune=cortex-a9 -mcpu=cortex-a9 -mfpu=neon -mfloat-abi=hard -mstructure-size-boundary=0x20 -O3 -fdefault-real-8 -fdefault-double-8 -fopenmp -cpp"
+  memreorder_compile_flags: "-mabi=aapcs-linux -march=armv7-a -mtune=cortex-a9 -mcpu=cortex-a9 -mfpu=neon -mfloat-abi=hard -mstructure-size-boundary=0x20 -O3 -fdefault-real-8 -fdefault-double-8 -fopenmp -cpp"
+- model:        "Raspberry Pi 3"
+  hostname:     "clovermine"
+  processor:    "ARM Cortex-A53"
+  clock:        "1200"
+  cache:        "32+32 KB"
+  mem:          "1024 MB"
+  mem_type:     "LPDDR2"
+  mem_speed:    "3.2 GB/s"
+  _mem_speed_comment: "400 MHz LPDDR2 (800 MT/sec) at 32-bit bus width"
+  wall_secs:    2531
+  memreorder_secs: 1463
+  compiler:     "GNU GFortran 4.9.2"
+  compile_flags: "-mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8"
+  stream_triad_mbs: 1595.6
+  _comment:    "stream_triad compiled with same compile_flags and -DSTREAM_ARRAY_SIZE=25000000; run with OMP_PROC_BIND=true; gcc 6.3.0-18+rpi1+deb9u1"
+- model:        "Raspberry Pi 3"
+  processor:    "ARM Cortex-A53"
+  clock:        "2&#215; 1200"
+  cache:        "32+32 KB"
+  mem:          "1024 MB"
+  mem_type:     "LPDDR2"
+  mem_speed:    "3.2 GB/s"
+  _mem_speed_comment: "400 MHz LPDDR2 (800 MT/sec) at 32-bit bus width"
+  wall_secs:    2427
+  memreorder_secs: 1489
+  compiler:     "GNU GFortran 4.9.2"
+  compile_flags: "-mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8"
+  stream_triad_mbs: 1602.4
+  _comment:    "stream_triad compiled with same compile_flags and -DSTREAM_ARRAY_SIZE=25000000; run with OMP_PROC_BIND=true; gcc 6.3.0-18+rpi1+deb9u1"
+- model:        "Raspberry Pi 3"
+  processor:    "ARM Cortex-A53"
+  clock:        "4&#215; 1200"
+  cache:        "32+32 KB"
+  mem:          "1024 MB"
+  mem_type:     "LPDDR2"
+  mem_speed:    "3.2 GB/s"
+  _mem_speed_comment: "400 MHz LPDDR2 (800 MT/sec) at 32-bit bus width"
+  wall_secs:    2508
+  memreorder_secs: 1939
+  compiler:     "GNU GFortran 4.9.2"
+  compile_flags: "-mcpu=cortex-a7 -mfpu=neon-vfpv4 -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8"
+  stream_triad_mbs: 1594.7
+  _comment:    "stream_triad compiled with same compile_flags and -DSTREAM_ARRAY_SIZE=25000000; run with OMP_PROC_BIND=true; gcc 6.3.0-18+rpi1+deb9u1"
+- model:        "Raspberry Pi 4"
+  hostname:     "cloverdale"
+  processor:    "ARM Cortex-A72"
+  clock:        "1&#215; 1500"
+  cache:        "32+48 KB"
+  mem:          "4096 MB"
+  mem_type:     "LPDDR4-2400"
+  mem_speed:    ""
+  wall_secs:    879
+  memreorder_secs: 732
+  compiler:     "GNU GFortran 8.3.0+rpi1"
+  compile_flags: "-march=armv8-a+crc+simd -mcpu=cortex-a72 -mtune=cortex-a72 -mfpu=vfp -marm -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8 -fopenmp"
+  stream_triad_mbs: 4800.4
+  _comment:    "stream_triad compiled with same compile_flags and -DSTREAM_ARRAY_SIZE=100000000; run with OMP_PROC_BIND=true"
+- model:        "Raspberry Pi 4"
+  hostname:     "cloverdale"
+  processor:    "ARM Cortex-A72"
+  clock:        "2&#215; 1500"
+  cache:        "32+48 KB"
+  mem:          "4096 MB"
+  mem_type:     "LPDDR4-2400"
+  mem_speed:    ""
+  wall_secs:    815
+  memreorder_secs: 592
+  compiler:     "GNU GFortran 8.3.0+rpi1"
+  compile_flags: "-march=armv8-a+crc+simd -mcpu=cortex-a72 -mtune=cortex-a72 -mfpu=vfp -marm -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8 -fopenmp"
+  stream_triad_mbs: 4320.9
+  _comment:    "stream_triad compiled with same compile_flags and -DSTREAM_ARRAY_SIZE=100000000; run with OMP_PROC_BIND=true"
+- model:        "Raspberry Pi 4"
+  hostname:     "cloverdale"
+  processor:    "ARM Cortex-A72"
+  clock:        "3&#215; 1500"
+  cache:        "32+48 KB"
+  mem:          "4096 MB"
+  mem_type:     "LPDDR4-2400"
+  mem_speed:    ""
+  wall_secs:    939
+  memreorder_secs: 589
+  compiler:     "GNU GFortran 8.3.0+rpi1"
+  compile_flags: "-march=armv8-a+crc+simd -mcpu=cortex-a72 -mtune=cortex-a72 -mfpu=vfp -marm -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8 -fopenmp"
+  stream_triad_mbs: 4004.3
+  _comment:    "stream_triad compiled with same compile_flags and -DSTREAM_ARRAY_SIZE=100000000; run with OMP_PROC_BIND=true"
+- model:        "Raspberry Pi 4"
+  hostname:     "cloverdale"
+  processor:    "ARM Cortex-A72"
+  clock:        "4&#215; 1500"
+  cache:        "32+48 KB"
+  mem:          "4096 MB"
+  mem_type:     "LPDDR4-2400"
+  mem_speed:    ""
+  wall_secs:    1146
+  memreorder_secs: 639
+  compiler:     "GNU GFortran 8.3.0+rpi1"
+  compile_flags: "-march=armv8-a+crc+simd -mcpu=cortex-a72 -mtune=cortex-a72 -mfpu=vfp -marm -mfloat-abi=hard -O3 -fdefault-real-8 -fdefault-double-8 -fopenmp"
+  stream_triad_mbs: 3749.8
+  _comment:    "stream_triad compiled with same compile_flags and -DSTREAM_ARRAY_SIZE=100000000; run with OMP_PROC_BIND=true"
+- model:        "NVIDIA Jetson Nano"
+  hostname:     "jetson"
+  processor:    "ARM Cortex-A57"
+  clock:        "1&#215; 1430"
+  cache:        "32+48 KB<br>2 MB"
+  mem:          "4096 MB"
+  mem_type:     "DDR4-1600"
+  mem_speed:    "25.6 GB/s"
+  wall_secs:    876
+  memreorder_secs: 778
+  compiler:     "GNU Fortran (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0"
+  compile_flags: "-mcpu=cortex-a57 -mtune=cortex-a57 -O3 -fdefault-real-8 -fdefault-double-8"
+- model:        "NVIDIA Jetson Nano"
+  hostname:     "jetson"
+  processor:    "ARM Cortex-A57"
+  clock:        "2&#215; 1430"
+  cache:        "32+48 KB<br>2 MB"
+  mem:          "4096 MB"
+  mem_type:     "DDR4-1600"
+  mem_speed:    "25.6 GB/s"
+  wall_secs:    738
+  memreorder_secs: 592
+  compiler:     "GNU Fortran (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0"
+  compile_flags: "-mcpu=cortex-a57 -mtune=cortex-a57 -O3 -fdefault-real-8 -fdefault-double-8"
+- model:        "NVIDIA Jetson Nano"
+  hostname:     "jetson"
+  processor:    "ARM Cortex-A57"
+  clock:        "3&#215; 1430"
+  cache:        "32+48 KB<br>2 MB"
+  mem:          "4096 MB"
+  mem_type:     "DDR4-1600"
+  mem_speed:    "25.6 GB/s"
+  wall_secs:    707
+  memreorder_secs: 541
+  compiler:     "GNU Fortran (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0"
+  compile_flags: "-mcpu=cortex-a57 -mtune=cortex-a57 -O3 -fdefault-real-8 -fdefault-double-8"
+- model:        "NVIDIA Jetson Nano"
+  hostname:     "jetson"
+  processor:    "ARM Cortex-A57"
+  clock:        "4&#215; 1430"
+  cache:        "32+48 KB<br>2 MB"
+  mem:          "4096 MB"
+  mem_type:     "DDR4-1600"
+  mem_speed:    "25.6 GB/s"
+  wall_secs:    667
+  memreorder_secs: 528
+  compiler:     "GNU Fortran (Ubuntu/Linaro 7.5.0-3ubuntu1~18.04) 7.5.0"
+  compile_flags: "-mcpu=cortex-a57 -mtune=cortex-a57 -O3 -fdefault-real-8 -fdefault-double-8"
+- model:        "MacBook Air M1 (Rosetta)"
+  hostname:     "-"
+  processor:    "Apple M1"
+  cache:        "192 KiB + 128 KiB / 12 MiB<br>128 KiB + 64 KiB / 4 MiB"
+  mem:          "16384 MB"
+  mem_type:     "LPDDR4X-4266"
+  mem_speed:    "-"
+  compiler:     "GNU Fortran (Spack GCC) 10.2.0"
+  compile_flags: "-mtune=westmere -O3 -fdefault-real-8 -fdefault-double-8"
+  compile_flags_comment: "-mcpu=native -mtune=native on M1 came up as Westmere"
+  results:
+  - clock:            "1&#215; 3200"
+    wall_secs:        118
+    memreorder_secs:  108
+  - clock:            "2&#215; 3200"
+    wall_secs:        93
+    memreorder_secs:  83
+  - clock:            "3&#215; 3200"
+    wall_secs:        84
+    memreorder_secs:  77
+  - clock:            "4&#215; 3200"
+    wall_secs:        78
+    memreorder_secs:  73
+  - clock:            "8&#215; 3200"
+    wall_secs:        80
+    memreorder_secs:  78
