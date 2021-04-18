@@ -38,7 +38,7 @@ def md2html(md_content, settings):
 def json2table(*args, **kwargs):
     return yaml2table(*args, **kwargs)
 
-def yaml2table(datafile, show_cols, tablefmt='html'):
+def yaml2table(datafile, show_cols, tablefmt='unsafehtml'):
     """Converts contents of a JSON data file into an ASCII table
 
     Takes a JSON encoded list of dictionaries, converts it into a Pandas
