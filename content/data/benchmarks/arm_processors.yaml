@@ -2,7 +2,9 @@
 - model:        "Raspberry Pi Model B"
   processor:    "ARM1176JZF-S"
   clock:        "700"
-  cache:        "32+32 KB"
+  cache_l1i_kib: 16
+  cache_l1d_kib: 16
+  cache_l2_kib:  128
   mem:          "512 MB"
   mem_type:     "LPDDR2"
   mem_speed:    "3.2 GB/s"
@@ -15,7 +17,9 @@
 - model:        "Terasic DE10-Nano"
   processor:    "ARM Cortex-A9"
   clock:        "800"
-  cache:        "32+32K<br>512K"
+  cache_l1i_kib: 32
+  cache_l1d_kib: 32
+  cache_l2_kib:  512
   mem:          "1024 MB"
   mem_type:     "DDR3-400"
   mem_speed:    "6.4 GB/s"
@@ -27,7 +31,9 @@
 - model:        "Terasic DE10-Nano"
   processor:    "ARM Cortex-A9"
   clock:        "2&#215; 800"
-  cache:        "32+32K<br>512K"
+  cache_l1i_kib: 32
+  cache_l1d_kib: 32
+  cache_l2_kib:  512
   mem:          "1024 MB"
   mem_type:     "DDR3-400"
   mem_speed:    "6.4 GB/s"
@@ -40,7 +46,9 @@
   hostname:     "clovermine"
   processor:    "ARM Cortex-A53"
   clock:        "1200"
-  cache:        "32+32 KB"
+  cache_l1i_kib: 32
+  cache_l1d_kib: 32
+  cache_l2_kib:  512
   mem:          "1024 MB"
   mem_type:     "LPDDR2"
   mem_speed:    "3.2 GB/s"
@@ -54,7 +62,9 @@
 - model:        "Raspberry Pi 3"
   processor:    "ARM Cortex-A53"
   clock:        "2&#215; 1200"
-  cache:        "32+32 KB"
+  cache_l1i_kib: 32
+  cache_l1d_kib: 32
+  cache_l2_kib:  512
   mem:          "1024 MB"
   mem_type:     "LPDDR2"
   mem_speed:    "3.2 GB/s"
@@ -68,7 +78,9 @@
 - model:        "Raspberry Pi 3"
   processor:    "ARM Cortex-A53"
   clock:        "4&#215; 1200"
-  cache:        "32+32 KB"
+  cache_l1i_kib: 32
+  cache_l1d_kib: 32
+  cache_l2_kib:  512
   mem:          "1024 MB"
   mem_type:     "LPDDR2"
   mem_speed:    "3.2 GB/s"
@@ -83,7 +95,9 @@
   hostname:     "cloverdale"
   processor:    "ARM Cortex-A72"
   clock:        "1&#215; 1500"
-  cache:        "32+48 KB"
+  cache_l1i_kib: 48
+  cache_l1d_kib: 32
+  cache_l2_kib:  1024
   mem:          "4096 MB"
   mem_type:     "LPDDR4-2400"
   mem_speed:    ""
@@ -97,7 +111,9 @@
   hostname:     "cloverdale"
   processor:    "ARM Cortex-A72"
   clock:        "2&#215; 1500"
-  cache:        "32+48 KB"
+  cache_l1i_kib: 48
+  cache_l1d_kib: 32
+  cache_l2_kib:  1024
   mem:          "4096 MB"
   mem_type:     "LPDDR4-2400"
   mem_speed:    ""
@@ -111,7 +127,9 @@
   hostname:     "cloverdale"
   processor:    "ARM Cortex-A72"
   clock:        "3&#215; 1500"
-  cache:        "32+48 KB"
+  cache_l1i_kib: 48
+  cache_l1d_kib: 32
+  cache_l2_kib:  1024
   mem:          "4096 MB"
   mem_type:     "LPDDR4-2400"
   mem_speed:    ""
@@ -125,7 +143,9 @@
   hostname:     "cloverdale"
   processor:    "ARM Cortex-A72"
   clock:        "4&#215; 1500"
-  cache:        "32+48 KB"
+  cache_l1i_kib: 48
+  cache_l1d_kib: 32
+  cache_l2_kib:  1024
   mem:          "4096 MB"
   mem_type:     "LPDDR4-2400"
   mem_speed:    ""
@@ -139,7 +159,9 @@
   hostname:     "jetson"
   processor:    "ARM Cortex-A57"
   clock:        "1&#215; 1430"
-  cache:        "32+48 KB<br>2 MB"
+  cache_l1i_kib: 48
+  cache_l1d_kib: 32
+  cache_l2_kib:  2048
   mem:          "4096 MB"
   mem_type:     "DDR4-1600"
   mem_speed:    "25.6 GB/s"
@@ -151,7 +173,9 @@
   hostname:     "jetson"
   processor:    "ARM Cortex-A57"
   clock:        "2&#215; 1430"
-  cache:        "32+48 KB<br>2 MB"
+  cache_l1i_kib: 48
+  cache_l1d_kib: 32
+  cache_l2_kib:  2048
   mem:          "4096 MB"
   mem_type:     "DDR4-1600"
   mem_speed:    "25.6 GB/s"
@@ -163,7 +187,9 @@
   hostname:     "jetson"
   processor:    "ARM Cortex-A57"
   clock:        "3&#215; 1430"
-  cache:        "32+48 KB<br>2 MB"
+  cache_l1i_kib: 48
+  cache_l1d_kib: 32
+  cache_l2_kib:  2048
   mem:          "4096 MB"
   mem_type:     "DDR4-1600"
   mem_speed:    "25.6 GB/s"
@@ -175,7 +201,9 @@
   hostname:     "jetson"
   processor:    "ARM Cortex-A57"
   clock:        "4&#215; 1430"
-  cache:        "32+48 KB<br>2 MB"
+  cache_l1i_kib: 48
+  cache_l1d_kib: 32
+  cache_l2_kib:  2048
   mem:          "4096 MB"
   mem_type:     "DDR4-1600"
   mem_speed:    "25.6 GB/s"
@@ -186,7 +214,10 @@
 - model:        "MacBook Air M1 (Rosetta)"
   hostname:     "-"
   processor:    "Apple M1"
-  cache:        "192 KiB + 128 KiB / 12 MiB<br>128 KiB + 64 KiB / 4 MiB"
+  cache_l1i_kib: 192
+  cache_l1d_kib: 128
+  cache_l2_kib:  12288
+  _cache_comment: "big cores: 192K L1I, 128K L1D, 12 M L2; small cores: 128K L1I, 64K L1D, 4M L2"
   mem:          "16384 MB"
   mem_type:     "LPDDR4X-4266"
   mem_speed:    "-"
