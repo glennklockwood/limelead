@@ -23,9 +23,10 @@ sensible set of optimization options.  To see the exact options I used for
 each benchmark, in addition to a plethora of other metadata, you can view the
 raw data used to generate this page in [my website's git repository].
 
+<div class="d-none d-md-block">
 Here is a graphical respresentation of the performance data:
-
 <div id="barchart" style="width: 100%; height: 700px; margin-bottom: 1rem"></div>
+</div>
 
 Some measurements below also have an "Optimized Time" column.  This measurement
 was made on a version of the application that periodically sorts the atomic
