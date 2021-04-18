@@ -70,7 +70,7 @@ set show_cols = [
 
 {{ yaml2table("content/data/benchmarks/x86_processors.yaml", show_cols=show_cols) }}
 
-<script async src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script async src="benchmark-plot.js"></script>
+<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script src="benchmark-plot.js"></script>
 
 [my website's git repository]: https://github.com/glennklockwood/limelead/tree/master/content/data/benchmarks
