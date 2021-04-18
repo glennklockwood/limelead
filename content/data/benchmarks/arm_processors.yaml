@@ -193,19 +193,20 @@
   compiler:     "GNU Fortran (Spack GCC) 10.2.0"
   compile_flags: "-mtune=westmere -O3 -fdefault-real-8 -fdefault-double-8"
   compile_flags_comment: "-mcpu=native -mtune=native on M1 came up as Westmere"
+  clock_mhz:    3200
   results:
-  - clock:            "1&#215; 3200"
+  - cores_used:       1
     wall_secs:        118
     memreorder_secs:  108
-  - clock:            "2&#215; 3200"
+  - cores_used:       2
     wall_secs:        93
     memreorder_secs:  83
-  - clock:            "3&#215; 3200"
+  - cores_used:       3
     wall_secs:        84
     memreorder_secs:  77
-  - clock:            "4&#215; 3200"
+  - cores_used:       4
     wall_secs:        78
     memreorder_secs:  73
-  - clock:            "8&#215; 3200"
+  - cores_used:       8
     wall_secs:        80
     memreorder_secs:  78

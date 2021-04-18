@@ -37,6 +37,46 @@ def flatten_results(records):
             flattened.append(record)
     return flattened
 
+def benchmarks2dataframe(results_dict):
+    """Converts raw yaml to a pandas DataFrame
+
+    Also performs some normalization across records that use different
+    encoding schemes.
+    """
+    records = flatten_results(results_dict)
+    dataframe = pandas.DataFrame.from_dict(records)
+
+    def fix_clock_vals(row):
+        """Extracts core count and clock frequency from a record (row)
+
+        - old-style records have a single "clock" key
+        - new-style records have "clock_mhz" and "cores_used" keys
+        """
+
+        # old-style record
+        if 'clock' in row and isinstance(row['clock'], str):
+            # explicit core count
+            if '&#215;' in row['clock']:
+                cores, clock = map(int, _SPLIT_ON_X.split(row['clock']))
+            else: # implicit core count
+                cores, clock = 1, int(row['clock'])
+        # new-style record
+        else:
+            clock = int(row['clock_mhz'])
+            # explicit core count
+            if 'cores_used' in row and not pandas.isna(row['cores_used']):
+                cores = int(row['cores_used'])
+            else: # implicit core count
+                cores = 1
+        return cores, clock
+
+    cores_and_clocks = dataframe.apply(fix_clock_vals, axis=1).values
+    cores, clock = zip(*(cores_and_clocks))
+    dataframe['cores_used'] = cores
+    dataframe['clock_mhz'] = clock
+
+    return dataframe.fillna(value="")
+
 def rekey_row(row, brief=False):
     if '&#215' in row['clock']:
         cores, clock = map(int, _SPLIT_ON_X.split(row['clock']))

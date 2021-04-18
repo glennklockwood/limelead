@@ -5,8 +5,6 @@ import subprocess
 
 import yaml
 
-from .benchmarks import flatten_results
-
 DIR_METADATA = {}
 PAGE_METADATA = {}
 

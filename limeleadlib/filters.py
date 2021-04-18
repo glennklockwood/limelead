@@ -15,9 +15,9 @@ import markdown
 import pandas
 import tabulate
 
-from .core import get_dir_metadata, pagepath2sourcepath, get_git_mtime, \
-                  flatten_results
+from .core import get_dir_metadata, pagepath2sourcepath, get_git_mtime
 from .tables import fix_md_table, DEFAULT_TABLE_CLASSES
+from .benchmarks import benchmarks2dataframe
 
 def md2html(md_content, settings):
     """Converts arbitrary Markdown to HTML
@@ -67,7 +67,7 @@ def yaml2table(datafile, show_cols, tablefmt='unsafehtml'):
     """
     from_dict = yaml.load(open(datafile, 'r'))
 
-    dataframe = pandas.DataFrame.from_dict(flatten_results(from_dict)).fillna(value="")
+    dataframe = benchmarks2dataframe(from_dict)
 
     show_cols_keys = [x[0] for x in show_cols if x[0] in dataframe.columns]
 
