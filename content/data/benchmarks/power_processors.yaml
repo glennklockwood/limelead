@@ -1,7 +1,9 @@
 - model:        "IBM RS/6000 43p 150"
   processor:    "PowerPC 604e"
-  clock:        "374"
-  cache:        "32+32 KB <br>1024 KB"
+  clock_mhz:     374
+  cache_l1i_kib: 32
+  cache_l1d_kib: 32
+  cache_l2_kib:  1024
   mem:          "512 MB"
   mem_type:     "PC-100"
   mem_speed:    "800 MB/s"
@@ -10,8 +12,10 @@
   compile_flags: "-qautodbl=dbl4 -qdpc=e -qfloat-fltint -qarch=604 -qcache=auto -O5"
 - model:        "Apple Power Mac G4"
   processor:    "PowerPC 7450"
-  clock:        "733"
-  cache:        "256 KB"
+  clock_mhz:     733
+  cache_l1i_kib: 32
+  cache_l1d_kib: 32
+  cache_l2_kib:  256
   mem:          "1024 MB"
   mem_type:     "PC-100"
   mem_speed:    "800 MB/s"
@@ -20,8 +24,11 @@
   compile_flags: "-O3 -mtune=7450 -mcpu=7450"
 - model:        "Apple Power Mac G4"
   processor:    "PowerPC 7450"
-  clock:        "933"
-  cache:        "2048 KB"
+  clock_mhz:     933
+  cache_l1i_kib: 32
+  cache_l1d_kib: 32
+  cache_l2_kib:  256
+  cache_l3_kib:  2048
   mem:          "1536 MB"
   mem_type:     "PC-100"
   mem_speed:    "800 MB/s"
@@ -30,8 +37,10 @@
   compile_flags: "-O3 -mtune=7450 -mcpu=7450"
 - model:        "Apple Power Mac G5"
   processor:    "PowerPC 970"
-  clock:        "1600"
-  cache:        "512 KB"
+  clock_mhz:     1600
+  cache_l1i_kib: 64
+  cache_l1d_kib: 32
+  cache_l2_kib:  512
   mem:          "1024 MB"
   mem_type:     "DDR2-400"
   mem_speed:    "3.2 GB/s"
@@ -40,8 +49,11 @@
   compile_flags: "-O3 -mtune=7450 -mcpu=7450"
 - model:        "IBM Blue Gene/P"
   processor:    "PowerPC 450"
-  clock:        "850"
-  cache:        "32+32 KB <br>2 KB <br>8 MB"
+  clock_mhz:     850
+  cache_l1i_kib: 32
+  cache_l1d_kib: 32
+  cache_l2_kib:  2
+  cache_l3_kib:  8192
   mem:          "2048 MB"
   mem_type:     "DDR2-840"
   mem_speed:    "13.6 GB/s"
@@ -50,8 +62,12 @@
   compile_flags: "-O5 -qautodbl=dbl4 -qdpc=e -qfloat-fltint -qarch=450d -qtune=450 -qcache=auto -qhot -qipa"
 - model:        "IBM Blue Gene/P"
   processor:    "PowerPC 450"
-  clock:        "4&#215; 850"
-  cache:        "32+32 KB <br>2 KB <br>8 MB"
+  clock_mhz:     850
+  cores_used:    4
+  cache_l1i_kib: 32
+  cache_l1d_kib: 32
+  cache_l2_kib:  2
+  cache_l3_kib:  8192
   mem:          "2048 MB"
   mem_type:     "DDR2-840"
   mem_speed:    "13.6 GB/s"
@@ -60,21 +76,19 @@
   compile_flags: "     -O5 -qautodbl=dbl4 -qdpc=e -qfloat=fltint -qarch=450d -qtune=450 -qcache=auto -qhot -qipa"
 - model:        "IBM Power 550 Express"
   processor:    "POWER6"
-  clock:        "4204"
-  cache:        "64+64 KB <br>8 MB <br> 32 MB"
+  clock_mhz:     4204
+  cache_l1i_kib: 64
+  cache_l1d_kib: 64
+  cache_l2_kib:  4096
+  cache_l3_kib:  32768
+  _cache_comment: "L2 cache is 4M per core"
   mem:          "15479 MB"
   mem_type:     "DDR2-667"
   mem_speed:    "10.7 GB/s"
-  wall_secs:    646
   compiler:     "IBM XL Fortran 11.1"
   compile_flags: "-qautodbl=dbl4 -qdpc=e -qfloat-fltint -qarch=pwr6 -qcache=auto -O5"
-- model:        "IBM Power 550 Express"
-  processor:    "POWER6"
-  clock:        "4&#215; 4204"
-  cache:        "64+64 KB <br>8 MB <br> 32 MB"
-  mem:          "15479 MB"
-  mem_type:     "DDR2-667"
-  mem_speed:    "10.7 GB/s"
-  wall_secs:    414
-  compiler:     "IBM XL Fortran 11.1"
-  compile_flags: "-qautodbl=dbl4 -qdpc=e -qfloat-fltint -qarch=pwr6 -qcache=auto -O5"
+  results:
+    - wall_secs:    646
+      cores_used:   1
+    - wall_secs:    414
+      cores_used:   4
