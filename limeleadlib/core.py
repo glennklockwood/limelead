@@ -5,6 +5,8 @@ import subprocess
 
 import yaml
 
+from .benchmarks import flatten_results
+
 DIR_METADATA = {}
 PAGE_METADATA = {}
 
@@ -188,27 +190,3 @@ def get_git_mtime(path):
         ret = _scrape_date(subprocess.check_output(['git', 'log', '--date', 'raw', '-n', '1']))
 
     return ret
-
-def flatten_results(records):
-    """Flattens nested list of benchmark records into a list of flat records
-
-    Args:
-        records (list): List of dictionaries, optionally containing the
-            'results' key which contains a list of key-value pairs to combine
-            with the parent keys/values to generate flat records.
-
-    Returns:
-        list: List of dictionaries suitable to be passed to
-        pandas.DataFrame.from_dict().
-    """
-    flattened = []
-    for record in records:
-        if 'results' in record:
-            for result in record['results']:
-                tmp_record = record.copy()
-                del tmp_record['results']
-                tmp_record.update(result)
-                flattened.append(tmp_record)
-        else:
-            flattened.append(record)
-    return flattened

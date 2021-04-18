@@ -46,6 +46,13 @@ help:
 NOTEBOOKS = content/pages/data-intensive/analysis/perceptron.ipynb \
             content/pages/data-intensive/analysis/multilayer-perceptron.ipynb
 
+BENCHMARK_FILES = content/data/benchmarks/arm_processors.json \
+                  content/data/benchmarks/mips_processors.json \
+                  content/data/benchmarks/power_processors.json \
+                  content/data/benchmarks/x86_processors.yaml \
+                  content/data/benchmarks/ia64_processors.json \
+                  content/data/benchmarks/parisc_processors.json \
+                  content/data/benchmarks/sparc_processors.json
 #
 #  Super hacky piece to convert very specific Jupyter notebooks into very
 #  specific Markdown pages.  This is an imperfect process and usually requires
@@ -71,7 +78,10 @@ content/pages/data-intensive/analysis/multilayer-perceptron.md: notebooks/multil
 	&& $(SED) -i 's/\([^\]\)_{/\1\\_{/g' "$@" \
 	&& (test ! -d notebooks/multilayer-perceptron_files || rmdir notebooks/multilayer-perceptron_files)) || rm "$@"
 
-html: $(NOTEBOOKS:ipynb=md)
+content/static/benchmarks/benchmark-results.json: $(BENCHMARK_FILES)
+	$(PY) -mlimeleadlib.benchmarks $^ -o "$@"
+
+html: $(NOTEBOOKS:ipynb=md) content/static/benchmarks/benchmark-results.json
 	$(PELICAN) $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
 
 clean:
