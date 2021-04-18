@@ -78,11 +78,9 @@ def benchmarks2dataframe(results_dict):
     return dataframe.fillna(value="")
 
 def rekey_row(row, brief=False):
-    if '&#215' in row['clock']:
-        cores, clock = map(int, _SPLIT_ON_X.split(row['clock']))
-    else:
-        cores = 1
-        clock = int(row['clock'])
+    cores = row['cores_used']
+    clock = row['clock_mhz']
+        
     if clock < 1000:
         clock = "{:d} MHz".format(clock)
     else:
@@ -103,7 +101,7 @@ def load_datasets(datafiles):
 
     for datafile in datafiles:
         from_dict = yaml.load(open(datafile, 'r'), Loader=yaml.SafeLoader)
-        results_df = pandas.DataFrame.from_dict(flatten_results(from_dict))
+        results_df = benchmarks2dataframe(from_dict)
         results_df['isa'] = datafile.split(os.sep)[-1].split('_', 1)[0]
         if all_results is None:
             all_results = results_df
@@ -113,9 +111,13 @@ def load_datasets(datafiles):
     return all_results
 
 def generate_plotly_dataset(dataframe, key='wall_secs'):
-    dataframe['index'] = dataframe.apply(lambda x: rekey_row(x, brief=True), axis=1)
+    dataframe['index'] = dataframe.apply(
+        lambda x: rekey_row(x, brief=True),
+        axis=1)
     dataframe= dataframe.set_index('index')
-    sorted_df = dataframe[dataframe[key].notna()].sort_values(by=key, ascending=True)
+    sorted_df = dataframe[dataframe[key].notna()].sort_values(
+        by=key,
+        ascending=True)
 
     dataset = []
     for isa in sorted_df['isa'].unique():
