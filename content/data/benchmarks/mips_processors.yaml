@@ -1,7 +1,9 @@
 - model:        "SGI O2"
   processor:    "MIPS R5000"
-  clock:        "180"
-  cache:        "512 KB"
+  clock_mhz:     180
+  cache_l1i_kib: 32
+  cache_l1d_kib: 32
+  cache_l2_kib:  0
   mem:          "192 MB"
   mem_type:     "-"
   mem_speed:    "-"
@@ -10,8 +12,10 @@
   compile_flags: "unknown"
 - model:        "SGI O2"
   processor:    "MIPS R10000"
-  clock:        "195"
-  cache:        "1024 KB"
+  clock_mhz:     195
+  cache_l1i_kib: 32
+  cache_l1d_kib: 32
+  cache_l2_kib:  1024
   mem:          "192 MB"
   mem_type:     "-"
   mem_speed:    "-"
@@ -20,8 +24,10 @@
   compile_flags: "-Ofast=ip32_10k -r10000"
 - model:        "SGI Indigo2"
   processor:    "MIPS R10000"
-  clock:        "195"
-  cache:        "1024 KB"
+  clock_mhz:     195
+  cache_l1i_kib: 32
+  cache_l1d_kib: 32
+  cache_l2_kib:  1024
   mem:          "128 MB"
   mem_type:     "-"
   mem_speed:    "-"
@@ -30,8 +36,10 @@
   compile_flags: "-64 -O -mips4"
 - model:        "SGI Octane"
   processor:    "MIPS R10000"
-  clock:        "225"
-  cache:        "1024 KB"
+  clock_mhz:     225
+  cache_l1i_kib: 32
+  cache_l1d_kib: 32
+  cache_l2_kib:  1024
   mem:          "384 MB"
   mem_type:     "-"
   mem_speed:    "-"
@@ -40,8 +48,10 @@
   compile_flags: "unknown"
 - model:        "SGI Fuel"
   processor:    "MIPS R14000"
-  clock:        "500"
-  cache:        "2048 KB"
+  clock_mhz:     500
+  cache_l1i_kib: 32
+  cache_l1d_kib: 32
+  cache_l2_kib:  2048
   mem:          "2048 MB"
   mem_type:     "-"
   mem_speed:    "-"
@@ -50,8 +60,10 @@
   compile_flags: "-O -mips4"
 - model:        "SGI Fuel"
   processor:    "MIPS R14000"
-  clock:        "600"
-  cache:        "4096 KB"
+  clock_mhz:     600
+  cache_l1i_kib: 32
+  cache_l1d_kib: 32
+  cache_l2_kib:  4096
   mem:          "1024 MB"
   mem_type:     "-"
   mem_speed:    "-"
