@@ -70,6 +70,7 @@ def benchmarks2dataframe(results_dict):
                 cores = 1
         return cores, clock
 
+    # standardize representation of number of cores and clock speed
     cores_and_clock = dataframe.apply(fix_clock_vals, axis=1)
     cores, clock = zip(*(cores_and_clock.values))
     dataframe['cores_used'] = cores
@@ -79,7 +80,7 @@ def benchmarks2dataframe(results_dict):
             x[0],
             reduce_mhz(x[1])))
 
-    return dataframe.fillna(value="")
+    return dataframe
 
 def reduce_mhz(clock):
     """Converts MHz to GHz if sensible

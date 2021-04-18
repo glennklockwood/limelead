@@ -13,6 +13,7 @@ import datetime
 import pelican
 import markdown
 import pandas
+import numpy
 import tabulate
 
 from .core import get_dir_metadata, pagepath2sourcepath, get_git_mtime
@@ -38,7 +39,7 @@ def md2html(md_content, settings):
 def json2table(*args, **kwargs):
     return yaml2table(*args, **kwargs)
 
-def yaml2table(datafile, show_cols, tablefmt='unsafehtml'):
+def yaml2table(datafile, show_cols, tablefmt='unsafehtml', **kwargs):
     """Converts contents of a JSON data file into an ASCII table
 
     Takes a JSON encoded list of dictionaries, converts it into a Pandas
@@ -69,13 +70,29 @@ def yaml2table(datafile, show_cols, tablefmt='unsafehtml'):
 
     dataframe = benchmarks2dataframe(from_dict)
 
-    show_cols_keys = [x[0] for x in show_cols if x[0] in dataframe.columns]
+    # hack to fix some sparse integer columns - print nothing instead of nan,
+    # and print integers instead of floats
+    if 'memreorder_secs' in dataframe:
+        dataframe['memreorder_secs'] = dataframe['memreorder_secs'].apply(
+            lambda x: "" if numpy.isnan(x) else "{:d}".format(int(x)))
+
+    show_cols_keys = []
+    colalign = []
+    for show_col in show_cols:
+        if show_col[0] in dataframe.columns:
+            show_cols_keys.append(show_col[0])
+            if show_col[0] in ('memreorder_secs', 'wall_secs', 'cores_and_clock'):
+                colalign.append("right")
+            else:
+                colalign.append(None)
 
     html = tabulate.tabulate(
         dataframe[show_cols_keys],
         tablefmt=tablefmt,
         headers=[x[1] for x in show_cols if x[0] in show_cols_keys],
-        showindex=False)
+        showindex=False,
+        colalign=colalign,
+        **kwargs)
     html, _ = fix_md_table(html, add_table_classes=DEFAULT_TABLE_CLASSES + ["table-responsive-md"])
     return html
 
