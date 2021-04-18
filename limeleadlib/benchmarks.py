@@ -70,31 +70,32 @@ def benchmarks2dataframe(results_dict):
                 cores = 1
         return cores, clock
 
-    cores_and_clocks = dataframe.apply(fix_clock_vals, axis=1).values
-    cores, clock = zip(*(cores_and_clocks))
+    cores_and_clock = dataframe.apply(fix_clock_vals, axis=1)
+    cores, clock = zip(*(cores_and_clock.values))
     dataframe['cores_used'] = cores
     dataframe['clock_mhz'] = clock
+    dataframe['cores_and_clock'] = cores_and_clock.apply(
+        lambda x: "{:d} &#215; {}".format(
+            x[0],
+            reduce_mhz(x[1])))
 
     return dataframe.fillna(value="")
 
-def rekey_row(row, brief=False):
-    cores = row['cores_used']
-    clock = row['clock_mhz']
-        
+def reduce_mhz(clock):
+    """Converts MHz to GHz if sensible
+
+    Args:
+        clock (int): clock frequency in MHz
+
+    Returns:
+        str: The clockspeed and unit of measure such that clockspeed is at
+        least 1 and less 1000.
+    """
     if clock < 1000:
         clock = "{:d} MHz".format(clock)
     else:
         clock = "{:.1f} GHz".format(clock / 1000)
-    if brief:
-        return "{} ({}){}".format(
-            row['processor'],
-            clock,
-            " {:d} cores".format(cores) if cores > 1 else "")
-    else:
-        return "{} ({}) {:d} core{}".format(
-            row['processor'],
-            clock,
-            cores, "s" if cores != 1 else "")
+    return clock
 
 def load_datasets(datafiles):
     all_results = None
@@ -111,6 +112,19 @@ def load_datasets(datafiles):
     return all_results
 
 def generate_plotly_dataset(dataframe, key='wall_secs'):
+    def rekey_row(row, brief=False):
+        cores = row['cores_used']
+        if brief:
+            return "{} ({}){}".format(
+                row['processor'],
+                reduce_mhz(row['clock_mhz']),
+                " {:d} cores".format(cores) if cores > 1 else "")
+        else:
+            return "{} ({}) {:d} core{}".format(
+                row['processor'],
+                reduce_mhz(row['clock_mhz']),
+                cores, "s" if cores != 1 else "")
+
     dataframe['index'] = dataframe.apply(
         lambda x: rekey_row(x, brief=True),
         axis=1)

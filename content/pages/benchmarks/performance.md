@@ -26,8 +26,6 @@ raw data used to generate this page in [my website's git repository].
 Here is a graphical respresentation of the performance data:
 
 <div id="barchart" style="width: 100%; height: 700px; margin-bottom: 1rem"></div>
-<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-<script src="benchmark-plot.js"></script>
 
 Some measurements below also have an "Optimized Time" column.  This measurement
 was made on a version of the application that periodically sorts the atomic
@@ -35,7 +33,14 @@ positions in memory to increase cache hit rate.  Because this optimization was
 not available at the time I started doing these benchmarks, many of the older
 systems do not have it.
 
-{% set show_cols = [('model', 'System'), ('processor', 'Processor'), ('clock', 'Clock (MHz)'), ('cache', 'Cache'), ('mem', "Memory"), ('wall_secs', "Time (sec)"), ('memreorder_secs', "Optimized Time (sec)")] %}
+{%
+set show_cols = [
+    ('model', 'System'),
+    ('processor', 'Processor'),
+    ('cores_and_clock', 'Clock'),
+    ('wall_secs', "Time (sec)"),
+    ('memreorder_secs', "Optimized Time (sec)")]
+%}
 
 ## SPARC Processors
 
@@ -64,5 +69,8 @@ systems do not have it.
 ## x86 Processors
 
 {{ yaml2table("content/data/benchmarks/x86_processors.yaml", show_cols=show_cols) }}
+
+<script async src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+<script async src="benchmark-plot.js"></script>
 
 [my website's git repository]: https://github.com/glennklockwood/limelead/tree/master/content/data/benchmarks
