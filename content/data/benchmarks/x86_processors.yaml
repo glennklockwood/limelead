@@ -1032,7 +1032,7 @@
   wall_secs: 303
   memreorder_secs: 302
 - model: "Mac Mini 8,2"
-  processor: "Intel I7-8700B"
+  processor: "Intel i7-8700B"
   cache: "32K+32K<br>6&#215;256K<br>12M"
   mem: "64 GB"
   mem_type: "DDR4-21300"
