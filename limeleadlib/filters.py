@@ -66,7 +66,7 @@ def yaml2table(datafile, show_cols, tablefmt='unsafehtml', **kwargs):
     Returns:
         str: HTML representation of _datafile_ in the given ASCII encoding
     """
-    from_dict = yaml.load(open(datafile, 'r'))
+    from_dict = yaml.load(open(datafile, 'r'), Loader=yaml.FullLoader)
 
     dataframe = benchmarks2dataframe(from_dict)
 
