@@ -112,20 +112,20 @@ def load_datasets(datafiles):
 
     return all_results
 
-def generate_plotly_dataset(dataframe, key='wall_secs'):
-    def rekey_row(row, brief=False):
-        cores = row['cores_used']
-        if brief:
-            return "{} ({}){}".format(
-                row['processor'],
-                reduce_mhz(row['clock_mhz']),
-                " {:d} cores".format(cores) if cores > 1 else "")
-        else:
-            return "{} ({}) {:d} core{}".format(
-                row['processor'],
-                reduce_mhz(row['clock_mhz']),
-                cores, "s" if cores != 1 else "")
+def rekey_row(row, brief=False):
+    cores = row['cores_used']
+    if brief:
+        return "{} ({}){}".format(
+            row['processor'],
+            reduce_mhz(row['clock_mhz']),
+            " {:d} cores".format(cores) if cores > 1 else "")
+    else:
+        return "{} ({}) {:d} core{}".format(
+            row['processor'],
+            reduce_mhz(row['clock_mhz']),
+            cores, "s" if cores != 1 else "")
 
+def generate_plotly_dataset(dataframe, key='wall_secs'):
     dataframe['index'] = dataframe.apply(
         lambda x: rekey_row(x, brief=True),
         axis=1)
