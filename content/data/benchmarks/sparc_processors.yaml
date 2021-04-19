@@ -1,8 +1,10 @@
 ---
 - model:        "Sun Ultra 10"
   processor:    "UltraSPARC IIi"
-  clock:        "360"
-  cache:        "2048 KB"
+  clock_mhz:     360
+  cache_l1i_kib: 16
+  cache_l1d_kib: 16
+  cache_l2_kib:  2048
   mem:          "512 MB"
   mem_type:     "EDO"
   mem_speed:    "265 MB/s"
@@ -11,8 +13,10 @@
   compile_flags: "-f77=%all -xO5 -xarch=v8plusa -xcache=16/32/1:2048/64/1 -xchip=ultra2i -xdepend=yes -xpad=local -xlibmil -xlibmopt -ftrap=%none -fround=nearest -Bstatic"
 - model:        "Sun Enterprise 4500"
   processor:    "UltraSPARC II"
-  clock:        "400"
-  cache:        "4096 KB"
+  clock_mhz:     400
+  cache_l1i_kib: 16
+  cache_l1d_kib: 16
+  cache_l2_kib:  4096
   mem:          "2048 MB"
   mem_type:     "FPM"
   mem_speed:    "176 MB/s"
@@ -21,8 +25,10 @@
   compile_flags: "unknown"
 - model:        "Sun Netra T1"
   processor:    "UltraSPARC IIi"
-  clock:        "440"
-  cache:        "2048 KB"
+  clock_mhz:     440
+  cache_l1i_kib: 16
+  cache_l1d_kib: 16
+  cache_l2_kib:  2048
   mem:          "1024 MB"
   mem_type:     ""
   mem_speed:    "? MB/s"
@@ -31,8 +37,10 @@
   compile_flags: "-f77=%all -xO5 -xarch=v8plusa -xcache=16/32/1:2048/64/1 -xchip=ultra2i -xdepend=yes -xpad=local -xlibmil -xlibmopt -ftrap=%none -fround=nearest -Bstatic"
 - model:        "Sun Ultra 60"
   processor:    "UltraSPARC II"
-  clock:        "360"
-  cache:        "4096 KB"
+  clock_mhz:     360
+  cache_l1i_kib: 16
+  cache_l1d_kib: 16
+  cache_l2_kib:  4096
   mem:          "1024 MB"
   mem_type:     "EDO"
   mem_speed:    "264  MB/s"
@@ -41,8 +49,10 @@
   compile_flags: "f77=%all -xO5 -xchip=ultra2  -xcache=16/32/1:4096/64/1 -xarch=sparcvis -xdepend=yes -xmemalign=8s -xpad=local -xvector=lib -aligncommon=dalign -fsimple=0 -fns=no -xlibmil -xlibmopt -ftrap=%none -fround=nearest -Bstatic"
 - model:        "Sun Ultra 60"
   processor:    "UltraSPARC II"
-  clock:        "450"
-  cache:        "4096 KB"
+  clock_mhz:     450
+  cache_l1i_kib: 16
+  cache_l1d_kib: 16
+  cache_l2_kib:  4096
   mem:          "2048 MB"
   mem_type:     "EDO"
   mem_speed:    "264  MB/s"
@@ -51,8 +61,10 @@
   compile_flags: "unknown"
 - model:        "Sun Blade 100"
   processor:    "UltraSPARC IIe"
-  clock:        "500"
-  cache:        "256 KB"
+  clock_mhz:     500
+  cache_l1i_kib: 16
+  cache_l1d_kib: 16
+  cache_l2_kib:  256
   mem:          "512 MB"
   mem_type:     "PC-133"
   mem_speed:    "1.066 GB/s"
@@ -61,8 +73,10 @@
   compile_flags: "unknown"
 - model:        "Sun Fire v100"
   processor:    "UltraSPARC IIi"
-  clock:        "548"
-  cache:        "512 KB"
+  clock_mhz:     548
+  cache_l1i_kib: 16
+  cache_l1d_kib: 16
+  cache_l2_kib:  512
   mem:          "2014 MB"
   mem_type:     "PC-133"
   mem_speed:    "1.066 GB/s"
@@ -71,8 +85,10 @@
   compile_flags: "unknown"
 - model:        "Sun Blade 150"
   processor:    "UltraSPARC IIi"
-  clock:        "550"
-  cache:        "512 KB"
+  clock_mhz:     550
+  cache_l1i_kib: 16
+  cache_l1d_kib: 16
+  cache_l2_kib:  512
   mem:          "512 MB"
   mem_type:     "PC-133"
   mem_speed:    "1.066 GB/s"
@@ -81,8 +97,10 @@
   compile_flags: "unknown"
 - model:        "Sun Blade 150"
   processor:    "UltraSPARC IIi"
-  clock:        "650"
-  cache:        "512 KB"
+  clock_mhz:     650
+  cache_l1i_kib: 16
+  cache_l1d_kib: 16
+  cache_l2_kib:  512
   mem:          "512 MB"
   mem_type:     "PC-133"
   mem_speed:    "1.066 GB/s"
@@ -91,8 +109,11 @@
   compile_flags: "unknown"
 - model:        "Sun Blade 1000"
   processor:    "UltraSPARC III"
-  clock:        "750"
-  cache:        "8192 KB"
+  clock_mhz:     750
+  cache_l1i_kib: 32
+  cache_l1d_kib: 64
+  cache_l2_kib:  8192
+  _cache_comment: "UltraSPARC III also had a 2K write cache"
   mem:          "3072 MB"
   mem_type:     "PC-100"
   mem_speed:    "800 MB/s"
@@ -101,8 +122,11 @@
   compile_flags: "unknown"
 - model:        "Sun Blade 1000"
   processor:    "UltraSPARC III Cu"
-  clock:        "900"
-  cache:        "8192 KB"
+  clock_mhz:     900
+  cache_l1i_kib: 32
+  cache_l1d_kib: 64
+  cache_l2_kib:  8192
+  _cache_comment: "UltraSPARC III Cu also had a 2K write cache + 2K prefetch cache"
   mem:          "3072 MB"
   mem_type:     "PC-100"
   mem_speed:    "800 MB/s"
@@ -111,8 +135,12 @@
   compile_flags: "unknown"
 - model:        "Sun Fire v210"
   processor:    "UltraSPARC IIIi"
-  clock:        "1002"
+  clock_mhz:     1002
   cache:        "32+64 KB <br>1024 KB"
+  cache_l1i_kib: 32
+  cache_l1d_kib: 64
+  cache_l2_kib:  1024
+  _cache_comment: "UltraSPARC IIIi also had a 2K write cache + 2K prefetch cache"
   mem:          "2014 MB"
   mem_type:     "DDR-266"
   mem_speed:    "2.1 GB/s"
@@ -121,8 +149,11 @@
   compile_flags: "unknown"
 - model:        "Sun Blade 1500 (Red)"
   processor:    "UltraSPARC IIIi"
-  clock:        "1062"
-  cache:        "32+64 KB <br>1024 KB"
+  clock_mhz:     1062
+  cache_l1i_kib: 32
+  cache_l1d_kib: 64
+  cache_l2_kib:  1024
+  _cache_comment: "UltraSPARC IIIi also had a 2K write cache + 2K prefetch cache"
   mem:          "1024 MB"
   mem_type:     "DDR-266"
   mem_speed:    "2.1 GB/s"
@@ -131,8 +162,11 @@
   compile_flags: "-f77=%all -xO5 -xarch=sparcvis2 -xcache=64/32/4:1024/64/4 -xchip=ultra3i -xpad=local -xvector=lib -fsimple=0 -fns=no -xlibmil -xlibmopt -ftrap=%none -fround=nearest"
 - model:        "Sun Fire v240"
   processor:    "UltraSPARC IIIi"
-  clock:        "1503"
-  cache:        "32+64 KB <br>1024 KB"
+  clock_mhz:     1503
+  cache_l1i_kib: 32
+  cache_l1d_kib: 64
+  cache_l2_kib:  1024
+  _cache_comment: "UltraSPARC IIIi also had a 2K write cache + 2K prefetch cache"
   mem:          "2048 MB"
   mem_type:     "DDR-266"
   mem_speed:    "2.1 GB/s"
@@ -141,8 +175,11 @@
   compile_flags: "-f77=%all -xO5 -xchip=ultra3i -xcache=64/32/4:1024/64/4 -xarch=sparcvis2 -xdepend=yes -xmemalign=8s -xpad=local -fsimple=0 -fns=no -xlibmil -xvector=lib -xlibmopt -ftrap=%none -fround=nearest -Bstatic"
 - model:        "Sun Blade 1500 (Silver)"
   processor:    "UltraSPARC IIIi"
-  clock:        "1503"
-  cache:        "32+64 KB <br>1024 KB"
+  clock_mhz:     1503
+  cache_l1i_kib: 32
+  cache_l1d_kib: 64
+  cache_l2_kib:  1024
+  _cache_comment: "UltraSPARC IIIi also had a 2K write cache + 2K prefetch cache"
   mem:          "2048 MB"
   mem_type:     "DDR-266"
   mem_speed:    "2.1 GB/s"
@@ -151,8 +188,11 @@
   compile_flags: "-f77=%all -xO5 -xarch=sparcvis2 -xcache=64/32/4:1024/64/4 -xchip=ultra3i -xpad=local -xvector=lib -fsimple=0 -fns=no -xlibmil -xlibmopt -ftrap=%none -fround=nearest"
 - model:        "Sun Blade 2500 (Silver)"
   processor:    "UltraSPARC IIIi"
-  clock:        "1600"
-  cache:        "1024 KB"
+  clock_mhz:     1600
+  cache_l1i_kib: 32
+  cache_l1d_kib: 64
+  cache_l2_kib:  1024
+  _cache_comment: "UltraSPARC IIIi also had a 2K write cache + 2K prefetch cache"
   mem:          "12288 MB"
   mem_type:     "DDR2-266"
   mem_speed:    "2.1 GB/s"
