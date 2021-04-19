@@ -1,6 +1,6 @@
 - model:        "IBM RS/6000 43p 150"
   processor:    "PowerPC 604e"
-  clock_mhz:     374
+  clock_mhz:     375
   cache_l1i_kib: 32
   cache_l1d_kib: 32
   cache_l2_kib:  1024
