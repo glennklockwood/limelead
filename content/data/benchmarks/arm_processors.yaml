@@ -115,9 +115,9 @@
     - cores_used: 4
       wall_secs:    667
       memreorder_secs: 528
-- model:        "MacBook Air M1 (Rosetta)"
+- model:        "MacBook Air M1"
   hostname:     "-"
-  processor:    "Apple M1"
+  processor:    "Apple M1/Rosetta"
   cache_l1i_kib: 192
   cache_l1d_kib: 128
   cache_l2_kib:  12288
@@ -145,3 +145,32 @@
   - cores_used:       8
     wall_secs:        80
     memreorder_secs:  78
+- model:        "MacBook Air M1"
+  hostname:     "-"
+  processor:    "Apple M1"
+  cache_l1i_kib: 192
+  cache_l1d_kib: 128
+  cache_l2_kib:  12288
+  _cache_comment: "big cores: 192K L1I, 128K L1D, 12 M L2; small cores: 128K L1I, 64K L1D, 4M L2"
+  mem:          "16384 MB"
+  mem_type:     "LPDDR4X-4266"
+  mem_speed:    "-"
+  compiler:     "GNU Fortran (Spack GCC) 10.2.0"
+  compile_flags: "-mtune=generic -O3 -fdefault-real-8 -fdefault-double-8"
+  clock_mhz:    3200
+  results:
+  - cores_used:       1
+    wall_secs:        94
+    memreorder_secs:  86
+  - cores_used:       2
+    wall_secs:        73
+    memreorder_secs:  67
+  - cores_used:       3
+    wall_secs:        66
+    memreorder_secs:  61
+  - cores_used:       4
+    wall_secs:        61
+    memreorder_secs:  59
+  - cores_used:       8
+    wall_secs:        65
+    memreorder_secs:  65
