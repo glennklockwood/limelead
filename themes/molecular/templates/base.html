@@ -53,13 +53,9 @@
 
     <div class="row text-box"> <!-- main row -->
 
-        <div class="{{ content_class }} content-box pt-3" id="content"> <!-- content -->
-            {% block content %}{% endblock %}
-        </div> <!-- end content -->
-
         {% if sidebar_class %}
         {% block sidebar %}
-        <div class="{{ sidebar_class }} sidebar-box pt-3" id="sidebar"> <!-- sidebar -->
+        <div class="{{ sidebar_class }} sidebar-box pt-3 d-none d-md-block" id="sidebar"> <!-- sidebar -->
             <aside>
               {% if ABOUT_ME or AVATAR %}
                 {% include 'includes/aboutme.html' %}
@@ -71,6 +67,10 @@
         </div> <!-- end sidebar -->
         {% endblock sidebar %}
         {% endif %}
+
+        <div class="{{ content_class }} content-box pt-3" id="content"> <!-- content -->
+            {% block content %}{% endblock %}
+        </div> <!-- end content -->
 
     </div> <!-- end main row -->
 
