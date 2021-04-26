@@ -252,21 +252,96 @@ and `-z 3` results in the following:
                 - `mdtest_tree.3/`
 
 Files/directories then get evenly spread across all four of these tree levels.
-More concretely, if we do
+So if we do
 
-    mpirun mdtest -F -C -z 3 -n 20 
+    mpirun -n 1 mdtest -F -C -z 3 -n 20 
 
 We will get the following:
 
 - `out/test-dir.0-0/mdtest_tree.0/`
-    - `file.mdtest.0.0` through `file.mdtest.0.9`
-    - `mdtest_tree.1/`
-        - `file.mdtest.0.5` through `file.mdtest.0.19`
-        - `mdtest_tree.2/`
-            - `file.mdtest.0.10` through `file.mdtest.0.17`
-            - `mdtest_tree.3/`
-                - `file.mdtest.0.15` through `file.mdtest.0.19`
+    - **five** files: `file.mdtest.0.0` through `file.mdtest.0.4`
+    - **one** directory:`mdtest_tree.1/`
+        - **five** files: `file.mdtest.0.5` through `file.mdtest.0.9`
+        - **one** directory: `mdtest_tree.2/`
+            - **five** files: `file.mdtest.0.10` through `file.mdtest.0.14`
+            - **one** directory: `mdtest_tree.3/`
+                - **five** files: `file.mdtest.0.15` through `file.mdtest.0.19`
+
+We created three nested directories under the root of our tree (`-z 3`) and a
+total of twenty files (`-n 20`) broken into groups of five evenly spread across
+four directories (our tree base plus `-z 3`).
 
 If you specify a number of items (`-n`) that is not evenly divisible _depth_ + 1
 (`-z` + 1), the number of items will be rounded down so that every directory
 contains an identical number of items.
+
+### Branching Factor (-b)
+
+The above example creates a very skinny tree, but we can create more branches
+for each level of the tree by specifying a _branching factor_ using `-b`.  The
+default is `-b 1`, but if we set it to `-b 2`:
+
+    mpirun -n 1 mdtest -F -C -z 3 -b 2 -n 20
+
+we get a tree that looks like
+
+- `out/test-dir.0-0/mdtest_tree.0/`
+    - `mdtest_tree.1/`
+        - `mdtest_tree.3/`
+            - `mdtest_tree.7/`
+            - `mdtest_tree.8/`
+        - `mdtest_tree.4/`
+            - `mdtest_tree.9/`
+            - `mdtest_tree.10/`
+    - `mdtest_tree.2/`
+        - `mdtest_tree.5/`
+            - `mdtest_tree.11/`
+            - `mdtest_tree.12/`
+        - `mdtest_tree.6/`
+            - `mdtest_tree.13/`
+            - `mdtest_tree.14/`
+
+So at each of our three levels of depth (`-z 3`), we now have two branches
+(`-b 2`) and, as before, the number of items (`-n`) are evenly spread across
+everything and rounded down to ensure that every directory contains the same
+number of items.  In the above case with `-n 20`, our tree is so heavily
+branched that we can only create one file in each directory of our tree.
+
+Once you have decided on a suitable tree, the _number of items_ should be a
+multiple of _depth_ &#215; _branching factor_
+
+### Leaf-only Mode (-L)
+
+If you'd rather only create files/directories in the outermost level of the tree
+rather than at every level, use the `-L` parameter.
+
+    mpirun mdtest -F -C -z 3 -b 2 -L -n 20
+
+This results in the same tree structure as above, but it spreads the files as
+
+- `out/test-dir.0-0/mdtest_tree.0/`
+    - `mdtest_tree.1/`
+        - `mdtest_tree.3/`
+            - `mdtest_tree.7/`
+                - **two** files: `file.mdtest.0.14` and `file.mdtest.0.15`
+            - `mdtest_tree.8/`
+                - **two** files: `file.mdtest.0.16` and `file.mdtest.0.17`
+        - `mdtest_tree.4/`
+            - `mdtest_tree.9/`
+                - **two** files: `file.mdtest.0.18` and `file.mdtest.0.19`
+            - `mdtest_tree.10/`
+                - **two** files: `file.mdtest.0.20` and `file.mdtest.0.21`
+    - `mdtest_tree.2/`
+        - `mdtest_tree.5/`
+            - `mdtest_tree.11/`
+                - **two** files: `file.mdtest.0.22` and `file.mdtest.0.23`
+            - `mdtest_tree.12/`
+                - **two** files: `file.mdtest.0.24` and `file.mdtest.0.25`
+        - `mdtest_tree.6/`
+            - `mdtest_tree.13/`
+                - **two** files: `file.mdtest.0.26` and `file.mdtest.0.27`
+            - `mdtest_tree.14/`
+                - **two** files: `file.mdtest.0.28` and `file.mdtest.0.29`
+
+Again, our request for twenty items (`-n 20`) was rounded down to sixteen so
+that each leaf node would get two files.
