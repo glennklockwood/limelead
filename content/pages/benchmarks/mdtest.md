@@ -19,12 +19,9 @@ capability more difficult because
 2. the relative costs to service these metadata operations can vary widely
    (e.g., the CPU and disk overhead of an unlink vs. a stat)
 
-## mdtest Basics
+[IOR]: https://github.com/hpc/ior
 
-{% call alert(type="warning") %}
-Don't run mdtest without any arguments because the default behavior is to
-almost do nothing.
-{% endcall %}
+## mdtest Basics
 
 The simplest possible mdtest run looks something like this:
 
@@ -47,44 +44,62 @@ which will result in output that looks like this:
    Tree removal                72315.586      72315.586      72315.586          0.000
 ```
 
-What mdtest just did is the following:
+What this tells us is that mdtest runs four primary _phases_:
 
-### 1. Create Test Directory
+1. **Tree creation** - create the directory structure in which subsequent tests
+   will be run (the "_tree_")
+2. **Directory tests** - test how fast _directories_ can be
+   created/statted/renamed/destroyed
+3. **File tests** - test how fast _files_ can be created/statted/read/destroyed
+4. **Tree removal** - remove the directory structure (the _tree_)
 
-mdtest first creates the test directory in which all tests for the current
+The _directory test phase_ and _file test phase_ are comprised of individual
+_steps_, and each step and phase are surrounded by barriers.
+
+## Test Phases in Detail
+
+{% call alert(type="warning") %}
+Don't run mdtest without any arguments.  The default behavior is to do
+nothing except create the tree where tests would normally run.
+{% endcall %}
+
+Let's walk through exactly what happens when you run the simplest case:
+
+    mpirun -n 1 mdtest -n 1
+
+First, mdtest creates the test directory in which all tests for the current
 iteration will run as:
 
     mkdir ./out/test-dir.0-0
 
 The time it takes for this to happen is _not_ reported by mdtest.
 
-### 2. Run Tree Creation Test Phase
+**1. Run Tree Creation Test Phase**
 
-There is a tree creation test that measures how long it takes to recursively
-create a tree structure.  In our case, no meaningful test runs and only a single
-tree is created:
+The tree creation test measures how long it takes to recursively create the
+test's directory tree structure.  In our case, only a single tree with a base
+directory is created:
 
     mkdir ./out/test-dir.0-0/mdtest_tree.0/
 
-The behavior of this test is governed by the `-u` (unique directory per task)
-and `-c` (collective creates) options.
+**2. Run Directory Test Phase**
 
-### 3. Run Directory Test Phase
-
-mdtest then performs a series of directory tests.  It first creates ten new
-directories (since we specified `-n 10`):
+mdtest then performs a series of directory tests in the **directory creation
+step**.  It first creates ten new directories (since we specified `-n 10`):
 
     mkdir ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.0
     ...
     mkdir ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.9
 
-Then it calls `stat(2)` on these ten directories:
+Next is the **directory stat step** which calls `stat(2)` on these ten
+directories:
 
     stat ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.0
     ...
     stat ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.9
 
-Then it calls `rename(2)` each of the ten directories:
+The **directory rename step** then calls `rename(2)` on each of the ten
+directories:
 
     rename ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.0 ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.0-XX
     rename ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.1 ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.0
@@ -92,28 +107,22 @@ Then it calls `rename(2)` each of the ten directories:
     rename ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.8 ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.7
     rename ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.0-XX ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.8
 
-Then it unlinks all ten directories:
+The final step is the **directory removal step** which unlinks all ten
+directories:
 
     rmdir ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.0
     ...
     rmdir ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.9
 
-There are barriers between each of these steps after which the timing is
-reported.
-
-### 4. Run File Test Phase Phase
+**3. Run File Test Phase**
 
 The file tests then commence in the same tree as the directory tests above.
 Notice that whereas the directory tests created inodes called `dir.mdtest.X.Y`,
 these file tests create `file.mdtest.X.Y`; the tree (`mdtest_tree.0`) remains
 untouched between these phases.
 
-There is a barrier, the timing is reported, and mdtest resumes to the next step.
-
-#### File Creation
-
-First is the _file creation_ test.  Ten files are opened with `_O_CREAT`, then
-closed:  
+First is the **file creation step**.  Ten files are opened with `_O_CREAT`,
+then closed:  
 
     open ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.0
     close /data/out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.0
@@ -127,24 +136,17 @@ closed:
 
 There are no barriers between these opens and closes, and mdtest has an option
 (`-w`) that would let us optionally write some bytes to each of these files
-between each open and close.  By default nothing is written, so 0-byte files
-are created here.
+between each open and close.  By default nothing is written so 0-byte files
+are created here, but the "file creation" step measures the time it takes to
+create files of an arbitrary size.
 
-There is a barrier, the timing is reported, and mdtest resumes to the next step.
-
-#### File Stat
-
-Then `stat(2)` is called on each file:
+Next is the **file stat step** where `stat(2)` is called on each file:
 
     stat ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.0
     ...
     stat ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.9
 
-There is a barrier, the timing is reported, and mdtest resumes to the next step.
-
-#### File Read
-
-Then each file is opened and closed again.  
+The **file read step** follows and each file is opened and closed again.  
 
     open ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.0
     close /data/out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.0
@@ -152,24 +154,18 @@ Then each file is opened and closed again.
     open ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.9
     close /data/out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.9
 
-If we had written data to these files during the _file creation_ step, we
+If we had written data to these files during the file creation step, we
 could have optionally read that data back out here using the `-e` parameter.
 Since we didn't specify either of these parameters though, the timing reported
 is just the time it takes to open each file, do nothing, then close it.
 
-There is a barrier, the timing is reported, and mdtest resumes to the next step.
-
-#### File Removal
-
-Finally, each file is unlinked:
+Finally, **file removal step** where each file is unlinked:
 
     unlink ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.0
     ...
     unlink ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.9
 
-There is a barrier, the timing is reported, and mdtest resumes to the next step.
-
-### 5. Run Tree Removal Test Phase
+**4. Run Tree Removal Test Phase**
 
 Once both file and directory tests are finished, the tree itself is cleaned up:
 
@@ -178,15 +174,12 @@ Once both file and directory tests are finished, the tree itself is cleaned up:
 Because we didn't specify the parameters to make a directory tree, only our
 single directory at the base of the tree is removed.
 
-### 6. Destroy Test Directory
-
-Finally, the test directory for this iteration is cleaned up:
+Once this final phase is complete, the test directory for this iteration is
+cleaned up:
 
     rmdir ./out/test-dir.0-0
 
 The time it takes for this to happen is _not_ reported by mdtest.
-
-[IOR]: https://github.com/hpc/ior
 
 ## Selecting Tests to Run
 
