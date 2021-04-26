@@ -44,7 +44,7 @@ which will result in output that looks like this:
    Tree removal                72315.586      72315.586      72315.586          0.000
 ```
 
-What this tells us is that mdtest runs four primary _phases_:
+From these results, we can see that mdtest runs in several _phases_:
 
 1. **Tree creation** - create the directory structure in which subsequent tests
    will be run (the "_tree_")
@@ -84,21 +84,23 @@ directory is created:
 
 **2. Run Directory Test Phase**
 
-mdtest then performs a series of directory tests in the **directory creation
-step**.  It first creates ten new directories (since we specified `-n 10`):
+mdtest then performs a series of directory tests.
+
+First is the **directory creation step** which creates ten new
+directories (since we specified `-n 10`):
 
     mkdir ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.0
     ...
     mkdir ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.9
 
-Next is the **directory stat step** which calls `stat(2)` on these ten
+Then the **directory stat step** calls `stat(2)` on these ten
 directories:
 
     stat ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.0
     ...
     stat ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.9
 
-The **directory rename step** then calls `rename(2)` on each of the ten
+The **directory rename step** follows and calls `rename(2)` on each of the ten
 directories:
 
     rename ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.0 ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.0-XX
@@ -117,18 +119,18 @@ directories:
 **3. Run File Test Phase**
 
 The file tests then commence in the same tree as the directory tests above.
-Notice that whereas the directory tests created inodes called `dir.mdtest.X.Y`,
-these file tests create `file.mdtest.X.Y`; the tree (`mdtest_tree.0`) remains
+Notice that these file tests create `file.mdtest.X.Y` whereas the directory
+tests created inodes called `dir.mdtest.X.Y`.  The tree (`mdtest_tree.0`) remains
 untouched between these phases.
 
-First is the **file creation step**.  Ten files are opened with `_O_CREAT`,
+First is the **file creation step**.  Ten files are opened with `O_CREAT`,
 then closed:  
 
     open ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.0
     close /data/out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.0
     open ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.1
     close /data/out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.1
-    ....
+    ...
     open ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.8
     close /data/out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.8
     open ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.9
@@ -136,9 +138,10 @@ then closed:
 
 There are no barriers between these opens and closes, and mdtest has an option
 (`-w`) that would let us optionally write some bytes to each of these files
-between each open and close.  By default nothing is written so 0-byte files
-are created here, but the "file creation" step measures the time it takes to
-create files of an arbitrary size.
+between each open and close.  As such, the "file creation" can be thought of as
+the rate at which a storage system can create files of an arbitrary size.
+By default nothing is written (`-w 0` is implicit), so 0-byte files are created
+in this example.
 
 Next is the **file stat step** where `stat(2)` is called on each file:
 
@@ -156,10 +159,10 @@ The **file read step** follows and each file is opened and closed again.
 
 If we had written data to these files during the file creation step, we
 could have optionally read that data back out here using the `-e` parameter.
-Since we didn't specify either of these parameters though, the timing reported
+Since we didn't specify either `-w` or `-e` though, the timing reported
 is just the time it takes to open each file, do nothing, then close it.
 
-Finally, **file removal step** where each file is unlinked:
+Finally, the **file removal step** unlinks each file created in this phase.
 
     unlink ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.0
     ...
@@ -171,8 +174,8 @@ Once both file and directory tests are finished, the tree itself is cleaned up:
 
     rmdir ./out/test-dir.0-0/mdtest_tree.0/
 
-Because we didn't specify the parameters to make a directory tree, only our
-single directory at the base of the tree is removed.
+We only had one directory as our tree, but trees can get more complicated
+as we'll see below.
 
 Once this final phase is complete, the test directory for this iteration is
 cleaned up:
@@ -181,7 +184,7 @@ cleaned up:
 
 The time it takes for this to happen is _not_ reported by mdtest.
 
-## Selecting Tests to Run
+## Selecting Phases and Steps
 
 You can run only a subset of the phases and steps above.
 
@@ -316,25 +319,33 @@ This results in the same tree structure as above, but it spreads the files as
     - `mdtest_tree.1/`
         - `mdtest_tree.3/`
             - `mdtest_tree.7/`
-                - **two** files: `file.mdtest.0.14` and `file.mdtest.0.15`
+                - `file.mdtest.0.14`
+                - `file.mdtest.0.15`
             - `mdtest_tree.8/`
-                - **two** files: `file.mdtest.0.16` and `file.mdtest.0.17`
+                - `file.mdtest.0.16`
+                - `file.mdtest.0.17`
         - `mdtest_tree.4/`
             - `mdtest_tree.9/`
-                - **two** files: `file.mdtest.0.18` and `file.mdtest.0.19`
+                - `file.mdtest.0.18` 
+                - `file.mdtest.0.19`
             - `mdtest_tree.10/`
-                - **two** files: `file.mdtest.0.20` and `file.mdtest.0.21`
+                - `file.mdtest.0.20` 
+                - `file.mdtest.0.21`
     - `mdtest_tree.2/`
         - `mdtest_tree.5/`
             - `mdtest_tree.11/`
-                - **two** files: `file.mdtest.0.22` and `file.mdtest.0.23`
+                - `file.mdtest.0.22`
+                - `file.mdtest.0.23`
             - `mdtest_tree.12/`
-                - **two** files: `file.mdtest.0.24` and `file.mdtest.0.25`
+                - `file.mdtest.0.24`
+                - `file.mdtest.0.25`
         - `mdtest_tree.6/`
             - `mdtest_tree.13/`
-                - **two** files: `file.mdtest.0.26` and `file.mdtest.0.27`
+                - `file.mdtest.0.26`
+                - `file.mdtest.0.27`
             - `mdtest_tree.14/`
-                - **two** files: `file.mdtest.0.28` and `file.mdtest.0.29`
+                - `file.mdtest.0.28`
+                - `file.mdtest.0.29`
 
 Again, our request for twenty items (`-n 20`) was rounded down to sixteen so
 that each leaf node would get two files.
