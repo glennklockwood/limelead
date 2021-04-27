@@ -25,23 +25,24 @@ capability more difficult because
 
 The simplest possible mdtest run looks something like this:
 
-    mpirun -n 1 mdtest -n 1
+    mpirun -n 2 mdtest -n 10
 
 which will result in output that looks like this:
 
 ```
+SUMMARY rate: (of 1 iterations)
    Operation                     Max            Min           Mean        Std Dev
    ---------                     ---            ---           ----        -------
-   Directory creation          43464.290      43464.290      43464.290          0.000
-   Directory stat             476625.455     476625.455     476625.455          0.000
-   Directory rename            95325.091      95325.091      95325.091          0.000
-   Directory removal           75166.738      75166.738      75166.738          0.000
-   File creation               51025.596      51025.596      51025.596          0.000
-   File stat                  530924.557     530924.557     530924.557          0.000
-   File read                  133152.508     133152.508     133152.508          0.000
-   File removal               125203.104     125203.104     125203.104          0.000
-   Tree creation               41943.040      41943.040      41943.040          0.000
-   Tree removal                72315.586      72315.586      72315.586          0.000
+   Directory creation          13936.880      13936.880      13936.880          0.000
+   Directory stat              58661.594      58661.594      58661.594          0.000
+   Directory rename            24125.994      24125.994      24125.994          0.000
+   Directory removal           20365.642      20365.642      20365.642          0.000
+   File creation               24392.579      24392.579      24392.579          0.000
+   File stat                   50747.780      50747.780      50747.780          0.000
+   File read                   36759.895      36759.895      36759.895          0.000
+   File removal                50261.282      50261.282      50261.282          0.000
+   Tree creation                2673.234       2673.234       2673.234          0.000
+   Tree removal                 6168.094       6168.094       6168.094          0.000
 ```
 
 From these results, we can see that mdtest runs in several _phases_:
@@ -65,7 +66,7 @@ nothing except create the tree where tests would normally run.
 
 Let's walk through exactly what happens when you run the simplest case:
 
-    mpirun -n 1 mdtest -n 1
+    mpirun -n 2 mdtest -n 10
 
 First, mdtest creates the test directory in which all tests for the current
 iteration will run as:
@@ -74,7 +75,7 @@ iteration will run as:
 
 The time it takes for this to happen is _not_ reported by mdtest.
 
-**1. Run Tree Creation Test Phase**
+### Tree Creation
 
 The tree creation test measures how long it takes to recursively create the
 test's directory tree structure.  In our case, only a single tree with a base
@@ -82,59 +83,78 @@ directory is created:
 
     mkdir ./out/test-dir.0-0/mdtest_tree.0/
 
-**2. Run Directory Test Phase**
+Note that the tree creation is always performed by rank 0, not in parallel.
+
+### Directory Tests
 
 mdtest then performs a series of directory tests.
 
 First is the **directory creation step** which creates ten new
-directories (since we specified `-n 10`):
+directories for each MPI rank (since we specified `-n 10`):
 
     mkdir ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.0
+    mkdir ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.1.0
     ...
     mkdir ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.9
+    mkdir ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.1.9
 
-Then the **directory stat step** calls `stat(2)` on these ten
+Each directory is named `dir.mdtest.X.Y` where `X` is the MPI rank that created
+the directory and `Y` ranges from 0 to `-n` minus one.
+
+Then the **directory stat step** calls `stat(2)` on these twenty
 directories:
 
     stat ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.0
+    stat ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.1.0
     ...
     stat ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.9
+    stat ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.1.9
 
-The **directory rename step** follows and calls `rename(2)` on each of the ten
-directories:
+The MPI rank that created the directory is also the one that stats it here, but
+we can control this behavior using the `-N` argument later.
+
+The **directory rename step** follows and calls `rename(2)` on each of the
+twenty directories:
 
     rename ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.0 ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.0-XX
+    rename ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.1.0 ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.1.0-XX
     rename ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.1 ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.0
+    rename ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.1.1 ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.1.0
     ...
     rename ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.8 ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.7
+    rename ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.1.8 ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.1.7
     rename ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.0-XX ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.8
+    rename ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.1.0-XX ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.1.8
 
-The final step is the **directory removal step** which unlinks all ten
+The final step is the **directory removal step** which unlinks all twenty
 directories:
 
     rmdir ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.0
+    rmdir ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.1.0
     ...
     rmdir ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.0.9
+    rmdir ./out/test-dir.0-0/mdtest_tree.0/dir.mdtest.1.9
 
-**3. Run File Test Phase**
+### File Tests
 
 The file tests then commence in the same tree as the directory tests above.
 Notice that these file tests create `file.mdtest.X.Y` whereas the directory
-tests created inodes called `dir.mdtest.X.Y`.  The tree (`mdtest_tree.0`) remains
-untouched between these phases.
+tests created inodes called `dir.mdtest.X.Y`.  The `X` and `Y` have the same
+meaning in file tests as the directory tests above, and the tree
+(`mdtest_tree.0`) remains untouched between these phases.
 
-First is the **file creation step**.  Ten files are opened with `O_CREAT`,
-then closed:  
+First is the **file creation step**.  Ten files per MPI rank are opened with
+`O_CREAT`, then closed:  
 
     open ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.0
     close /data/out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.0
-    open ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.1
-    close /data/out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.1
+    open ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.1.0
+    close /data/out/test-dir.0-0/mdtest_tree.0/file.mdtest.1.0
     ...
-    open ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.8
-    close /data/out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.8
     open ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.9
     close /data/out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.9
+    open ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.1.9
+    close /data/out/test-dir.0-0/mdtest_tree.0/file.mdtest.1.9
 
 There are no barriers between these opens and closes, and mdtest has an option
 (`-w`) that would let us optionally write some bytes to each of these files
@@ -146,16 +166,22 @@ in this example.
 Next is the **file stat step** where `stat(2)` is called on each file:
 
     stat ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.0
+    stat ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.1.0
     ...
     stat ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.9
+    stat ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.1.9
 
 The **file read step** follows and each file is opened and closed again.  
 
     open ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.0
+    open ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.1.0
     close /data/out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.0
+    close /data/out/test-dir.0-0/mdtest_tree.0/file.mdtest.1.0
     ...
     open ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.9
+    open ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.1.9
     close /data/out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.9
+    close /data/out/test-dir.0-0/mdtest_tree.0/file.mdtest.1.9
 
 If we had written data to these files during the file creation step, we
 could have optionally read that data back out here using the `-e` parameter.
@@ -168,14 +194,15 @@ Finally, the **file removal step** unlinks each file created in this phase.
     ...
     unlink ./out/test-dir.0-0/mdtest_tree.0/file.mdtest.0.9
 
-**4. Run Tree Removal Test Phase**
+### Tree Removal
 
 Once both file and directory tests are finished, the tree itself is cleaned up:
 
     rmdir ./out/test-dir.0-0/mdtest_tree.0/
 
 We only had one directory as our tree, but trees can get more complicated
-as we'll see below.
+as we'll see below.  And as with tree creation, tree removal is serial and
+always performed by rank 0.
 
 Once this final phase is complete, the test directory for this iteration is
 cleaned up:
@@ -217,7 +244,7 @@ just report rates of 0.0000.
 
 You can mix and match these options to do things such as
 
-    mpirun -n 1 mdtest -F -C -n 10
+    mpirun -n 2 mdtest -F -C -n 10
 
 which will only test file creation rates.  It will also leave behind a bunch of
 files in `./out` which you can inspect.
@@ -250,22 +277,23 @@ and `-z 3` results in the following:
 Files/directories then get evenly spread across all four of these tree levels.
 So if we do
 
-    mpirun -n 1 mdtest -F -C -z 3 -n 20 
+    mpirun -n 2 mdtest -F -C -z 3 -n 20 
 
 We will get the following:
 
 - `out/test-dir.0-0/mdtest_tree.0/`
-    - **five** files: `file.mdtest.0.0` through `file.mdtest.0.4`
+    - **ten** files: `file.mdtest.0.0` through `file.mdtest.1.4`
     - **one** directory:`mdtest_tree.1/`
-        - **five** files: `file.mdtest.0.5` through `file.mdtest.0.9`
+        - **ten** files: `file.mdtest.0.5` through `file.mdtest.1.9`
         - **one** directory: `mdtest_tree.2/`
-            - **five** files: `file.mdtest.0.10` through `file.mdtest.0.14`
+            - **ten** files: `file.mdtest.0.10` through `file.mdtest.1.14`
             - **one** directory: `mdtest_tree.3/`
-                - **five** files: `file.mdtest.0.15` through `file.mdtest.0.19`
+                - **ten** files: `file.mdtest.0.15` through `file.mdtest.1.19`
 
 We created three nested directories under the root of our tree (`-z 3`) and a
-total of twenty files (`-n 20`) broken into groups of five evenly spread across
-four directories (our tree base plus `-z 3`).
+total of forty files (`-n 20` and two MPI processes) broken into groups of ten
+(five per MPI rank) evenly spread across four directories (our tree base plus
+`-z 3`).
 
 If you specify a number of items (`-n`) that is not evenly divisible _depth_ + 1
 (`-z` + 1), the number of items will be rounded down so that every directory
@@ -277,7 +305,7 @@ The above example creates a very skinny tree, but we can create more branches
 for each level of the tree by specifying a _branching factor_ using `-b`.  The
 default is `-b 1`, but if we set it to `-b 2`:
 
-    mpirun -n 1 mdtest -F -C -z 3 -b 2 -n 20
+    mpirun -n 2 mdtest -F -C -z 3 -b 2 -n 20
 
 we get a tree that looks like
 
@@ -301,7 +329,8 @@ So at each of our three levels of depth (`-z 3`), we now have two branches
 (`-b 2`) and, as before, the number of items (`-n`) are evenly spread across
 everything and rounded down to ensure that every directory contains the same
 number of items.  In the above case with `-n 20`, our tree is so heavily
-branched that we can only create one file in each directory of our tree.
+branched that we can only create two files (one per MPI rank) in each directory
+of our tree.
 
 Once you have decided on a suitable tree, the _number of items_ should be a
 multiple of _depth_ &#215; _branching factor_
@@ -311,7 +340,7 @@ multiple of _depth_ &#215; _branching factor_
 If you'd rather only create files/directories in the outermost level of the tree
 rather than at every level, use the `-L` parameter.
 
-    mpirun mdtest -F -C -z 3 -b 2 -L -n 20
+    mpirun -n 2 mdtest -F -C -z 3 -b 2 -L -n 20
 
 This results in the same tree structure as above, but it spreads the files as
 
@@ -319,33 +348,33 @@ This results in the same tree structure as above, but it spreads the files as
     - `mdtest_tree.1/`
         - `mdtest_tree.3/`
             - `mdtest_tree.7/`
-                - `file.mdtest.0.14`
-                - `file.mdtest.0.15`
+                - `file.mdtest.0.14` and `file.mdtest.1.14`
+                - `file.mdtest.0.15` and `file.mdtest.1.15`
             - `mdtest_tree.8/`
-                - `file.mdtest.0.16`
-                - `file.mdtest.0.17`
+                - `file.mdtest.0.16` and `file.mdtest.1.16`
+                - `file.mdtest.0.17` and `file.mdtest.1.17`
         - `mdtest_tree.4/`
             - `mdtest_tree.9/`
-                - `file.mdtest.0.18` 
-                - `file.mdtest.0.19`
+                - `file.mdtest.0.18` and `file.mdtest.0.19` 
+                - `file.mdtest.0.19` and `file.mdtest.1.19`
             - `mdtest_tree.10/`
-                - `file.mdtest.0.20` 
-                - `file.mdtest.0.21`
+                - `file.mdtest.0.20` and `file.mdtest.1.20`
+                - `file.mdtest.0.21` and `file.mdtest.1.21`
     - `mdtest_tree.2/`
         - `mdtest_tree.5/`
             - `mdtest_tree.11/`
-                - `file.mdtest.0.22`
-                - `file.mdtest.0.23`
+                - `file.mdtest.0.22` and `file.mdtest.1.22`
+                - `file.mdtest.0.23` and `file.mdtest.1.23`
             - `mdtest_tree.12/`
-                - `file.mdtest.0.24`
-                - `file.mdtest.0.25`
+                - `file.mdtest.0.24` and `file.mdtest.1.24`
+                - `file.mdtest.0.25` and `file.mdtest.1.25`
         - `mdtest_tree.6/`
             - `mdtest_tree.13/`
-                - `file.mdtest.0.26`
-                - `file.mdtest.0.27`
+                - `file.mdtest.0.26` and `file.mdtest.1.26`
+                - `file.mdtest.0.27` and `file.mdtest.1.27`
             - `mdtest_tree.14/`
-                - `file.mdtest.0.28`
-                - `file.mdtest.0.29`
+                - `file.mdtest.0.28` and `file.mdtest.1.28`
+                - `file.mdtest.0.29` and `file.mdtest.1.29`
 
-Again, our request for twenty items (`-n 20`) was rounded down to sixteen so
-that each leaf node would get two files.
+Again, our request for twenty items (`-n 20`) was rounded down to sixteen per
+MPI process so that each leaf node would get the same number of files.
