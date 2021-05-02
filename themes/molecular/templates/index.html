@@ -25,34 +25,32 @@
 
 {{ includefile(PATH + '/pages/_index.md') | md2html(MARKDOWN) }}
 
-<!-- Data-Intensive Computing meta-section -->
-<h2>Data-Intensive Computing</h2>
-<p>
-The following pages document some of the different faces of data-intensive
-scientific computing in which I've worked over the last few years.  I haven't
-used Hadoop or R since I left the San Diego Supercomputer Center in 2014, so
-those guides may seem a bit dated now.
-</p>
+<h2>High-Performance Computing</h2>
+<p>I've worked in high-performance computing since 2012, and this section
+contains notes and guides I've written in that capacity.  I try to retire
+links to pages once they have fallen out of date, so things tend to come and
+go from this section as technologies (and my areas of work) evolve.</p>
 
 {{ make_index_html_ul(PATH + '/pages/data-intensive/analysis', PATH + '/pages', SITEURL, 3) }}
 {{ make_index_html_ul(PATH + '/pages/data-intensive/storage', PATH + '/pages', SITEURL, 3) }}
-{{ make_index_html_ul(PATH + '/pages/data-intensive/hadoop', PATH + '/pages', SITEURL, 3) }}
-{{ make_index_html_ul(PATH + '/pages/data-intensive/r', PATH + '/pages', SITEURL, 3) }}
+{{ make_index_html_ul(PATH + '/pages/hpc-howtos', PATH + '/pages', SITEURL, 3) }}
+{{ make_index_html_ul(PATH + '/pages/benchmarks', PATH + '/pages', SITEURL, 3) }}
 
-<!-- HPC-howtos section -->
-{{ make_index_html_ul(PATH + '/pages/hpc-howtos', PATH + '/pages', SITEURL, 2) }}
+<p>
+I also have a set of pages on <a href="{{ SITEURL }}/data-intensive/hadoop/">Hadoop</a>
+and <a href="{{ SITEURL }}/data-intensive/r/">Parallel Computing with R</a> that
+I host for posterity, but I haven't used either of these since 2014 and those
+guides are likely out of date. 
+</p>
 
-<!-- Performance and Benchmarking section -->
-{{ make_index_html_ul(PATH + '/pages/benchmarks', PATH + '/pages', SITEURL, 2) }}
-
-<!-- Materials science section -->
+<!-- Materials Science -->
 {{ make_index_html_ul(PATH + '/pages/materials-science', PATH + '/pages', SITEURL, 2) }}
 
-<!-- Miscellaneous section -->
-<h2>Miscellany</h2>
-<p>I've created the following pages about my hobbies mostly for my own
-entertainment. They have little to do with what I do professionally, but
-they might be of interest to people who hold similar interests.</p>
+<h2>Hobbies &amp; Personal Stuff</h2>
+
+<p>This section contains notes and tutorials that I've written related to my
+personal interests and hobbies outside of work.</p>
+
 {{ make_index_html_ul(PATH + '/pages/electronics', PATH + '/pages', SITEURL, 3) }}
 {{ make_index_html_ul(PATH + '/pages/sysadmin-howtos', PATH + '/pages', SITEURL, 3) }}
 {{ make_index_html_ul(PATH + '/pages/personal', PATH + '/pages', SITEURL, 3) }}

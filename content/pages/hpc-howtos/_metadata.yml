@@ -1,17 +1,5 @@
-title: HPC Howtos
+title: General HPC
 links:
-  - title: "Quantum ESPRESSO: Compiling and Choice of Libraries"
-    linktype: blog
-    url: https://glennklockwood.blogspot.com/2014/02/quantum-espresso-compiling-and-choice.html
-  - title: Building IPM 0.983 for Lightweight MPI Profiling
-    linktype: blog
-    url: https://glennklockwood.blogspot.com/2013/05/building-ipm-0983-for-lightweight-mpi.html
   - title: Quick MPI Cluster Setup on Amazon EC2
     linktype: blog
     url: https://glennklockwood.blogspot.com/2013/04/quick-mpi-cluster-setup-on-amazon-ec2.html
-contentHtml: |
-    <p>In the past I have worked as both a user services consultant and a systems
-    engineer.  This section contains a few notes relevant to using and managing
-    HPC resources, but the bulk of <a href="http://users.sdsc.edu/~glockwood/">my
-    HPC how-to guides</a> remains hosted at the San Diego Supercomputer Center.</p>
-

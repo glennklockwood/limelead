@@ -4,15 +4,3 @@ links:
   - title: Basics of I/O Benchmarking
     linktype: blog
     url: https://glennklockwood.blogspot.com/2016/07/basics-of-io-benchmarking.html
-  - title: "Quantum ESPRESSO: Performance Benefits of Vendor-Optimized Libraries"
-    linktype: blog
-    url: https://glennklockwood.blogspot.com/2014/02/quantum-espresso-performance-benefits.html
-  - title: SR-IOV with InfiniBand Performance
-    linktype: blog
-    url: https://glennklockwood.blogspot.com/2013/12/high-performance-virtualization-sr-iov_14.html
-  - title: Dual-rail QDR as an Alternative to FDR InfiniBand
-    linktype: blog
-    url: https://glennklockwood.blogspot.com/2013/05/fdr-infiniband-vs-dual-rail-qdr.html
-  - title: Perl vs. Python Performance
-    linktype: blog
-    url: https://glennklockwood.blogspot.com/2012/04/revisiting-perl-and-python-speed.html
