@@ -307,8 +307,43 @@ I have an rt8192-based USB wifi dongle that I wanted to plug into the DE10-nano.
 After buying a [USB OTG adapter][] to add some standard USB type B ports into
 which I could plug my [Edimax wifi dongle][].  On the first plug-in, everything
 seemed to work well and I configured the adapter per 
-[Adafruit's BeagleBone wifi guide][] and it worked, but after rebooting, the wifi
-adapter no longer worked and I started getting these suspicious USB bus errors:
+[Adafruit's BeagleBone wifi guide][] and it worked.  For posterity, that
+involved first creating `/var/lib/connman/wifi.config`:
+
+    root@de10-nano:~# cat /var/lib/connman/wifi.config
+    [service_home]
+    Type = wifi
+    Name = REPLACE_THIS_WITH_YOUR_SSID
+    Security = wpa
+    Passphrase = REPLACE_THIS_WITH_YOUR_WIFI_PASSWORD
+
+Then edit `/var/lib/connman/settings` and make sure that wifi is enabled.  You
+should probably also make sure gadget is **disabled**:
+
+    root@de10-nano:~# cat /var/lib/connman/settings
+    [global]
+    Timeservers=0.angstrom.pool.ntp.org;1.angstrom.pool.ntp.org;2.angstrom.pool.ntp.org;3.angstrom.pool.ntp.org
+    OfflineMode=false
+
+    [Wired]
+    Enable=true
+    Tethering=false
+
+    [WiFi]
+    Enable=true
+    Tethering=false
+
+    [Gadget]
+    Enable=false
+    Tethering=false
+
+Then enable connman.  If it was enabled, restart it.  Your connection may drop
+when you do this:
+
+    root@de10-nano:~# systemctl enable connman
+
+The first time I did this, after rebooting, the wifi adapter no longer worked
+and I started getting these suspicious USB bus errors:
 
     [   18.433665] rtl_usb: reg 0x4, usbctrl_vendorreq TimeOut! status:0xffffff92 value=0x80208f0e
     [   28.436455] rtl_usb: reg 0x21, usbctrl_vendorreq TimeOut! status:0xffffff92 value=0x80208f0e
@@ -364,12 +399,28 @@ the device was reverting from host mode:
 
     [  588.465205] dwc2 ffb40000.usb: Mode Mismatch Interrupt: currently in Device mode
 
-Disabling the `de10-nano-synergy-init` service seems to work around this:
+Disabling the `de10-nano-synergy-init` service seems to work around this.  In
+fact, go ahead and disable all the other non-essential, non-FPGA de10-nano
+services:
 
-    # systemctl disable de10-nano-synergy-init.service
+    # systemctl disable de10-nano-synergy-init.service \
+                        de10-nano-fftsw-init.service \
+                        de10-nano-gadget-init.service \
+                        de10-nano-synergy-init.service \
+                        de10-nano-x11vnc-init.service \
+                        de10-nano-xfce-init.service
 
 The configuration for this service tries to bind the synergy client to the USB
 OTG Ethernet gadget, so this may have been causing the regression.
+
+### 4.2 Disable lighthttpd
+
+Part of the default stack for the DE-10 Nano image includes an http server
+running a web interface into some FPGA demos that you can access by going to
+http://de10-nano.local/ on your local network.  Disable this if you don't plan 
+on using it:
+
+    root@de10-nano:~# systemctl disable lighttpd.service
 
 [Terasic DE10-Nano Kit download page at Intel]: https://downloadcenter.intel.com/download/26687/
 [Etcher]: http://www.etcher.io
