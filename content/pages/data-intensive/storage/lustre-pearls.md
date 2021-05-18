@@ -282,6 +282,14 @@ From [Andreas Dilger, June 2020](http://lists.lustre.org/pipermail/lustre-discus
 > IOPS then `rpcrate=10` may get up to 256 4KB writes per RPC, or about 2560
 > IOPS = 10MB/s.
 
+From [Andreas, May 2021](https://vi4io.slack.com/archives/CBJFGMHMK/p1621356549009200)
+
+> ldiskfs OSTs won't do writeback caching, but may do writethrough caching,
+> depending on settings (and IO size, depending on version)
+>
+> ZFS can only do writeback caching, but can be tuned to aggressively discard
+> cache after the write completes.
+
 ## Architectural Design Decisions
 
 From [Andreas, February 2021](http://lists.lustre.org/pipermail/lustre-devel-lustre.org/2021-February/010217.html):
