@@ -19,11 +19,11 @@ life are in my [biography][].
 This site contains various notes I've taken related to technical computing over
 the years.  I welcome any feedback about its contents at the e-mail address
 listed at the bottom of every page.  You can also find me [on Twitter][] and in
-the `#hpc` channel on [freenode][].
+the `#hpc` channel on [Libera][].
 
 [nersc]: https://www.nersc.gov/
 [lbnl]: https://www.lbl.gov/
-[freenode]: https://freenode.net/
+[Libera]: https://libera.chat/
 [LinkedIn]: https://www.linkedin.com/in/glennklockwood
 [my CV]: personal/cv.html
 [biography]: personal/about.html
