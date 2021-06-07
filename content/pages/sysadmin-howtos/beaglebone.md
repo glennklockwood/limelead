@@ -15,11 +15,11 @@ are enabled by default:
 
 - **cloud9** - This is the IDE that the [BeagleBone 101 page][] has you work
   through as an alternative to sshing directly into the Beaglebone and thrashing
-  around.
+  around. Note that this service only starts when triggered by _cloud9.socket_.
 - **bonescript** - This sets up the socket and the nodejs server
-  that exposes a lot of GPIO functionality via a REST interface
+  that exposes a lot of GPIO functionality via a REST interface.
 - **bonescript-autorun** - Runs `/usr/local/lib/node_modules/bonescript/autorun.js`
-  which does something related to watching files in the Cloud9 directory
+  which does something related to watching files in the cloud9 directory
   (`/var/lib/cloud9`).
 - **nodered** - This sets up the [Node-RED][] programming environment and UI.
   As far as I can tell, the fact that BeagleBone Black does this is
@@ -121,13 +121,13 @@ configured:
 
 - <http://beaglebone.local/> - Cloud9
 - <http://beaglebone.local/bone101/> - Beaglebone 101 - although this proxies to
-  port 8000 which is unresponsive.  bonescript.service handles this, but there's
-  some kind of bug between the bonescript.service and the underlying nodejs
-  script that prevents this from working--nodejs says the socket is already in
-  use.  Once it's up though, going to that link just gives you a static "upgrade
-  your software" page which is unhelpful.
+  port 8000 which is unresponsive.  _bonescript.service_ handles this, but
+  there's some kind of bug in the _bonescript.service_ and the underlying
+  nodejs script that prevents this from working.  As best I can tell, nodejs
+  says the socket is already in use.  If you start this manually though, going
+  to the link just gives you a static "upgrade your software" page.
 - <http://beaglebone.local/nodered/> - Node-RED
-- <http://beaglebone.local/ui/> - Unsure
+- <http://beaglebone.local/ui/> - Unsure what this is about.
 
 First thing cloud9 says to do is upgrade per <https://bbb.io/upgrade>.  This has
 you just pull scripts from [some guy's GitHub repo][].  A little digging reveals
