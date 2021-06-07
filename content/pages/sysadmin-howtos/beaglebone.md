@@ -40,7 +40,7 @@ are enabled by default:
        Black, this does:
         1. Initializes a [DLP2000 projector cape][] if present (seems pretty
            specific...)
-        2. Deletes stuff from `/var/cache/doc-` for BeagleBoards that are not
+        2. Delets stuff from `/var/cache/doc-` for BeagleBoards that are not
            BeagleBone Black to reclaim eMMC space.
         3. Configures the USB gadget functionality (network, mass storage device,
            serial console)
@@ -55,8 +55,90 @@ aren't using the USB gadget functionality or using the projector cape.
 It will be re-enabled whenever you re-flash the eMMC, so its functionality
 post-flash will always run when it is supposed to.
 
+If you want to reclaim some eMMC space, you can also remove these BeagleBone
+demo software packages directly:
+
+    apt remove --purge bb-node-red-installer bb-usb-gadgets bone101 bonescript c9-core-installer doc-beaglebone-getting-started
+    rm -rf /var/lib/cloud9 /opt/cloud9
+    rm -rf /var/cache/doc-beaglebone-getting-started
+    apt remove --purge nodejs npm
+    rm -rf /usr/local/lib/node_modules
+    sudo apt autoremove --purge
+
 [Node-RED]: https://www.nodered.org/
 [DLP2000 projector cape]: https://www.digikey.com/en/products/detail/texas-instruments/DLPDLCR2000EVM/7598640
+
+## PRU Programming
+
+Programming to the PRUs from the BeagleBone itself depends on a set of scripts
+in the [BeagleBoard cloud9-examples repository][cloud9-examples repo].  The
+build process is weird because compiling, uploading code, and executing code
+is all hidden by a `make` command according to the [most detailed
+guides](https://markayoder.github.io/PRUCookbook/02start/start.html#_blinking_an_led).
+The actual workflow appears to be:
+
+```bash
+# Stop PRU0
+echo stop > /sys/class/remoteproc/remoteproc1/state
+
+# Compile the PRU source into binary
+clpru -fe /tmp/cloud9-examples/hello.pru0.o hello.pru0.c \
+    --include_path=/home/glock/src/cloud9-examples/common \
+    --include_path=/usr/lib/ti/pru-software-support-package/include \
+    --include_path=/usr/lib/ti/pru-software-support-package/include/am335x \
+    --include_path=/usr/share/ti/cgt-pru/include \
+    -DCHIP=am335x \
+    -DCHIP_IS_am335x \
+    -DMODEL=TI_AM335x_BeagleBone_Black \
+    -DPROC=pru \
+    -DPRUN=0 \
+    -v3 -O2 \
+    --printf_support=minimal \
+    --display_error_number \
+    --endian=little \
+    --hardware_mac=on \
+    --obj_directory=/tmp/cloud9-examples \
+    --pp_directory=/tmp/cloud9-examples \
+    --asm_directory=/tmp/cloud9-examples \
+    -ppd \
+    -ppa \
+    --asm_listing \
+    --c_src_interlist
+
+# Link the PRU binary
+lnkpru -o /tmp/cloud9-examples/hello.pru0.out /tmp/cloud9-examples/hello.pru0.o \
+    --reread_libs \
+    --warn_sections \
+    --stack_size=0x100 \
+    --heap_size=0x100 \
+    -m /tmp/cloud9-examples/hello.pru0.map \
+    -i/usr/share/ti/cgt-pru/lib \
+    -i/usr/share/ti/cgt-pru/include \
+    /home/glock/src/cloud9-examples/common/am335x_pru.cmd \
+    --library=libc.a \
+    --library=/usr/lib/ti/pru-software-support-package/lib/rpmsg_lib.lib 
+
+# Copy the binary to the PRU firmware
+cp /tmp/cloud9-examples/hello.pru0.out /lib/firmware/am335x-pru0-fw
+
+# Run the write_init_pins.sh script on this compiled binary
+/home/glock/src/cloud9-examples/common/write_init_pins.sh /lib/firmware/am335x-pru0-fw
+
+# Start the PRU back up
+echo start > /sys/class/remoteproc/remoteproc1/state
+```
+
+It sounds like there may be a better way of doing this now provided by TI in
+their [PRU Software Support Package][].  There is a [PRU Software Support
+Package git repository][PRU-SWPKG git repo] that I haven't looked into yet that
+seems a little less janky than the one bundled with the [cloud9-examples repo][]
+above.  On closer examination of the actual compiler commands above though, it
+sounds like the janky cloud9 build process is layered on top of stuff in
+`/usr/lib/ti/pru-software-support-package`.
+
+[PRU Software Support Package]: https://www.ti.com/tool/PRU-SWPKG
+[PRU-SWPKG git repo]: https://git.ti.com/cgit/pru-software-support-package/pru-software-support-package/
+[cloud9-examples repo]: https://github.com/beagleboard/cloud9-examples/tree/v2020.01/common
 
 ## Random Tips
 
