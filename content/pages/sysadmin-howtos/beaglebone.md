@@ -8,13 +8,13 @@ shortTitle: BeagleBone
 I have been folding much of this into [Ansible playbooks for SBCs][], so have a
 look at the `beaglebone` role there for more details.
 
-### Beaglebone-specific Services
+### BeagleBone-specific services
 
 In addition to stock Debian, the BeagleBone board has some extra services that
 are enabled by default:
 
 - **cloud9** - This is the IDE that the [BeagleBone 101 page][] has you work
-  through as an alternative to sshing directly into the Beaglebone and thrashing
+  through as an alternative to sshing directly into the BeagleBone and thrashing
   around. Note that this service only starts when triggered by _cloud9.socket_.
 - **bonescript** - This sets up the socket and the nodejs server
   that exposes a lot of GPIO functionality via a REST interface.
@@ -62,22 +62,25 @@ post-flash will always run when it is supposed to.
 
 **What image version are you running?**  `cat /etc/dogtag` to see.
 
-**What board version do you have?**  You can read the EEPROM to find out; the
-EEPROM is accessible from i2c bus 0 as device `0x50`:
+**What board version do you have?**  You can read the EEPROM to find out.
+The EEPROM is accessible from i2c bus 0 as device `0x50`:
 
 ```
 dd if=/sys/class/i2c-dev/i2c-0/device/0-0050/eeprom ibs=1 skip=4 count=12 status=none conv=unblock cbs=12
 ```
 
 The board identification object's format is documented (obliquely) by TI since
-it is read by U-boot during bootup; see [this article][EEPROM format article]
-for specifics on what to expect and the [U-boot source code][] for expected
-values.
+U-boot reads it during bootup; see [this article][EEPROM format article]
+for specifics on how the EEPROM contents can be interpreted and the
+[U-boot source code][] for expected values.
+
+You can also `cat /proc/device-tree/model` for a single-line board description
+that requires less interpretation.
 
 [U-boot source code]: https://github.com/beagleboard/u-boot/blob/55ac96a8461d06edfa89cda37459753397de268a/board/ti/am335x/board.h
 [EEPROM format article]: https://siliconbladeconsultants.com/2020/07/06/beaglebone-black-and-osd335x-eeprom/
 
-## Opinions on the Out of Box Experience
+## Out-of-box experience opinions
 
 The out-of-box experience, despite being zero-download, feels incomplete.  It
 uses a web-based user interface (nice), but dumps you into a directory full of
@@ -85,7 +88,7 @@ examples without any tutorial (not nice).  The online documentation (for
 example, the [BeagleBone 101 page][]) claims that you can try code right there
 in your browser.  However this functionality relies on a custom Javascript-based
 framework that, while logically motivated, has no parallels outside of the
-Beaglebone ecosystem, and I couldn't actually get it to work for whatever
+BeagleBone ecosystem, and I couldn't actually get it to work for whatever
 definition of "work" makes sense.  I still don't really know what's supposed
 to happen when I connect to <http://beaglebone.local/bone101/>.
 
@@ -103,16 +106,16 @@ together what documentation is presently accurate.
 What follows are some notes on my experiences in June 2021.
 
 USB tunneled Ethernet doesn't appear to work out of box.  macOS picks up the
-adapter (as being unresponsive), the Beaglebone assigns itself the correct
-address (192.168.7.2), but macOS doesn't see the Beaglebone network device as
+adapter (as being unresponsive), the BeagleBone assigns itself the correct
+address (192.168.7.2), but macOS doesn't see the BeagleBone network device as
 being connected.  After some amount of time (I'm not sure what triggers it)
-though, the adapter does come up and the Beaglebone can be accessed via
+though, the adapter does come up and the BeagleBone can be accessed via
 <http://192.168.7.2/>.  I think this configuration is specified in
 `/etc/default/bb-boot`
 
 The [official Getting Started docs][] suggest that there is a nice getting
 started guide hosted on the board at the device IP address, but this does not
-seem to be the case.  Cloud9 is what comes up if you connect to the Beaglebone
+seem to be the case.  Cloud9 is what comes up if you connect to the BeagleBone
 via http, and it throws you in the deep end.  I think what is meant to show up
 is the [BeagleBone 101 page][].  Picking through `/etc/nginx/sites-enabled/default`
 reveals that this functionality has been moved to
@@ -120,7 +123,7 @@ reveals that this functionality has been moved to
 configured:
 
 - <http://beaglebone.local/> - Cloud9
-- <http://beaglebone.local/bone101/> - Beaglebone 101 - although this proxies to
+- <http://beaglebone.local/bone101/> - BeagleBone 101 - although this proxies to
   port 8000 which is unresponsive.  _bonescript.service_ handles this, but
   there's some kind of bug in the _bonescript.service_ and the underlying
   nodejs script that prevents this from working.  As best I can tell, nodejs
@@ -132,7 +135,7 @@ configured:
 First thing cloud9 says to do is upgrade per <https://bbb.io/upgrade>.  This has
 you just pull scripts from [some guy's GitHub repo][].  A little digging reveals
 that this repo is maintained by one of the Beagleboard Foundation board members
-who is engineer at Digikey; I am surprised there is no formal Beaglebone
+who is engineer at Digikey; I am surprised there is no formal BeagleBone
 Foundation branding around this, but the code itself looks professional.  More
 information on the cast of characters involved appears [here](https://beagleboard.org/about).
 
