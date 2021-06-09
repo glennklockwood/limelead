@@ -40,7 +40,7 @@ are enabled by default:
        Black, this does:
         1. Initializes a [DLP2000 projector cape][] if present (seems pretty
            specific...)
-        2. Delets stuff from `/var/cache/doc-` for BeagleBoards that are not
+        2. Delets stuff from `/var/cache/doc-` for Beagleboards that are not
            BeagleBone Black to reclaim eMMC space.
         3. Configures the USB gadget functionality (network, mass storage device,
            serial console)
@@ -68,10 +68,195 @@ demo software packages directly:
 [Node-RED]: https://www.nodered.org/
 [DLP2000 projector cape]: https://www.digikey.com/en/products/detail/texas-instruments/DLPDLCR2000EVM/7598640
 
-## PRU Programming
+## The Programmable Real-time Unit (PRU)
+
+The most unique feature of BeagleBone (and its underlying TI Sitara SoC) are its
+PRUs which are realtime microcontrollers that are nicely integrated with the
+ARM core.  You have two options to program the PRUs:
+
+1. **Using [TI's Code Composer Studio (CCS)][]**.  This is overly complicated if
+   all you want to do is treat the PRUs as a part of an embedded Linux system
+   though.
+2. **Program the PRUs from within Linux** on the BeagleBone itself.  This is the
+   easier approach if you are familiar with Linux but not programming ARM
+   directly.
+
+Hereafter we're only considering the second option, and the BeagleBone OS ships
+with the necessary tools to make this work already in `/usr/lib/ti/pru-software-support-package`.
+In this mode, the PRUs are exposed to Linux as [remote processors][] which have
+a pretty simple API with which you can
+
+1. Load "firmware" (compiled code) into a PRU
+2. Start execution on a PRU
+3. Stop execution on a PRU
+
+These _remote processors_ can be accessed in `/sys/class/remoteproc` which, on
+BeagleBone Black, contains:
+
+- `remoteproc0` - the ARM Cortex-M3 processor on the BeagleBone.  This isn't
+  documented very well because it is preloaded with code that handles power
+  management on the board.  If you don't care about power management, I assume
+  you could overwrite its firmware and do as you please with it.
+- `remoteproc1` - PRU0, called `4a334000.pru`
+- `remoteproc2` - PRU1, called `4a338000.pru`
+
+### Executing code on the PRU
+
+To load compiled firmware into a PRU, first copy the compiled code into
+`/lib/firmware`:
+
+    cp myfirmware.bin /lib/firmware/myfirmware.bin
+
+Linux will read the contents of `/sys/class/remoteproc/remoteproc1/firmware` and
+look for a file in `/lib/firmware` with that name to load into PRU0 when it is
+started, so we have to tell it the name of this new firmware:
+
+    echo "myfirmware.bin" > /sys/class/remoteproc/remoteproc1/firmware
+
+Then tell the PRU to boot up:
+
+    echo "start" > /sys/class/remoteproc/remoteproc1/state
+
+TI's documentation for all this can be found in the [RemoteProc and RPMsg][]
+section of the [Processor SDK Linux Software Developer's Guide][].
+
+[TI's Code Composer Studio (CCS)]: https://www.ti.com/tool/CCSTUDIO-SITARA
+[remote processors]: https://www.kernel.org/doc/html/latest/staging/remoteproc.html
+[RemoteProc and RPMsg]: https://software-dl.ti.com/processor-sdk-linux/esd/docs/latest/linux/Foundational_Components/PRU-ICSS/Linux_Drivers/RemoteProc_and_RPMsg.html
+[Processor SDK Linux Software Developer's Guide]: https://software-dl.ti.com/processor-sdk-linux/esd/docs/latest/devices/AM335X/linux/index.html
+
+### Hello world on the PRU
+
+A minimal working example of a PRU firmware source is as follows:
+
+```c
+#include <stdint.h>
+#include <rsc_types.h>  /* provides struct resource_table */
+
+#define CYCLES_PER_SECOND 200000000 /* PRU has 200 MHz clock */
+
+#define GPIO1 0x4804C000        /* am335x GPIO address */
+#define LED_USR3 (1 << 24)      /* USR LED offset */
+#define GPIO_LOW    (0x190 / 4) /* divide by 4 to convert bytes to words */
+#define GPIO_HIGH   (0x194 / 4)
+
+struct my_resource_table {
+    struct resource_table base;
+    uint32_t offset[1];
+};
+
+void main(void) {
+    uint32_t *gpio1 = (uint32_t *)GPIO1;
+    
+    while (1) {
+        gpio1[GPIO_HIGH] = LED_USR3;
+        __delay_cycles(CYCLES_PER_SECOND / 2); /* wait 0.5 seconds */
+        gpio1[GPIO_LOW] = LED_USR3;
+        __delay_cycles(CYCLES_PER_SECOND / 2); /* wait 0.5 seconds */
+    }
+}
+
+#pragma DATA_SECTION(pru_remoteproc_ResourceTable, ".resource_table")
+#pragma RETAIN(pru_remoteproc_ResourceTable)
+struct my_resource_table pru_remoteproc_ResourceTable = { 1, 0, 0, 0, 0 };
+```
+
+Compiling this code for the PRU can be done with either the official TI
+toolchain (the `clpru` compiler and `lnkpru` linker) or the GCC frontend for
+the PRU.  I haven't tried GCC yet, so let's stick with the TI toolchain.  The
+minimal makefile for the above looks like this:
+
+```make
+PRU_SWPKG = /usr/lib/ti/pru-software-support-package
+
+CC = clpru
+LD = lnkpru
+CFLAGS = --include_path=$(PRU_SWPKG)/include \
+         --include_path=$(PRU_SWPKG)/include/am335x
+LDFLAGS = $(PRU_SWPKG)/labs/lab_2/AM335x_PRU.cmd
+
+all: am335x-pru0-fw
+
+hello-pru0.o: hello-pru0.c
+	$(CC) $(CFLAGS) $^ --output_file $@
+
+am335x-pru0-fw: hello-pru0.o
+	$(LD) $(LDFLAGS) $^ -o $@
+```
+
+This will do the following:
+
+```
+$ clpru --include_path=/usr/lib/ti/pru-software-support-package/include \
+        --include_path=/usr/lib/ti/pru-software-support-package/include/am335x \
+        hello-pru0.c \
+        --output_file hello-pru0.o
+
+$ lnkpru /usr/lib/ti/pru-software-support-package/labs/lab_2/AM335x_PRU.cmd \
+         hello-pru0.o \
+         -o am335x-pru0-fw
+```
+
+This compiles the C source into an object, then links the object with a special
+linker command file (`AM335x_PRU.cmd`) to create a complete firmware that the
+PRU can execute.  This firmware is called `am335x-pru0-fw`.
+
+### Loading and launching on the PRU
+
+You cannot load firmware onto a PRU while it's running, so check its state:
+
+    $ cat /sys/class/remoteproc/remoteproc1/state
+    offline
+
+If it's anything but `offline`, stop it using `echo stop > /sys/class/remoteproc/remoteproc1/state`.
+
+Then copy our firmware into the directory where Linux will look for new firmware
+to load:
+
+    $ cp am335x-pru0-fw /lib/firmware/am335x-pru0-fw
+
+Then make sure that Linux will be looking for a file with this name in
+`/lib/firmware`:
+
+    $ cat /sys/class/remoteproc/remoteproc1/firmware
+    am335x-pru0-fw
+
+This tells us that when we start the PRU, it will indeed look for a file called
+`am335x-pru0-fw` in `/lib/firmware`.  Now just start the PRU:
+
+    $ echo start > /sys/class/remoteproc/remoteproc1/state
+
+And verify that it's running by either looking at the USR3 LED to confirm that
+it blinks on and off at half-second intervals, or ask Linux to check on its
+state:
+
+    $ cat /sys/class/remoteproc/remoteproc1/state
+    running
+
+If the state is still `offline`, there was a problem.  Check `journalctl` for
+errors:
+
+    $ journalctl --system --priority err
+    ...
+    Jun 08 22:20:49 beaglebone kernel: remoteproc remoteproc1: header-less resource table
+    Jun 08 22:20:49 beaglebone kernel: remoteproc remoteproc1: Boot failed: -22
+
+In the above example, I tried to boot code that was missing the resource table
+data structure.
+
+You can download the above minimum viable product from [my BeagleBone
+repository on GitHub][beaglebone-pru github].
+
+[beaglebone-pru github]: https://github.com/glennklockwood/beaglebone-pru
+
+## PRU Programming in Detail
+
+{% call alert(type="info") %}
+This section is just a jumble of notes right now.
+{% endcall %}
 
 Programming to the PRUs from the BeagleBone itself depends on a set of scripts
-in the [BeagleBoard cloud9-examples repository][cloud9-examples repo].  The
+in the [Beagleboard cloud9-examples repository][cloud9-examples repo].  The
 build process is weird because compiling, uploading code, and executing code
 is all hidden by a `make` command according to the [most detailed
 guides](https://markayoder.github.io/PRUCookbook/02start/start.html#_blinking_an_led).
@@ -140,11 +325,11 @@ sounds like the janky cloud9 build process is layered on top of stuff in
 [PRU-SWPKG git repo]: https://git.ti.com/cgit/pru-software-support-package/pru-software-support-package/
 [cloud9-examples repo]: https://github.com/beagleboard/cloud9-examples/tree/v2020.01/common
 
-## Random Tips
+## Quick Howtos: How do I...
 
-**What image version are you running?**  `cat /etc/dogtag` to see.
+**tell what image version is running?**  `cat /etc/dogtag` to see.
 
-**What board version do you have?**  You can read the EEPROM to find out.
+**tell board version do I have?**  You can read the EEPROM to find out.
 The EEPROM is accessible from i2c bus 0 as device `0x50`:
 
 ```
@@ -158,6 +343,9 @@ for specifics on how the EEPROM contents can be interpreted and the
 
 You can also `cat /proc/device-tree/model` for a single-line board description
 that requires less interpretation.
+
+**tell what the CPU temperature is?**  Turns out you cannot because
+[TI does not expose thermal sensors to Linux](https://stackoverflow.com/questions/28099822/reading-cpu-temperature-on-beaglebone-black).
 
 [U-boot source code]: https://github.com/beagleboard/u-boot/blob/55ac96a8461d06edfa89cda37459753397de268a/board/ti/am335x/board.h
 [EEPROM format article]: https://siliconbladeconsultants.com/2020/07/06/beaglebone-black-and-osd335x-eeprom/
