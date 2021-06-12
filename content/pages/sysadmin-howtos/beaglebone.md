@@ -208,7 +208,9 @@ You cannot load firmware onto a PRU while it's running, so check its state:
     $ cat /sys/class/remoteproc/remoteproc1/state
     offline
 
-If it's anything but `offline`, stop it using `echo stop > /sys/class/remoteproc/remoteproc1/state`.
+If it's anything but `offline`, stop it using 
+
+    $ echo stop > /sys/class/remoteproc/remoteproc1/state
 
 Then copy our firmware into the directory where Linux will look for new firmware
 to load:
@@ -332,9 +334,7 @@ sounds like the janky cloud9 build process is layered on top of stuff in
 **How do I tell board version do I have?**  You can read the EEPROM to find out.
 The EEPROM is accessible from i2c bus 0 as device `0x50`:
 
-```
-dd if=/sys/class/i2c-dev/i2c-0/device/0-0050/eeprom ibs=1 skip=4 count=12 status=none conv=unblock cbs=12
-```
+    $ dd if=/sys/class/i2c-dev/i2c-0/device/0-0050/eeprom ibs=1 skip=4 count=12 status=none conv=unblock cbs=12
 
 The board identification object's format is documented (obliquely) by TI since
 U-boot reads it during bootup; see [this article][EEPROM format article]
@@ -351,33 +351,25 @@ that requires less interpretation.
 These LEDs are exposed to userspace under `/sys/class/leds/*`.  You can see what
 triggers their blinking by looking at the `trigger` file in this area, e.g.,
 
-```
-$ cat /sys/class/leds/beaglebone\:green\:usr0/trigger
-none rfkill-any rfkill-none kbd-scrolllock kbd-numlock kbd-capslock kbd-kanalock kbd-shiftlock kbd-altgrlock kbd-ctrllock kbd-altlock kbd-shiftllock kbd-shiftrlock kbd-ctrlllock kbd-ctrlrlock mmc0 mmc1 usb-gadget usb-host timer oneshot disk-activity disk-read disk-write ide-disk mtd nand-disk [heartbeat] backlight gpio cpu cpu0 activity default-on panic netdev 
-```
+    $ cat /sys/class/leds/beaglebone\:green\:usr0/trigger
+    none rfkill-any rfkill-none kbd-scrolllock kbd-numlock kbd-capslock kbd-kanalock kbd-shiftlock kbd-altgrlock kbd-ctrllock kbd-altlock kbd-shiftllock kbd-shiftrlock kbd-ctrlllock kbd-ctrlrlock mmc0 mmc1 usb-gadget usb-host timer oneshot disk-activity disk-read disk-write ide-disk mtd nand-disk [heartbeat] backlight gpio cpu cpu0 activity default-on panic netdev 
 
 This means that it has a heartbeat trigger, or just blinks twice, pauses, and
 repeats.  You can temporarily disable this behavior:
 
-```
-$ echo none > /sys/class/leds/beaglebone\:green\:usr0/trigger
-```
+    $ echo none > /sys/class/leds/beaglebone\:green\:usr0/trigger
 
 You can see the current default trigger in the device tree:
 
-```
-$ cat /proc/device-tree/leds/led2/label && echo
-beaglebone:green:usr0
+    $ cat /proc/device-tree/leds/led2/label && echo
+    beaglebone:green:usr0
 
-$ cat /proc/device-tree/leds/led2/linux,default-trigger && echo
-heartbeat
-```
+    $ cat /proc/device-tree/leds/led2/linux,default-trigger && echo
+    heartbeat
 
 Or if you want to see it in device tree source format,
 
-```
-$ dtc -I fs -O dts /proc/device-tree | less
-```
+    $ dtc -I fs -O dts /proc/device-tree | less
 
 To permanently change this behavior, you have to create a new device tree
 overlay since the default trigger is controlled by the kernel.  You can see
@@ -392,9 +384,7 @@ device tree and overlays were loaded on boot, and it gets these by:
 
 You can inspect the source of the base device tree using the following:
 
-```
-dtc -I dtb -O dts /boot/dtbs/$(uname -r)/$(sed -e 's/\.dts.*$/.dtb/' /proc/device-tree/chosen/base_dtb) | less
-```
+    $ dtc -I dtb -O dts /boot/dtbs/$(uname -r)/$(sed -e 's/\.dts.*$/.dtb/' /proc/device-tree/chosen/base_dtb) | less
 
 And you can inspect the chosen overlays by finding their binary `dtbo` files in
 `/lib/firmware` and using the same `dtc -I dtb -O dts ...` command on them.
@@ -406,7 +396,9 @@ cape on boot by telling U-boot to not load its associated device tree overlay.
 
 Manipulating which capes (and device tree overlays) are loaded at boot is all
 done in `/boot/uEnv.txt`.  Just comment out the `disable_uboot_overlay_video=1`
-line.
+line and reboot.  You can confirm that the HDMI cape is unloaded after reboot
+by inspecting `/proc/device-tree/chosen/overlays/` before and after; you should
+notice that `BB-HDMI-TDA998x-00A0` disappears.
 
 More information on how U-boot and U-boot overlays work on BeagleBone (and how
 they influence the default functions of all the GPIOs) on the
