@@ -325,11 +325,11 @@ sounds like the janky cloud9 build process is layered on top of stuff in
 [PRU-SWPKG git repo]: https://git.ti.com/cgit/pru-software-support-package/pru-software-support-package/
 [cloud9-examples repo]: https://github.com/beagleboard/cloud9-examples/tree/v2020.01/common
 
-## Quick Howtos: How do I...
+## Quick Howtos
 
-**tell what image version is running?**  `cat /etc/dogtag` to see.
+**How do I tell what image version is running?**  `cat /etc/dogtag` to see.
 
-**tell board version do I have?**  You can read the EEPROM to find out.
+**How do I tell board version do I have?**  You can read the EEPROM to find out.
 The EEPROM is accessible from i2c bus 0 as device `0x50`:
 
 ```
@@ -344,8 +344,43 @@ for specifics on how the EEPROM contents can be interpreted and the
 You can also `cat /proc/device-tree/model` for a single-line board description
 that requires less interpretation.
 
-**tell what the CPU temperature is?**  Turns out you cannot because
+**How do I tell what the CPU temperature is?**  Turns out you cannot because
 [TI does not expose thermal sensors to Linux](https://stackoverflow.com/questions/28099822/reading-cpu-temperature-on-beaglebone-black).
+
+**How do I stop the onboard LEDs from blinking?**
+These LEDs are exposed to userspace under `/sys/class/leds/*`.  You can see what
+triggers their blinking by looking at the `trigger` file in this area, e.g.,
+
+```
+$ cat /sys/class/leds/beaglebone\:green\:usr0/trigger
+none rfkill-any rfkill-none kbd-scrolllock kbd-numlock kbd-capslock kbd-kanalock kbd-shiftlock kbd-altgrlock kbd-ctrllock kbd-altlock kbd-shiftllock kbd-shiftrlock kbd-ctrlllock kbd-ctrlrlock mmc0 mmc1 usb-gadget usb-host timer oneshot disk-activity disk-read disk-write ide-disk mtd nand-disk [heartbeat] backlight gpio cpu cpu0 activity default-on panic netdev 
+```
+
+This means that it has a heartbeat trigger, or just blinks twice, pauses, and
+repeats.  You can temporarily disable this behavior:
+
+```
+$ echo none > /sys/class/leds/beaglebone\:green\:usr0/trigger
+```
+
+You can see the current default trigger in the device tree:
+
+```
+$ cat /proc/device-tree/leds/led2/label && echo
+beaglebone:green:usr0
+
+$ cat /proc/device-tree/leds/led2/linux,default-trigger && echo
+heartbeat
+```
+
+To permanently change this behavior, you have to create a new device tree
+overlay since the default trigger is controlled by the kernel.  And you can
+see where this default value is coming from by examining the device tree blob
+source you're using.  For example,
+
+```
+dtc -I dtb -O dts /boot/dtbs/$(uname -r)/am335x-boneblack.dtb | less
+```
 
 [U-boot source code]: https://github.com/beagleboard/u-boot/blob/55ac96a8461d06edfa89cda37459753397de268a/board/ti/am335x/board.h
 [EEPROM format article]: https://siliconbladeconsultants.com/2020/07/06/beaglebone-black-and-osd335x-eeprom/
