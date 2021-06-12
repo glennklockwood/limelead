@@ -373,17 +373,48 @@ $ cat /proc/device-tree/leds/led2/linux,default-trigger && echo
 heartbeat
 ```
 
-To permanently change this behavior, you have to create a new device tree
-overlay since the default trigger is controlled by the kernel.  And you can
-see where this default value is coming from by examining the device tree blob
-source you're using.  For example,
+Or if you want to see it in device tree source format,
 
 ```
-dtc -I dtb -O dts /boot/dtbs/$(uname -r)/am335x-boneblack.dtb | less
+$ dtc -I fs -O dts /proc/device-tree | less
 ```
+
+To permanently change this behavior, you have to create a new device tree
+overlay since the default trigger is controlled by the kernel.  You can see
+where this default value is coming from by examining the device tree blob
+source you're using.  `/opt/scripts/tools/version.sh` tells you which base
+device tree and overlays were loaded on boot, and it gets these by:
+
+- `cat /proc/device-tree/chosen/base_dtb` - gives you the name of the dts file
+  that generated the base device tree file that is loaded
+- `ls /proc/device-tree/chosen/overlays` - gives you a list of overlays
+  currently loaded
+
+You can inspect the source of the base device tree using the following:
+
+```
+dtc -I dtb -O dts /boot/dtbs/$(uname -r)/$(sed -e 's/\.dts.*$/.dtb/' /proc/device-tree/chosen/base_dtb) | less
+```
+
+And you can inspect the chosen overlays by finding their binary `dtbo` files in
+`/lib/firmware` and using the same `dtc -I dtb -O dts ...` command on them.
+
+**How do I get access to the GPIOs on header P8?**
+The HDMI port on BeagleBone is implemented as a virtual cape, and it lays claim
+to a bunch of the GPIO pins on header P8 (pins 27-46).  You can disable this
+cape on boot by telling U-boot to not load its associated device tree overlay.
+
+Manipulating which capes (and device tree overlays) are loaded at boot is all
+done in `/boot/uEnv.txt`.  Just comment out the `disable_uboot_overlay_video=1`
+line.
+
+More information on how U-boot and U-boot overlays work on BeagleBone (and how
+they influence the default functions of all the GPIOs) on the
+[BeagleBone/Debian wiki page][].
 
 [U-boot source code]: https://github.com/beagleboard/u-boot/blob/55ac96a8461d06edfa89cda37459753397de268a/board/ti/am335x/board.h
 [EEPROM format article]: https://siliconbladeconsultants.com/2020/07/06/beaglebone-black-and-osd335x-eeprom/
+[BeagleBone/Debian wiki page]: https://elinux.org/Beagleboard:BeagleBoneBlack_Debian#U-Boot_Overlays
 
 ## Out-of-box experience opinions
 
