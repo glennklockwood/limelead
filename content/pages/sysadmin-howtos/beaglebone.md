@@ -1,5 +1,5 @@
 ---
-title: Getting started with BeagleBone Black
+title: Getting started with the BeagleBone Black
 shortTitle: BeagleBone
 ---
 
@@ -100,7 +100,7 @@ BeagleBone Black, contains:
 - `remoteproc1` - PRU0, called `4a334000.pru`
 - `remoteproc2` - PRU1, called `4a338000.pru`
 
-### Executing code on the PRU
+### Basic usage
 
 To load compiled firmware into a PRU, first copy the compiled code into
 `/lib/firmware`:
@@ -125,7 +125,7 @@ section of the [Processor SDK Linux Software Developer's Guide][].
 [RemoteProc and RPMsg]: https://software-dl.ti.com/processor-sdk-linux/esd/docs/latest/linux/Foundational_Components/PRU-ICSS/Linux_Drivers/RemoteProc_and_RPMsg.html
 [Processor SDK Linux Software Developer's Guide]: https://software-dl.ti.com/processor-sdk-linux/esd/docs/latest/devices/AM335X/linux/index.html
 
-### Hello world on the PRU
+### Hello world example
 
 A minimal working example of a PRU firmware source is as follows:
 
@@ -135,31 +135,46 @@ A minimal working example of a PRU firmware source is as follows:
 
 #define CYCLES_PER_SECOND 200000000 /* PRU has 200 MHz clock */
 
-#define GPIO1 0x4804C000        /* am335x GPIO address */
-#define LED_USR3 (1 << 24)      /* USR LED offset */
-#define GPIO_LOW    (0x190 / 4) /* divide by 4 to convert bytes to words */
-#define GPIO_HIGH   (0x194 / 4)
+#define P9_31 (1 << 0) /* R30 at 0x1 = pru1_pru0_pru_r30_0 = ball A13 = P9_31 */
 
-struct my_resource_table {
-    struct resource_table base;
-    uint32_t offset[1];
-};
+volatile register uint32_t __R30; /* output register for PRU */
 
 void main(void) {
-    uint32_t *gpio1 = (uint32_t *)GPIO1;
-    
     while (1) {
-        gpio1[GPIO_HIGH] = LED_USR3;
-        __delay_cycles(CYCLES_PER_SECOND / 2); /* wait 0.5 seconds */
-        gpio1[GPIO_LOW] = LED_USR3;
-        __delay_cycles(CYCLES_PER_SECOND / 2); /* wait 0.5 seconds */
+        __R30 |= P9_31; /* set first bit in register 30 */
+        __delay_cycles(CYCLES_PER_SECOND / 4); /* wait 0.5 seconds */
+        __R30 &= ~P9_31; /* unset first bit in register 30 */
+        __delay_cycles(CYCLES_PER_SECOND / 4); /* wait 0.5 seconds */
     }
 }
 
+/* required by PRU */
 #pragma DATA_SECTION(pru_remoteproc_ResourceTable, ".resource_table")
 #pragma RETAIN(pru_remoteproc_ResourceTable)
-struct my_resource_table pru_remoteproc_ResourceTable = { 1, 0, 0, 0, 0 };
+struct my_resource_table {
+    struct resource_table base;
+    uint32_t offset[1];
+} pru_remoteproc_ResourceTable = { 1, 0, 0, 0, 0 };
 ```
+
+The PRU can directly toggle a subset of the BeagleBone's GPIO pins in a single
+cycle by manipulating bits in register #30.  That register is exposed in
+C as `__R30`, so modifying that register's contents directly triggers a change
+in one or more GPIO pin states.  See the [PRU Optimizing C/C++ Compiler User
+Guide][pru compiler user guide] Section 5.7.2 for more info.
+
+The first (least significant) bit in `__R30` controls pin 31 on header P9, so
+flipping that bit on and off will make that pin go high and low.  Since the PRUs
+run at 200 MHz and can complete one operation per cycle, this means a pin can be
+flipped on or off in 5 ns.  That's fast!
+
+The resource table junk at the bottom has to be in any code loaded into the PRU.
+This table is used to configure things like its buffers for communicating with
+the ARM host and handling interrupts.
+
+[pru compiler user guide]: https://www.ti.com/lit/ug/spruhv7b/spruhv7b.pdf
+
+### Compiling PRU firmware
 
 Compiling this code for the PRU can be done with either the official TI
 toolchain (the `clpru` compiler and `lnkpru` linker) or the GCC frontend for
@@ -201,7 +216,16 @@ This compiles the C source into an object, then links the object with a special
 linker command file (`AM335x_PRU.cmd`) to create a complete firmware that the
 PRU can execute.  This firmware is called `am335x-pru0-fw`.
 
-### Loading and launching on the PRU
+### Configuring GPIO pins
+
+In the above example, we want to allow the PRU to control `P9_31` through its
+`__R30` register.  To do that, we have to make sure that `P9_31` is configured
+to expose its PRU output mode functionality:
+
+    $ config-pin P9_31 pruout
+    Current mode for P9_31 is:     pruout
+
+### Launching code
 
 You cannot load firmware onto a PRU while it's running, so check its state:
 
@@ -228,9 +252,12 @@ This tells us that when we start the PRU, it will indeed look for a file called
 
     $ echo start > /sys/class/remoteproc/remoteproc1/state
 
-And verify that it's running by either looking at the USR3 LED to confirm that
-it blinks on and off at half-second intervals, or ask Linux to check on its
-state:
+And verify that it's running by either looking at the LED to confirm that
+it blinks on and off at quarter-second intervals:
+
+{{ figure("bbb-hello-pru.gif", alt="Blinking LED controlled by the PRU") }}
+
+Or ask Linux to check on its state:
 
     $ cat /sys/class/remoteproc/remoteproc1/state
     running
@@ -251,88 +278,18 @@ repository on GitHub][beaglebone-pru github].
 
 [beaglebone-pru github]: https://github.com/glennklockwood/beaglebone-pru
 
-## PRU Programming in Detail
+## Assorted Howtos
 
-{% call alert(type="info") %}
-This section is just a jumble of notes right now.
-{% endcall %}
+### Determine OS image version
 
-Programming to the PRUs from the BeagleBone itself depends on a set of scripts
-in the [Beagleboard cloud9-examples repository][cloud9-examples repo].  The
-build process is weird because compiling, uploading code, and executing code
-is all hidden by a `make` command according to the [most detailed
-guides](https://markayoder.github.io/PRUCookbook/02start/start.html#_blinking_an_led).
-The actual workflow appears to be:
+`cat /etc/dogtag` to see.
 
-```bash
-# Stop PRU0
-echo stop > /sys/class/remoteproc/remoteproc1/state
+### Determine board version
 
-# Compile the PRU source into binary
-clpru -fe /tmp/cloud9-examples/hello.pru0.o hello.pru0.c \
-    --include_path=/home/glock/src/cloud9-examples/common \
-    --include_path=/usr/lib/ti/pru-software-support-package/include \
-    --include_path=/usr/lib/ti/pru-software-support-package/include/am335x \
-    --include_path=/usr/share/ti/cgt-pru/include \
-    -DCHIP=am335x \
-    -DCHIP_IS_am335x \
-    -DMODEL=TI_AM335x_BeagleBone_Black \
-    -DPROC=pru \
-    -DPRUN=0 \
-    -v3 -O2 \
-    --printf_support=minimal \
-    --display_error_number \
-    --endian=little \
-    --hardware_mac=on \
-    --obj_directory=/tmp/cloud9-examples \
-    --pp_directory=/tmp/cloud9-examples \
-    --asm_directory=/tmp/cloud9-examples \
-    -ppd \
-    -ppa \
-    --asm_listing \
-    --c_src_interlist
+You can `cat /proc/device-tree/model` for a single-line board description.
 
-# Link the PRU binary
-lnkpru -o /tmp/cloud9-examples/hello.pru0.out /tmp/cloud9-examples/hello.pru0.o \
-    --reread_libs \
-    --warn_sections \
-    --stack_size=0x100 \
-    --heap_size=0x100 \
-    -m /tmp/cloud9-examples/hello.pru0.map \
-    -i/usr/share/ti/cgt-pru/lib \
-    -i/usr/share/ti/cgt-pru/include \
-    /home/glock/src/cloud9-examples/common/am335x_pru.cmd \
-    --library=libc.a \
-    --library=/usr/lib/ti/pru-software-support-package/lib/rpmsg_lib.lib 
-
-# Copy the binary to the PRU firmware
-cp /tmp/cloud9-examples/hello.pru0.out /lib/firmware/am335x-pru0-fw
-
-# Run the write_init_pins.sh script on this compiled binary
-/home/glock/src/cloud9-examples/common/write_init_pins.sh /lib/firmware/am335x-pru0-fw
-
-# Start the PRU back up
-echo start > /sys/class/remoteproc/remoteproc1/state
-```
-
-It sounds like there may be a better way of doing this now provided by TI in
-their [PRU Software Support Package][].  There is a [PRU Software Support
-Package git repository][PRU-SWPKG git repo] that I haven't looked into yet that
-seems a little less janky than the one bundled with the [cloud9-examples repo][]
-above.  On closer examination of the actual compiler commands above though, it
-sounds like the janky cloud9 build process is layered on top of stuff in
-`/usr/lib/ti/pru-software-support-package`.
-
-[PRU Software Support Package]: https://www.ti.com/tool/PRU-SWPKG
-[PRU-SWPKG git repo]: https://git.ti.com/cgit/pru-software-support-package/pru-software-support-package/
-[cloud9-examples repo]: https://github.com/beagleboard/cloud9-examples/tree/v2020.01/common
-
-## Quick Howtos
-
-**How do I tell what image version is running?**  `cat /etc/dogtag` to see.
-
-**How do I tell board version do I have?**  You can read the EEPROM to find out.
-The EEPROM is accessible from i2c bus 0 as device `0x50`:
+If you are hardcore, you can also read the EEPROM to find out.  The EEPROM is
+accessible from i2c bus 0 as device `0x50`:
 
     $ dd if=/sys/class/i2c-dev/i2c-0/device/0-0050/eeprom ibs=1 skip=4 count=12 status=none conv=unblock cbs=12
 
@@ -341,13 +298,16 @@ U-boot reads it during bootup; see [this article][EEPROM format article]
 for specifics on how the EEPROM contents can be interpreted and the
 [U-boot source code][] for expected values.
 
-You can also `cat /proc/device-tree/model` for a single-line board description
-that requires less interpretation.
+[EEPROM format article]: https://siliconbladeconsultants.com/2020/07/06/beaglebone-black-and-osd335x-eeprom/
+[U-boot source code]: https://github.com/beagleboard/u-boot/blob/55ac96a8461d06edfa89cda37459753397de268a/board/ti/am335x/board.h
 
-**How do I tell what the CPU temperature is?**  Turns out you cannot because
-[TI does not expose thermal sensors to Linux](https://stackoverflow.com/questions/28099822/reading-cpu-temperature-on-beaglebone-black).
+### Determine CPU temperature
 
-**How do I stop the onboard LEDs from blinking?**
+Turns out you cannot because [TI does not expose thermal sensors to
+Linux](https://stackoverflow.com/questions/28099822/reading-cpu-temperature-on-beaglebone-black).
+
+### Stop onboard LEDs from blinking
+
 These LEDs are exposed to userspace under `/sys/class/leds/*`.  You can see what
 triggers their blinking by looking at the `trigger` file in this area, e.g.,
 
@@ -389,7 +349,8 @@ You can inspect the source of the base device tree using the following:
 And you can inspect the chosen overlays by finding their binary `dtbo` files in
 `/lib/firmware` and using the same `dtc -I dtb -O dts ...` command on them.
 
-**How do I get access to the GPIOs on header P8?**
+## Access GPIOs on P8
+
 The HDMI port on BeagleBone is implemented as a virtual cape, and it lays claim
 to a bunch of the GPIO pins on header P8 (pins 27-46).  You can disable this
 cape on boot by telling U-boot to not load its associated device tree overlay.
@@ -404,11 +365,43 @@ More information on how U-boot and U-boot overlays work on BeagleBone (and how
 they influence the default functions of all the GPIOs) on the
 [BeagleBone/Debian wiki page][].
 
-[U-boot source code]: https://github.com/beagleboard/u-boot/blob/55ac96a8461d06edfa89cda37459753397de268a/board/ti/am335x/board.h
-[EEPROM format article]: https://siliconbladeconsultants.com/2020/07/06/beaglebone-black-and-osd335x-eeprom/
 [BeagleBone/Debian wiki page]: https://elinux.org/Beagleboard:BeagleBoneBlack_Debian#U-Boot_Overlays
 
-## Out-of-box experience opinions
+## Set GPIO pin modes
+
+Debian ships with a command-line tool `config-pin` which temporarily sets the
+function of each GPIO pin.  It will change the function of a pin until the next
+reboot, but to change the function permanentl, you have to create a device tree
+overlay (yuck).
+
+`config-pin` expects pins specified in `pX_YY` format (e.g., `p8_15` for
+GPIO1-15 or `P9_25` for GPIO3-21) and supports the following operations:
+
+```
+# Show current mode of a pin:
+$ config-pin -q p9_24
+Current mode for P9_24 is:     default
+
+# List supported pin modes:
+$ config-pin -l P8_42
+Available modes for P8_42 are: default gpio gpio_pu gpio_pd eqep pruout pruin
+
+# Set a pin mode:
+$ config-pin p8_45 pruout
+Current mode for P8_45 is:     pruout
+```
+
+A super-useful table that shows the mapping between PRU addresses, GPIO device
+addresses, and headers is on the [official wiki][PRU GPIO mode table].  The
+[BeagleBone Black System Reference Manual][] also has [mode mappings for the P8
+header][bbb-srm p8 table] on page 65 and the analogous [table for the P9
+header][bbb-srm p9 table] on page 67.
+
+[PRU GPIO mode table]: https://elinux.org/Ti_AM33XX_PRUSSv2#Beaglebone_PRU_connections_and_modes
+[bbb-srm p8 table]: https://github.com/beagleboard/beaglebone-black/wiki/System-Reference-Manual#711-connector-p8
+[bbb-srm p8 table]: https://github.com/beagleboard/beaglebone-black/wiki/System-Reference-Manual#712-connector-p9
+
+## Out-of-box experience
 
 The out-of-box experience, despite being zero-download, feels incomplete.  It
 uses a web-based user interface (nice), but dumps you into a directory full of
@@ -476,3 +469,4 @@ the test scripts in cloud9, and move on with life.
 [some guy's GitHub repo]: https://github.com/RobertCNelson
 [eLinux.org]: https://elinux.org/Beagleboard
 [Texas Instruments wiki]: https://processors.wiki.ti.com/index.php
+[BeagleBone Black System Reference Manual]: https://github.com/beagleboard/beaglebone-black/blob/master/BBB_SRM.pdf
