@@ -225,6 +225,8 @@ to expose its PRU output mode functionality:
     $ config-pin P9_31 pruout
     Current mode for P9_31 is:     pruout
 
+See the [Set GPIO pin modes](#set-gpio-pin-modes) section for more info.
+
 ### Launching code
 
 You cannot load firmware onto a PRU while it's running, so check its state:
@@ -371,7 +373,7 @@ they influence the default functions of all the GPIOs) on the
 
 Debian ships with a command-line tool `config-pin` which temporarily sets the
 function of each GPIO pin.  It will change the function of a pin until the next
-reboot, but to change the function permanentl, you have to create a device tree
+reboot, but to change the function permanently, you have to create a device tree
 overlay (yuck).
 
 `config-pin` expects pins specified in `pX_YY` format (e.g., `p8_15` for
@@ -399,7 +401,7 @@ header][bbb-srm p9 table] on page 67.
 
 [PRU GPIO mode table]: https://elinux.org/Ti_AM33XX_PRUSSv2#Beaglebone_PRU_connections_and_modes
 [bbb-srm p8 table]: https://github.com/beagleboard/beaglebone-black/wiki/System-Reference-Manual#711-connector-p8
-[bbb-srm p8 table]: https://github.com/beagleboard/beaglebone-black/wiki/System-Reference-Manual#712-connector-p9
+[bbb-srm p9 table]: https://github.com/beagleboard/beaglebone-black/wiki/System-Reference-Manual#712-connector-p9
 
 ## Out-of-box experience
 
