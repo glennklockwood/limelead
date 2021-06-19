@@ -284,14 +284,14 @@ repository on GitHub][beaglebone-pru github].
 
 Each PRU has its own UART which are pretty similar to the [TI16C550C][], and
 this is one of the easiest ways to communicate with the PRU without having to
-interface with the rest of the BeagleBone host CPU.  You just connect a
-[USB to TTL serial cable][] as, for example,
+interface with the rest of the BeagleBone host CPU.  For example, you just
+connect a [USB to TTL serial cable][] as
 
 1. Green to header P9, pin 17
 2. White to header P9, pin 18
 3. Black to ground
 
-It should look something like this:
+which should look something like this:
 
 {{ figure("bbb-pru-uart-wireup.jpg", alt="Wiring for USB-TTS to BeagleBone PRU UART") }}
 
@@ -310,7 +310,7 @@ Figuring out how to make the UART talk is a matter of digging through
 
 The pru\_uart.h header gives you the `CT_UART` identifier that provides
 convenient access to all the UART registers required to interact with the
-UART.  Let's walk through that process for the simplest possible case
+UART.  Let's walk through that process for the simplest possible case.
 
 [TI16C550C]: https://www.ti.com/product/TL16C550C
 [TI16C550C data sheet]: https://www.ti.com/document-viewer/TL16C550C/datasheet
