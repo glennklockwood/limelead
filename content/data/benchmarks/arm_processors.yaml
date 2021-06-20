@@ -14,6 +14,20 @@
   compiler:     "GNU GFortran 4.6"
   compile_flags: "-march=armv6zk -mfpu=vfp -mfloat-abi=hard -O3 -fdefault-real-8 -mcpu=arm1176jzf-s"
   _comment :    "10000 seconds with reordering"
+- model:        "BeagleBone Black Rev C"
+  processor:    "ARM Cortex-A8"
+  clock_mhz:     1000
+  cache_l1i_kib: 32
+  cache_l1d_kib: 32
+  cache_l2_kib:  256
+  mem:          "512 MB"
+  mem_type:     "DDR3L"
+  mem_speed:    "1.6 GB/s"
+  wall_secs:    9781
+# memreorder_secs: 0
+  compiler:     "GNU GFortran 8.3.0"
+  compile_flags: "-mcpu=native -mtune=native -O3 -fdefault-real-8 -fdefault-double-8"
+  _comment:      "compared to Cortex-A9, A8 is in-order and lacks pipelined vfp"
 - model:        "Terasic DE10-Nano"
   processor:    "ARM Cortex-A9"
   clock_mhz:     800
