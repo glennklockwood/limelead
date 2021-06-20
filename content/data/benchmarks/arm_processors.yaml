@@ -24,7 +24,7 @@
   mem_type:     "DDR3L"
   mem_speed:    "1.6 GB/s"
   wall_secs:    9781
-# memreorder_secs: 0
+  memreorder_secs: 8213
   compiler:     "GNU GFortran 8.3.0"
   compile_flags: "-mcpu=native -mtune=native -O3 -fdefault-real-8 -fdefault-double-8"
   _comment:      "compared to Cortex-A9, A8 is in-order and lacks pipelined vfp"
