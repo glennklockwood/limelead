@@ -440,6 +440,6 @@ and the BMC2835 loads it, you should get a blinking ACT light:
 
 [Baking Pi OS Development]: https://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/os/index.html
 [BCM2835 Datasheet]: https://www.raspberrypi.org/documentation/hardware/raspberrypi/bcm2835/BCM2835-ARM-Peripherals.pdf
-[HD44780 LCD Display]: {filename}hd44780-lcd-display.md
+[HD44780 LCD Display]: {filename}../electronics/hd44780-lcd-display.md
 [OK01 module]: https://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/os/ok01.html
 [OK02 module]: https://www.cl.cam.ac.uk/projects/raspberrypi/tutorials/os/ok02.html
