@@ -303,7 +303,7 @@ like `cu` or `screen` to connect in:
 
 Figuring out how to make the UART talk is a matter of digging through
 
-1. The [AM335x Technical Reference Manual][], Section 4.4.4 on the UART
+1. The [AM335x Technical Reference Manual][TRM], Section 4.4.4 on the UART
 2. The [TI16C550C data sheet][]
 3. The [pru\_uart.h header][pru-uart.h header] that comes with the
    [PRU Software Support Package][]
@@ -314,7 +314,7 @@ UART.  Let's walk through that process for the simplest possible case.
 
 [TI16C550C]: https://www.ti.com/product/TL16C550C
 [TI16C550C data sheet]: https://www.ti.com/document-viewer/TL16C550C/datasheet
-[AM335x Technical Reference Manual]: https://www.ti.com/lit/ug/spruh73q/spruh73q.pdf
+[TRM]: https://www.ti.com/lit/ug/spruh73q/spruh73q.pdf
 [pru-uart.h header]: https://git.ti.com/cgit/pru-software-support-package/pru-software-support-package/tree/include/pru_uart.h?id=aa9606013059eb8728bcc1165c5032f0589469e0
 [PRU Software Support Package]: https://www.ti.com/tool/PRU-SWPKG
 
@@ -476,7 +476,67 @@ repository][pru-uart github].
 [line control register]: https://www.ti.com/document-viewer/TL16C550C/datasheet/GUID-F216B59F-B8CD-450A-A44A-9F5234060867#GUID-533EE23A-57EF-44C6-BCFD-389D16ECFDD1
 [pru-uart github]: https://github.com/glennklockwood/beaglebone-pru/tree/main/uart
 
+## PRU Interrupt Controller
 
+A bit of nomenclature:
+
+- A **peripheral** is something that can talk to the PRU.
+    - It can be something like a push button attached to a GPIO pin.
+    - It can also be something built-in like a DMA controller.
+    - Peripherals can generate events.
+- An **event** describes the occurrence of a certain action.
+    - There are [64 defined events][PRU interrupts table] on the PRU.
+    - Events are hard-coded to specific peripherals.
+    - Events sound a lot like OS signals in that they are predefined but can be
+      intercepted or ignored.
+    - Events map to "channels."
+- A **channel** groups together multiple events.
+    - One channel can have zero, one, or multiple events mapped to it.
+    - The PRU interrupt controller has ten channels.
+    - Channels map to "host interrupts."
+- A **host interrupt** collects events from channels.
+    - One host interrupt can have zero, one, or multiple channels mapped to it.
+    - The PRU interrupt controller supports ten host interupts.
+    - Host interrupt 0 and 1 are magical.
+        - the 30th bit in `__R31` is mapped to _host interrupt 0_
+        - the 31st bit in `__R31` is mapped to _host interrupt 1_
+
+A diagram showing this relationship would be handy to have here.
+
+Why have events, channels, and host interrupts?
+
+- Events can be enabled or disabled, so if you don't care if a certain
+  peripheral does something, you can just disable its events and never have to
+  deal with it.
+- Channels let you prioritize events.  Channel 0 has the highest priority, so if
+  an event needs to be dealt with immediately, you would map it to channel 0.
+  Less-important events can be mapped to higher channels.
+- Host interrupts let you route a channel to a particular action to take.
+
+This mapping of events, channels, and host interrupts is all handled through the
+_interrupt controller_ on the PRU.  To enable/disable events, establish mappings
+between events, channels, and host interrupts, and configure other bits of how
+events should translate into actions, you twiddle the bits in a set of 63
+registers exposed by this interrupt controller.
+
+For example, the general setup for the interrupt controller involves:
+
+1. **Enabling an event**.  This involves writing its event number to the _system
+   event enable indexed set register_ (`EISR`).
+2. **Mapping an event to a channel**.  This involves setting a four-bit range
+   within one of the 32-bit _channel map registers_ (`CMR`) to the appropriate
+   channel.  These channel map registers have four-bit ranges for all 64 system
+   events.
+3. **Mapping a host interrupt to a channel**.  Similar to step 2 above, this
+   involves setting a four-bit range within one of the 32-bit _host map
+   registers_ (`HMR`) to the appropriate host interrupt.
+4. **Enabling a host interrupt**.  This involves writing the host interrupt
+   number to the _host interrupt enable indexed set register_ (`HIEISR`).  The
+   behavior is analogous to the `EISR` register.
+5. **Turning on the interrupt controller**.  This is done by writing a 1 to the
+   _global host interrupt enable register_ (`GER`).
+
+[PRU interrupts table]: https://elinux.org/PRUSSv2_Interrupts
 
 ## Assorted Howtos
 
