@@ -84,6 +84,25 @@ Regarding the maximum number of OSSes from [Andreas Dilger, October 2019](http:/
 > least one known limitation.  For IB there is no such connection limit that
 > I'm aware of.
 
+Regarding how much space different inodes consume from [Andreas Dilger, June
+2021](http://lists.lustre.org/pipermail/lustre-discuss-lustre.org/2021-June/017669.html),
+which is important when trying to figure out how large of an MDT footprint you
+need:
+
+> > There is a large directory tree with 353 M files. For each or many of these
+> > files, there is also a symlink.
+> > 
+> > This is about the only oddity of this MDT.
+> > Could it be that those symlinks eat up all the remaining space somehow?
+> 
+> It depends on how long the symlinks are.  Anything over 60 chars is allocated
+> in a separate 4KB block, so if you have a large number of symlinks then this
+> could definitely consume a lot of blocks on the MDT.
+> 
+> Hard links, on the other hand, consume space in directory blocks, but these
+> are typically shared with other names and only consume as much space as the
+> final name component, not the whole pathname.
+
 ## Striping Mechanics
 
 From [Andreas Dilger, March 2016](http://lists.lustre.org/pipermail/lustre-discuss-lustre.org/2016-March/013370.html):
