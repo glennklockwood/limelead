@@ -280,6 +280,155 @@ repository on GitHub][beaglebone-pru github].
 
 [beaglebone-pru github]: https://github.com/glennklockwood/beaglebone-pru
 
+## PRU GPIO
+
+The PRU has direct access to a subset of the GPIOs available on the BeagleBone
+Black through the `__R30` and `__R31` registers.  Here's a handy dandy table
+that maps the lower bits in these registers to physical header pins on
+BeagleBone Black:
+
+bit     | pru0's R30 | pru1's R30 | pru0's R31     | pru1's R31 
+:------:|:----------:|:----------:|:--------------:|:-----------------:
+      0 | P9\_31     | P8\_45     | P9\_31         | P8\_45
+      1 | P9\_29     | P8\_46     | P9\_29         | P8\_46
+      2 | P9\_30     | P8\_43     | P9\_30         | P8\_43
+      3 | P9\_28     | P8\_44     | P9\_28         | P8\_44
+      4 | P9\_42B    | P8\_41     | P9\_42B        | P8\_41
+      5 | P9\_27     | P8\_42     | P9\_27         | P8\_42
+      6 | P9\_41B    | P8\_39     | P9\_41B        | P8\_39
+      7 | P9\_25     | P8\_40     | P9\_25         | P8\_40
+      8 |            | P8\_27     |                | P8\_27
+      9 |            | P8\_29     |                | P8\_29
+     10 |            | P8\_28     |                | P8\_28
+     11 |            | P8\_30     |                | P8\_30
+     12 |            | P8\_21     |                | P8\_21
+     13 |            | P8\_20     |                | P8\_20
+     14 | P8\_12     |            | P9\_16         | 
+     15 | P8\_11     |            | P8\_15         |
+     16 |            |            | P9\_24/P9\_41A | P8\_26
+
+### Direct General Purpose Output
+
+If you want to run code on pru0 and turn on an LED using the 0th bit of `__R30`
+(as we did for our hello world example), the table above says you should plug
+your LED into `P9_31`.  To run the same code on pru1 though, you'd have to plug
+your LED into `P8_45`.  It's a little annoying that the same firmware cannot run
+on both PRUs without modification, but that's the way the BeagleBone Black is
+wired up.
+
+### Direct General Purpose Input
+
+In the hello world example above, we saw that we can turn on an LED connected
+to `P9_31` by flipping the first bit in `__R30`:
+
+```c
+__R30 |= 1;
+```
+
+You can also _read_ input directly from the PRU by reading values from `__R31`.
+Consider the simplest case where you have the following connected in series:
+
+```
+3.3V --> push button --> P8_15 header
+```
+
+If you were to read the 15th bit of `__R31` like this:
+
+```c
+input_bit = __R31 & (1 << 15);
+```
+
+You would see that `input_bit = 1` when the button was pressed and 0 otherwise.
+It's not too much of a stretch to combine this logic with our blinky LED from
+the hello world example and use the PRU to turn on an LED while the button is
+pressed.  Wire it up something like this:
+
+{{ figure("bbb-button-blink.png", alt="Wiring for button-blink LED example") }}
+
+And the remainder is pretty simple.  Here's a fully working example:
+
+```c
+#include <stdint.h>
+#include <rsc_types.h>  /* provides struct resource_table */
+
+#define P9_31 (1 << 0)
+#define P8_15 (1 << 15)
+
+volatile register uint32_t __R30, __R31;
+
+void main(void) {
+    while (1) {
+        if (__R31 & P8_15) /* if button is pressed */
+            __R30 |= P9_31; /* set bit */
+        else
+            __R30 &= ~P9_31; /* remove bit */
+    }
+}
+
+/* required by PRU */
+#pragma DATA_SECTION(pru_remoteproc_ResourceTable, ".resource_table")
+#pragma RETAIN(pru_remoteproc_ResourceTable)
+struct my_resource_table {
+    struct resource_table base;
+    uint32_t offset[1];
+} pru_remoteproc_ResourceTable = { 1, 0, 0, 0, 0 };
+```
+
+This checks to see if header `P8_15` is high (`__R31 & P8_15`) which would
+indicate that the button is pressed and `P8_15` is connected to the 3.3V
+line.  If it is, it turns on the LED-resistor series connected to `P9_31`,
+and if not, it turns it off.  Be sure to configure your pins correctly before
+trying this code!
+
+    config-pin p8_15 pruin
+    config-pin p9_31 pruout
+
+This example is a bit trivial because the same would happen if there was no
+BeagleBone at all and you just had a switch in series with 3.3V, a resistor,
+and the LED.  To actually have the PRU apply some logic to the LED, I took it
+a step further and made the LED blink while the button was pressed.  My `main()`
+looks like this:
+
+```c
+#define SET_BIT(reg, bit) (reg) |= (bit)
+#define REMOVE_BIT(reg, bit) (reg) &= ~(bit)
+#define IS_SET(reg, bit) (reg) & (bit)
+
+void main(void) {
+    uint8_t led_state = 0;
+    REMOVE_BIT(__R30, P9_31); /* initial LED state is off */
+
+    while (1) {
+        /* if button is pressed */
+        if (IS_SET(__R31, P8_15)) {
+            /* alternate between LED on and off */
+            if (led_state) {
+                REMOVE_BIT(__R30, P9_31);
+                led_state = 0;
+            }
+            else {
+                SET_BIT(__R30, P9_31);
+                led_state = 1;
+            }
+        }
+        else {
+            /* if button not pressed, make sure LED is off */
+            REMOVE_BIT(__R30, P9_31);
+        }
+        /* repeat this check every 0.1 seconds */
+        __delay_cycles(CYCLES_PER_SECOND / 10);
+    }
+}
+```
+
+I also added the `SET_BIT`, `REMOVE_BIT`, and `IS_SET` macros for clarity this
+time.
+
+You can see the full source code for these button examples in my [BeagleBone
+PRU GitHub repository][pru-gpio github].
+
+[pru-gpio github]: https://github.com/glennklockwood/beaglebone-pru/tree/main/button
+
 ## PRU UART
 
 Each PRU has its own UART which are pretty similar to the [TI16C550C][], and
@@ -478,7 +627,32 @@ repository][pru-uart github].
 
 ## PRU Interrupt Controller
 
-A bit of nomenclature:
+Broadly speaking, _interrupts_ are a way to let a computer know that something
+important has happened and that it should be dealt with immediately.  When you
+click a link on this page, your mouse generates an interrupt.  The code that
+gets executed on this interrupt is its _interrupt handler_; for the mouse click,
+this might mean figuring out what link your cursor was hovering over when you
+clicked and sending your browser there.
+
+Interrupts exist so that a CPU core doesn't have to spend all its time checking
+the status of your mouse button to see if it is clicked.  Considering that
+every keyboard button, every mouse button, and every network packet that arrives
+generate an interrupt, you can understand why using the CPU to check for new
+interrupts, deciding how important they are, and executing interrupt handlers
+becomes very expensive.
+
+The interrupt controller exists to help mitigate this challenge.  Like an
+administrative assistant, it receives interrupts from peripherals and does the
+work of evaluating how important each one is and the order in which they must
+be handled by the operating system.  This means the operating system only needs
+to ask the interrupt controller what's next on the list of interrupts to be
+handled rather than check all of them and rank them itself.
+
+Each PRU has its own interrupt handler which does exactly this--receive and
+prioritize various events that may have to be dealt with.
+
+Specific to the PRU's interrupt handler documentation, there is a bit of
+nomenclature:
 
 - A **peripheral** is something that can talk to the PRU.
     - It can be something like a push button attached to a GPIO pin.
