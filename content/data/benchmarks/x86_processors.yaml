@@ -748,3 +748,45 @@
     - cores_used: 6
       wall_secs: 109
       memreorder_secs: 137
+- model: "Cray EX235n"
+  processor: "AMD EPYC 7763"
+  cache_l1i_kib: 32
+  cache_l1d_kib: 32
+  cache_l2_kib: 512
+  cache_l3_kib: 262144
+  _cache_comment: "private L2, shared L3"
+  mem: "256 GB"
+  mem_type: "DDR4-3200"
+  mem_speed: "204.8 GB/sec"
+  compiler: "GNU Fortran (GCC) 10.2.0 20200723 (Cray Inc.)"
+  hostname: "perlmutter"
+  compile_flags: "-mcpu=native -mtune=native -O3 -fdefault-real-8 -fdefault-double-8"
+  clock_mhz: 2450
+  results:
+    - cores_used: 1
+      wall_secs: 141
+      memreorder_secs: 124
+    - cores_used: 2
+      wall_secs: 145
+      memreorder_secs: 121
+    - cores_used: 3
+      wall_secs: 116
+      memreorder_secs: 104
+    - cores_used: 4
+      wall_secs: 114
+      memreorder_secs: 101
+    - cores_used: 8
+      wall_secs: 105
+      memreorder_secs: 98
+    - cores_used: 16
+      wall_secs: 127
+      memreorder_secs: 118
+    - cores_used: 32
+      wall_secs: 180
+      memreorder_secs: 160
+    - cores_used: 64
+      wall_secs: 237
+      memreorder_secs: 233
+    - cores_used: 128
+      wall_secs: 472
+      memreorder_secs: 425
