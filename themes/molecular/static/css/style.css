@@ -509,6 +509,15 @@ ul.section-nav li > ul > li {
     font-weight: normal;
 }
 
+ul.section-nav li:not(:first-child) {
+    margin-top: 0.5rem;
+}
+
+ul.section-nav li > ul > li:not(:first-child) {
+    margin-top: 0;
+}
+
+
 .toc-entry {
     /*display: block;*/
     margin-left: 1rem;
