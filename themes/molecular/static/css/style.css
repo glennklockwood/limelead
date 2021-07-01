@@ -501,6 +501,10 @@ ul.section-nav li {
     font-weight: bold;
 }
 
+ul.section-nav li > ul {
+    list-style-type: disc;
+}
+
 ul.section-nav li > ul > li {
     font-weight: normal;
 }
