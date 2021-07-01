@@ -486,8 +486,8 @@ ul.cv-vertical-list {
 /* toc stuff */
 .section-toc {
     position: sticky;
-    top: 9rem;
-    height: calc(100vh - 9rem);
+    top: 0;
+    height: 100vh;
     overflow-y: auto;
     order: 2;
     font-size: 0.9rem;
