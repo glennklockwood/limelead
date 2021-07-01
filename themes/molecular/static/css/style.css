@@ -493,9 +493,22 @@ ul.cv-vertical-list {
     font-size: 0.9rem;
 }
 
+ul.section-nav {
+    display: list-item;
+    list-style-type: none;
+}
+ul.section-nav li {
+    font-weight: bold;
+}
+
+ul.section-nav li > ul > li {
+    font-weight: normal;
+}
+
 .toc-entry {
-    display: block;
+    /*display: block;*/
     margin-left: 1rem;
+    font-weight: normal;
 }
 
 .toc-entry a {
