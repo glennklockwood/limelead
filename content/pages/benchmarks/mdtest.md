@@ -213,7 +213,7 @@ The time it takes for this to happen is _not_ reported by mdtest.
 
 ## Selecting Phases and Steps
 
-You can run only a subset of the phases and steps above.
+You can also choose to run a subset of the phases and steps above.
 
 ### Phase Selection
 
@@ -378,3 +378,108 @@ This results in the same tree structure as above, but it spreads the files as
 
 Again, our request for twenty items (`-n 20`) was rounded down to sixteen per
 MPI process so that each leaf node would get the same number of files.
+
+## Example Configurations
+
+Here are some example mdtest configurations drawn from real-world use cases that
+I've come across.
+
+### IO500
+
+The IO500 benchmark contains several mdtest runs.
+
+mdtest-hard does
+
+Option   | Purpose
+---------|---------
+-n #     | create # files/dirs per MPI process
+-F       | only perform file tests
+-P       | print both metadata rate and raw timings
+-N 1     | do not read (`-e`) from the same node that wrote (`-w`)
+-d X     | run test in directory X
+-x X     | save stonewall progress from create phase to file named X
+-t       | "time unique working directory overhead" (what does this mean?)
+-w 3901  | write 3901 bytes to the file after it is created
+-e 3901  | read 3901 bytes from each file after it is created
+
+All parts of the mdtest-easy test do
+
+Option   | Purpose
+---------|---------
+-n #     | create X files/dirs per MPI process
+-F       | only perform file tests
+-P       | print both metadata rate and raw timings
+-N 1     | do not read (`-e`) from the same node that wrote (`-w`)
+-d X     | run test in directory X
+-x X     | save stonewall progress from create phase to file named X
+-u       | each MPI process gets its own directory
+-L       | only create files in leaf directories
+
+And the following arguments are appended to run the different phases of mdtest-easy:
+
+Phase              | Extra Args | Purpose
+-------------------|------------|------
+mdtest-easy-write  | -C -Y -W # | run create step, sync after every phase, and stonewall for # seconds
+mdtest-easy-stat   | -T         | run stat step
+mdtest-easy-delete | -r         | run removal step
+
+### NERSC Acceptance Tests
+
+The following tests were run on NERSC's Cori system as part of its file system
+acceptance.  These arguments were used with a much older version of mdtest
+(1.8.3) but the functionality is the same.
+
+**Testing multiple files in a single directory**:
+
+Option   | Purpose
+---------|---------
+-n 20    | create 20 files/dirs per MPI process
+-i 3     | run each test three times
+-F       | only perform file tests
+-C       | run create step
+-T       | run stat step
+-r       | run removal step
+-N 32    | files created by rank X are statted by rank X + 32
+-v       | increase verbosity
+
+**Testing multiple files in multiple directories**.  Note that multiple output
+directories were specified here to allow one mdtest run to exercise multiple
+metadata servers configured using Lustre DNE Phase 1 (remote directories):
+
+Option   | Purpose
+---------|---------
+-n 20    | create 20 files/dirs per MPI process
+-i 2     | run each test twice
+-F       | only perform file tests
+-C       | run create step
+-T       | run stat step
+-r       | run removal step
+-u       | each MPI process gets its own directory
+-v       | increase verbosity
+-d ...   | specify multiple output directories
+
+The exact argument specified for the `-d` option was:
+
+```
+-d $SCRATCH/mdt0/d1@$SCRATCH/mdt1/d2@$SCRATCH/mdt0/d3@$SCRATCH/mdt2/d4@$SCRATCH/mdt0/d5@$SCRATCH/mdt3/d6@$SCRATCH/mdt0/d7@$SCRATCH/mdt4/d8
+```
+
+**Testing a single file in a single directory**.  This test measured how well
+access to a single file performed by creating a file and then statting it using
+thousands of compute nodes.
+
+Option   | Purpose
+---------|---------
+-n 1     | create one file per MPI process
+-S       | use shared-file access (create one file, stat it with all ranks, then remove it)
+-i 3     | run each test three times
+-F       | only perform file tests
+-C       | run create step
+-T       | run stat step
+-r       | run removal step
+-N 32    | files created by rank X are statted by rank X + 32
+-v       | increase verbosity
+
+This is a strange run because the only meaningful metric is the _file stat_
+rate; the other phases (create/removal) reflect rank 0 creating and removing the
+single shared file.
