@@ -427,7 +427,16 @@ mdtest-easy-delete | -r         | run removal step
 
 The following tests were run on NERSC's Cori system as part of its file system
 acceptance.  These arguments were used with a much older version of mdtest
-(1.8.3) but the functionality is the same.
+(1.8.3) but the functionality is mostly the same.
+
+**The biggest exception is `-N 1` vs. `-N 32`!**  In older mdtest version,
+`-N 32` meant "offset each step by 32 MPI processes."  This mean that if you
+were running with 32 processes per node, the rank that statted a file would be
+on a different node than the rank that created it if your resource manager
+mapped MPI processes to nodes contiguously.  However in newer versions, mdtest
+will detect if your MPI ranks are mapped contiguously or round-robin and do
+the right thing, effectively making this parameter now mean "offset each step
+by 1 compute node" for `-N 1`.
 
 **Testing multiple files in a single directory**:
 
