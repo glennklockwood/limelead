@@ -9,14 +9,20 @@ This page remains a work in progress.
 
 {% call alert(type="warning") %}
 Do not run md-workbench with the default parameters because they reflect a
-bnechmark that will run for a very long time.
+benchmark that will run for a very long time.
 {% endcall %}
+
+md-workbench generates a semi-synchronous metadata-intensive workload that was
+designed to mimic what a parallel compilation may look like to a file system.
+It runs in three phases which are described below.
 
 Let's take a look at what a simple md-workbench does:
 
     mpirun -n 2 md-workbench -I 11 -P 7 -D 3
 
-## Phase 1
+## Phase 1 - Precreate phase
+
+This phase can be isolated by specifying the `-1` or `--run-precreate` option.
 
 Rank 0 does
 
@@ -44,9 +50,14 @@ then repeat this for `out/0_1` and `out/0_2`.
 
 Then there's a barrier.
 
-## Phase 2
+The 3901-byte file size can be changed using `-S` or `--object-size`, and this
+phase can be run multiple times using `-R` or `--iterations`.
 
-Then rank 0 does:
+## Phase 2 - Benchmark phase
+
+This phase can be isolated by specifying the `-2` or `--run-benchmark` option.
+
+Rank 0 does:
 
 - `stat(out/1_0/file-0)`
 - `open(out/1_0/file-0)`
@@ -65,9 +76,11 @@ this shuffling is determined.
 
 Then there's a barrier.
 
-## Phase 3
+## Phase 3 - Cleanup phase
 
-Finally, rank 0:
+This phase can be isolated by specifying the `-3` or `--run-cleanup` option.
+
+Rank 0:
 
 - unlinks the seven files in `./out/0_0/`
 - `rmdir(./out/0_0/)`
