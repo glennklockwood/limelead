@@ -102,6 +102,10 @@ both harmless warnings and a full job failure, and I'm not sure what
 circumstances lead to what.  To be safe, just always specify both `-P` and `-I`
 for all phases.
 
+Also, the default number of iterations is 3 (`-R 3`) which means this test
+will run three times before completing.  It's a good idea to specify `-R 1` if
+you want the test to complete quickly.
+
 ## Phase 3 - Cleanup phase
 
 This phase can be isolated by specifying the `-3` or `--run-cleanup` option.
