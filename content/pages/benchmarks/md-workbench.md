@@ -119,6 +119,80 @@ Repeat for `0_1/` and `0_2/`.
 
 Rank 1 does the same for its directories and files from Phase 1.
 
+## Understanding Output
+
+The default output of md-workbench is not labeled very well.  It looks something
+like this (but note that I adding some line breaks for clarity):
+
+```
+benchmark process
+max:60.73s min:60.08s mean: 60.45s balance:98.9 stddev:0.2
+rate:2420.7 iops/s objects:36750 rate:605.2 obj/s tp:4.5 MiB/s op-max:4.7359e-01s (0 errs)
+stonewall-iter:32
+read(6.6781e-04s, 1.2720e-03s, 2.1476e-03s, 4.7331e-03s, 9.7501e-03s, 2.6300e-02s, 9.0354e-02s)
+stat(5.8293e-04s, 1.3051e-03s, 2.2000e-03s, 4.6260e-03s, 8.8098e-03s, 2.3064e-02s, 9.9011e-02s)
+create(3.1090e-03s, 2.6335e-02s, 4.2686e-02s, 7.1706e-02s, 1.0507e-01s, 1.8351e-01s, 4.7359e-01s)
+delete(1.4300e-03s, 9.6769e-03s, 1.4584e-02s, 2.1045e-02s, 3.1489e-02s, 7.1808e-02s, 3.3352e-01s)
+```
+
+Let's break this down.  First are the basic statistics:
+
+- **max**, **min**, and **mean** reflect the wall seconds used by the slowest and fastest MPI ranks
+- **balance** is the fastest rank's time divided by the slowest rank's time (in percent)
+- **std** is the standard deviation of all ranks' time
+
+Then the benchmark rate summaries:
+
+- **rate** (for iops/s) is the number of successful open/read/close/unlink/create+open/write/close
+  cycles successfully completed divided by walltime.  To express this rate in
+  IOPS, it multiplies the number of successful cycles by **four** I/O
+  operations.  md-workbench considers one cycle to be four I/O operations
+  (write, stat, read, delete), but I don't agree.  You can ultimately divide
+  `rate` by four to get the cycle rate, then multiply it by whatever number of
+  I/O operations per cycle you care to use.  
+- **objects** are the number of objects (files) successfully manipulated
+- **rate** (for obj/s) is `objects` divided by time - this is the same as the
+  cycle rate and should be exactly 0.25 times the `rate` for iops/s discussed
+  above.
+- **tp** is the number of bytes successfully read and written over the whole
+  benchmark phase divided by overall walltime.  It is literally (objects created
+  \+ objects read) multiplied by the mebibytes-per-object and divided by
+  walltime.
+- **op-max** is the time taken by the slowest single operation (stat, create,
+  read, close, etc) by any MPI rank.  Not a terribly useful metric, but it tells
+  you if a single operation on a single MPI rank dominated the overall walltime.
+
+The **stonewall-iter** is how many cycles successfully complete.  This value will
+never exceed whatever you specified for `-I`.
+
+Finally, statistics are shown for each of the I/O operations per cycle
+(read/stat/create/delete).  They take the form
+
+```
+opname(min, q1, median, q3, q90, q99, max)
+```
+
+which is pretty self-explanatory:
+
+- **opname** denotes the timing for stat/create/read/close
+- **min** - fastest time to complete the I/O operation
+- **q1** - time taken to complete the op corresponding to first quartile
+- **median** - the median operation time
+- **q3** - time taken to complete the op corresponding to third quartile
+- **q90** - time taken to complete the op corresponding to the 90th percentile - these are going to be pretty slow
+- **q99** - time taken to complete the op corresponding to the 99th percentile - these are the long-tail stragglers
+- **max** - slowest time to complete the I/O operation
+
+If you specify `--print-detailed-stats`, you get a nice columnar summary of the
+benchmark phases' performance:
+
+```
+phase       d name  create  delete  ob nam  create  read    stat    delete  t_inc_b t_no_bar    thp max_t
+benchmark   0   0   20075   20075   20075   20075   62.191s 62.191s 2.40 MiB/s 1.2642e+00
+```
+
+but strangely, it silences the other statistics for each operation.
+
 ## Stonewalling
 
 md-workbench supports stonewalling via the `-w` option, but if you run your
