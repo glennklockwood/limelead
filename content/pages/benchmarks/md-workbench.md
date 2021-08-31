@@ -200,3 +200,13 @@ phases as separate jobs using `-1` and `-2` explicitly, Phase 2 will _only_ run
 with stonewalling if wear-out (`-W`) is also specified.  I think this is because
 md-workbench cannot store and recall the progress of each MPI rank after Phase
 1, so Phase 2 does not know how many files each rank should expect to touch.
+
+## Omitting I/O
+
+You can make md-workbench only test metadata operations by specifying `-S 0`.
+This sets the file size to 0 bytes, and md-workbench is smart enough to simply
+never call `read(2)` or `write(2)` during the precreate and benchmark phases.
+I argue that this is not a realistic test since from a user perspective since
+there are few reasons to open a file without not performing some I/O on it, but
+it is a good way to drive load on only the metadata subsystem on file systems
+that separate data from metadata (like Lustre).
