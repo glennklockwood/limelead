@@ -3,15 +3,6 @@ title: Getting Started with md-workbench
 shortTitle: md-workbench
 ---
 
-{% call alert(type="info") %}
-This page remains a work in progress.
-{% endcall %}
-
-{% call alert(type="warning") %}
-Do not run md-workbench with the default parameters because they reflect a
-benchmark that will run for a very long time.
-{% endcall %}
-
 md-workbench generates a semi-synchronous metadata-intensive workload that was
 designed to mimic what a parallel compilation may look like to a file system.
 It runs in three phases which are described below.
@@ -25,6 +16,11 @@ According to the manual,
 - `-I` is the number of "objects" (files) to manipulate per "data set" (directory)
 - `-P` is the number of objects to precreate per data set
 - `-D` is the number of data sets to manipulate per process
+
+{% call alert(type="warning") %}
+Do not run md-workbench with the default parameters because they reflect a
+benchmark that will run for a very long time.
+{% endcall %}
 
 ## Phase 1 - Precreate phase
 
