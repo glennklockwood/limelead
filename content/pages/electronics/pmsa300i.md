@@ -5,15 +5,15 @@ mathjax: True
 ---
 
 The [Adafruit PMSA003I Air Quality Breakout][] is a sensor that measures and
-reports the amount of particulates in ambient air.  This Plantower PMSA003I
+reports the amount of particulates in ambient air.  This [Plantower][] PMSA003I
 sensor is essentially the same devices used in [PurpleAir sensors][] which
-every Californian relies on to tell how safe it is to go outside during wildfire
-season.
+are indispensible during California's wildfire season.
 
-The PMSA003I exposes an I2C interface, but it is not very well documented
-outside of the Adafruit libraries that support it.  It also took me a while to
-figure out how the readings from this sensor relate to the AQI reported by
-PurpleAir.  What follows are my notes on how all of this works.
+This Adafruit PMSA003I exposes its readings via I2C interface, but it is not
+very well documented outside of the Adafruit libraries that support it.  It
+also took me a while to figure out how the readings from this sensor relate to
+the AQI reported by PurpleAir.  What follows are my notes on how all of this
+works.
 
 ## Getting Started - Beaglebone
 
@@ -58,12 +58,12 @@ for more information on how to interact with this sensor directly through I2C.
 
 The sensor exposes the following measurements via I2C:
 
-1. PM1.0 concentration in units of micrograms per cubic meter (&mu;g/m<sup>3</sup>) - _standard particle_ version
-2. PM2.5 concentration in &mu;g/m<sup>3</sup> - _standard particle/CF=1_ version
-3. PM10 concentration in &mu;g/m<sup>3</sup> - _standard particle/CF=1_ version
-4. PM1.0 concentration in &mu;g/m<sup>3</sup> - _atmospheric environment/CF=atm_ version
-5. PM2.5 concentration in &mu;g/m<sup>3</sup> - _atmospheric environment/CF=atm_ version
-6. PM10 concentration in &mu;g/m<sup>3</sup> - _atmospheric environment/CF=atm_ version
+1. PM1.0 concentration in units of micrograms per cubic meter (&mu;g/m<sup>3</sup>) - _standard (CF=1)_ version
+2. PM2.5 concentration in &mu;g/m<sup>3</sup> - _standard (CF=1)_ version
+3. PM10 concentration in &mu;g/m<sup>3</sup> - _standard (CF=1)_ version
+4. PM1.0 concentration in &mu;g/m<sup>3</sup> - _environmental (CF=atm)_ version
+5. PM2.5 concentration in &mu;g/m<sup>3</sup> - _environmental (CF=atm)_ version
+6. PM10 concentration in &mu;g/m<sup>3</sup> - _environmental (CF=atm)_ version
 7. Number of particles of size &gt; 0.3 microns in units of particles per decileter
 8. Number of particles of size &gt; 0.5 microns in units of particles per decileter
 9. Number of particles of size &gt; 1.0 microns in units of particles per decileter
@@ -80,13 +80,13 @@ immediately:
 
 ### Standard PM vs. Environment PM
 
-It turns out that nobody appears to know what the difference between these two
-measurements are.  There are only two hints as to which one to use.
+Nobody seems to know what the difference between these two measurements are.
+There are only two hints as to which one to use.
 
-The [PMSA300I datasheet][] simple says "CF = 1 should be used in the factory
-environment" at the very bottom which suggests it is only meant to be used for
-factory calibration and the _atmospheric environment_ metrics are the ones we
-should use in real life.
+The [PMSA300I datasheet][] simply says "CF = 1 should be used in the factory
+environment" which suggests it is only meant to be used for factory calibration
+and the _atmospheric environment_ metrics are the ones we should use in real
+life.
 
 However a number of [slides presented by researchers at the US Environmental
 Protection Agency][EPA PurpleAir slides] used the _standard particle_ reading
@@ -97,13 +97,13 @@ nobody but the Plantower folks who manufacture this sensor really know.
 
 ### Calculating AQI
 
-I found that AQI is a rather mysterious metric because it is unitless, not
-well-defined mathematically, and has different mathematical definitions in
-different countries (and even the same country at different times!).  In
-the USA, the EPA defines the AQI using a set of linear functions that each
-correspond to one of eight ranges of unhealthiness.  These eight ranges are
-defined using "breakpoints," and for example, the EPA defines the breakpoints
-for the PM2.5 AQI as follows:
+AQI is a mysterious metric because it is unitless, not well-defined
+mathematically, and has different mathematical definitions in different
+countries (and even the same country at different times!).  In the USA, the
+EPA defines the AQI using a set of linear functions that each correspond to
+one of eight ranges of unhealthiness.  These eight ranges are defined using
+"breakpoints," and for example, the EPA defines the breakpoints for the PM2.5
+AQI as follows:
 
 AQI Category            | Lower AQI | Upper AQI | Low Breakpoint | High Breakpoint
 ------------------------|-----------|-----------|----------------|--------------
@@ -151,6 +151,7 @@ def calculate_aqi(conc):
     return aqi
 ```
 
+[Plantower]: http://www.plantower.com/en/
 [PMSA300I datasheet]: https://cdn-shop.adafruit.com/product-files/4632/4505_PMSA003I_series_data_manual_English_V2.6.pdf
 [Adafruit PMSA003I Air Quality Breakout]: https://www.adafruit.com/product/4632
 [PurpleAir sensors]: https://purpleair.com
