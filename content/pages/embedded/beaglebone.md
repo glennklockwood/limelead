@@ -837,6 +837,18 @@ header][bbb-srm p9 table] on page 67.
 
 ## Out-of-box experience
 
+I got a couple of different BeagleBones at the same time, and they each came
+with different versions of the BeagleBone OS image.  Namely,
+
+1. My BeagleBone Black came preinstalled with the 2020-04-06 IoT image because
+   (apparently) the standard image is no longer updated.
+2. My BeagleBone Black Wireless came preinstalled with the 2018-10-07 standard
+   image
+
+I had very different out-of-box experiences with these two.
+
+### IoT Image 2020-04-06
+
 The out-of-box experience, despite being zero-download, feels incomplete.  It
 uses a web-based user interface (nice), but dumps you into a directory full of
 examples without any tutorial (not nice).  The online documentation (for
@@ -896,6 +908,39 @@ information on the cast of characters involved appears [here](https://beagleboar
 
 Beyond this, there's not much to do--browse the example source code, run some of
 the test scripts in cloud9, and move on with life.
+
+### Debian Image 2018-10-07
+
+The 2018-10-07 image was as-advertised.  I plugged the BeagleBone Black Wireless
+into my Mac using the provided micro-USB cable and it powered on.  Three
+different interfaces into the BeagleBone were immediately available:
+
+1. My Mac recognized the FAT partition as a USB mass storage device and mounted
+   it
+2. My Mac also recognized the BeagleBone's serial-over-USB, exposed it as
+   `/dev/tty.usbmodem2009BBWG09115`, and I was able to connect using 115,200
+   baud
+3. The BeagleBone started up a wireless access point to which anyone can
+   connect.  Once connected, the BeagleBone is accessible at 192.168.8.1.
+
+Using the third method (connect to the wifi AP), navigating to
+<http://192.168.1.1/> brings up a version of the [BeagleBone 101 page][] that
+appears to be newer than what's on beagleboard.org.  In addition to what's on
+the beagleboard.org version, the embedded version of BeagleBone 101 has
+
+1. Working BoneScript widgets
+2. A neat interactive BeagleBone-UI that allows you to play with the BeagleBone
+   GPIO pins visually using the browser
+3. A link to and description of the onboard Node-RED services that are also
+   included
+
+The out-of-box experience for this 2018-10-07 image is like night and day
+compared to the 2020-04-06 IoT image that shipped with my non-wireless
+BeagleBone Black.  Not only does everything work in the 2018-10-07 image, but
+everything seems documented and referenced even better than what's on
+beagleboard.org.  I don't know what regressed between 2018-10-07 and 2020-04-06,
+but it seems a shame that newer BeagleBone OS images give new users such a sour
+experience compared to what it used to be.
 
 [Ansible playbooks for SBCs]: http://github.com/glennklockwood/rpi-ansible
 [BeagleBone 101 page]: https://beagleboard.org/Support/bone101
