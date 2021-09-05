@@ -835,6 +835,36 @@ header][bbb-srm p9 table] on page 67.
 [bbb-srm p8 table]: https://github.com/beagleboard/beaglebone-black/wiki/System-Reference-Manual#711-connector-p8
 [bbb-srm p9 table]: https://github.com/beagleboard/beaglebone-black/wiki/System-Reference-Manual#712-connector-p9
 
+### Re-image the eMMC
+
+To install a newer version of the BeagleBone OS or reset it to the stock OS
+image, you have to re-flash the OS image on the eMMC.  A lot of instructions
+online say that holding down the boot select button while powering on is
+enough to both boot from the SD card image and flash it to the eMMC.
+**This does not work for newer images as of 2021** it just forces the BeagleBone
+to boot off the SD card instead of the eMMC.
+
+To copy the SD card to the eMMC, you have to
+
+1. Write an OS image to an SD card, insert the SD card, power down the
+   BeagleBone, then power it on while holding the boot select button on the
+   upper side of the BeagleBone, near the SD card slot.
+2. Connect to the BeagleBone using its serial-over-USB to get to the console
+   of the OS that booted off the SD card.
+3. Log in and edit /boot/uEnv.txt.  At the bottom of the file, uncomment the
+   following line:
+
+```
+cmdline=init=/opt/scripts/tools/eMMC/init-eMMC-flasher-v3.sh
+```
+
+This tells the BeagleBone should run the script to flash the eMMC on boot-up.
+
+Now reboot without holding the boot select button.  This will cause the eMMC
+to be re-flashed which will take a while.  After it is complete, pop out the
+SD card so that the BeagleBone boots back off of eMMC, and you should have a
+fresh OS installed.
+
 ## Out-of-box experience
 
 I got a couple of different BeagleBones at the same time, and they each came
