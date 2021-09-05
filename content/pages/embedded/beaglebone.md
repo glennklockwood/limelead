@@ -8,6 +8,13 @@ shortTitle: BeagleBone
 I have been folding much of this into [Ansible playbooks for SBCs][], so have a
 look at the `beaglebone` role there for more details.
 
+The first step after successfully powering on is to follow the instructions on
+[upgrade the software on your Beagle][bbb.io/upgrade].  Afterwards, there's
+additional cleanup you can do to turn off non-essential services and free up
+space on the eMMC.
+
+[bbb.io/upgrade]: https://bbb.io/upgrade
+
 ### BeagleBone-specific services
 
 In addition to stock Debian, the BeagleBone board has some extra services that
