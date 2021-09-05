@@ -15,6 +15,31 @@ space on the eMMC.
 
 [bbb.io/upgrade]: https://bbb.io/upgrade
 
+### Basic BeagleBone security
+
+The default login for BeagleBone is via username `debian` and password `temppwd`
+which is plastered all over every interface it exposes.  This is a big problem
+on BeagleBone Black Wireless because it boots up and starts its own wireless
+access point (AP) by default, allowing anyone within wifi range to have full
+administative access to your device.
+
+If you live in a densely populated area (like the Bay Area, where I live), you
+should disable this as soon as possible:
+
+1. Edit `/etc/default/bb-wl18xx`
+2. Change `TETHER_ENABLED=yes` to `TETHER_ENABLED=no`
+3. Reboot
+
+Once the BeagleBone comes back up, you can verify that that the access point is
+off:
+
+```
+debian@beaglebone:~$ ip addr list SoftAP0
+Device "SoftAP0" does not exist.
+```
+
+If the device still exists, you are likely still vulnerable.
+
 ### BeagleBone-specific services
 
 In addition to stock Debian, the BeagleBone board has some extra services that
@@ -848,8 +873,8 @@ To install a newer version of the BeagleBone OS or reset it to the stock OS
 image, you have to re-flash the OS image on the eMMC.  A lot of instructions
 online say that holding down the boot select button while powering on is
 enough to both boot from the SD card image and flash it to the eMMC.
-**This does not work for newer images as of 2021** it just forces the BeagleBone
-to boot off the SD card instead of the eMMC.
+**This does not work for BeagleBone Black**; it just forces the BeagleBone
+Black to boot off the SD card instead of the eMMC.
 
 To copy the SD card to the eMMC, you have to
 
