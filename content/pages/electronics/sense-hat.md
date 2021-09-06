@@ -13,6 +13,11 @@ contains my notes in using the Sense HAT with a BeagleBone Black, but a similar
 procedure can be followed for any controller (including Arduino) that supports
 I2C.
 
+All of the example code here can be found in my [BeagleBone/Sense HAT GitHub
+repository][github repo].
+
+[github repo]: https://github.com/glennklockwood/beaglebone-sensehat
+
 ## Available Sensors
 
 The Sense HAT contains the following sensors attached via I2C:
