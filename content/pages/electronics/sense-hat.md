@@ -36,13 +36,16 @@ Model        | I2C Address    | Functionality
 -------------|----------------|----------------------------------
 [LED2472G][] | `0x46`         | LED display driver
 
-It works in conjuction with a 5V [SN74AHCT245PWR bus transceiver][], an external
-5V power source for the LEDs, and the the on-board ATTiny88 microcontroller.  If
-you wish to use the LED driver functionality, you will have to supply 5V power
-as well.
+The I2C interface is actually provided by the ATTiny microcontroller which gives
+a nicer ([albeit undocumented][undocumented attiny]) interface into the actual
+LED2472G circuit.  The [Sense HAT schematics][] suggest the LED matrix
+requires 5V since there's a 5V [SN74AHCT245PWR bus transceiver][] inline with
+it, but I've found that just using 3.3V is sufficient to drive the LED matrix.
 
 [LED2472G]: https://www.st.com/en/power-management/led2472g.html
+[Sense HAT schematics]: https://datasheets.raspberrypi.org/sense-hat/sense-hat-schematics.pdf
 [SN74AHCT245PWR bus transceiver]: https://www.ti.com/store/ti/en/p/product/?p=SN74AHCT245PWR
+[undocumented attiny]: https://www.raspberrypi.org/forums/viewtopic.php?t=207775
 
 Finally, there is a joystick ([Alps Alpine SKRHABE010][]) and EEPROM ([onsemi CAT24C32][])
 as well:
@@ -226,3 +229,77 @@ Temperature:       30.23 C
 ```
 
 [CircuitPython HTS221 library documentation]: https://circuitpython.readthedocs.io/projects/hts221/en/latest/index.html
+
+### LED matrix display
+
+There is no CircuitPython library for the Sense HAT's LED2472G and 8x8 LED
+matrix because the Sense HAT doesn't actually expose the LED2472G natively;
+instead, its onboard ATTiny microcontroller exposes an I2C interface that makes
+programming the LED matrix much easier.
+
+However, we can still make our own CircuitPython driver for the Sense HAT's I2C
+interface into these LEDs.  It looks something like this:
+
+```python
+import board
+import busio
+from adafruit_bus_device.i2c_device import I2CDevice
+
+DEVICE_ADDRESS = 0x46
+
+class LED2472G:
+    def __init__(self, i2c_bus, address=DEVICE_ADDRESS):
+        self.i2c_device = I2CDevice(i2c, address)
+        self.clear()
+
+    def clear(self):
+        self.pixels = [0] * (8 * 8 * 3 + 1)
+
+    def set_pixel(self, x, y, red, green, blue):
+        linear_addr = x * 8 + y
+        r_addr = (y * 24) + x + 1
+        g_addr = r_addr + 8
+        b_addr = g_addr + 8
+        self.pixels[r_addr] = int(red * 64)
+        self.pixels[g_addr] = int(green * 64)
+        self.pixels[b_addr] = int(blue * 64)
+
+    def update(self):
+        with self.i2c_device as display:
+            display.write(bytearray(self.pixels))
+```
+
+Put simply, we control the 64 LEDs using the knowledge that I2C registers...
+
+- 1-8 control the redness of LEDs along the first row
+- 9-16 control the greenness of the LEDs along the first row
+- 17-24 control the blueness of the LEDs along the first row
+- 25-32 control the redness of LEDs along the second row
+- 33-40 control the greenness of the LEDs along the second row
+- etc
+
+The value of each register only holds six bits (0b00111111), so 63 is the
+highest brightness you can set.  If you set the two highest-order bits, (e.g.,
+`0b11000000)`, you wind up lighting up part of the next LED in the column,
+the lower six bits are ignored, and the intended LED sits at maximum brightness.
+
+To test the above driver, you can do something like this:
+
+```python
+i2c = board.I2C()
+display = LED2472G(i2c)
+
+print("Use ctrl+d to exit the following loop!")
+while True:
+    addr = input("Enter x, y (0-7): ")
+    x, y = [int(z) for z in addr.replace(",", " ").split()]
+    value = input("Enter r, g, b (0.0-1.0): ")
+    r, g, b = [float(z) for z in value.replace(",", " ").split()]
+    display.clear()
+    display.set_pixel(x, y, r, g, b)
+    display.update()
+```
+
+Enter x and y coordinates (in zero-based indexing) and red, green, and blue
+values that range from 0.0 to 1.0, and the corresponding LED should illuminate
+to that color.
