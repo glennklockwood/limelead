@@ -265,9 +265,9 @@ class LED2472G:
         r_addr = (y * 24) + x + 1
         g_addr = r_addr + 8
         b_addr = g_addr + 8
-        self.pixels[r_addr] = int(red * 64)
-        self.pixels[g_addr] = int(green * 64)
-        self.pixels[b_addr] = int(blue * 64)
+        self.pixels[r_addr] = int(red * 63)
+        self.pixels[g_addr] = int(green * 63)
+        self.pixels[b_addr] = int(blue * 63)
 
     def update(self):
         with self.i2c_device as display:
