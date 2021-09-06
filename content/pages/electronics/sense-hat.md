@@ -81,6 +81,148 @@ and it should look like this:
 
 {{ figure("bbb-sensehat.jpg", alt="Sense HAT pinout photo") }}
 
-As soon as you apply 3.3V and ground, the LED matrix will light up.
+As soon as you apply 3.3V and ground, the LED matrix will light up.  You can
+also verify that the I2C devices are detected by querying with `i2cdetect`:
+
+```
+$ i2cdetect -y -r 2
+     0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
+00:          -- -- -- -- -- -- -- -- -- -- -- -- -- 
+10: -- -- -- -- -- -- -- -- -- -- -- -- 1c -- -- -- 
+20: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+30: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
+40: -- -- -- -- -- -- 46 -- -- -- -- -- -- -- -- -- 
+50: -- -- -- -- -- -- -- -- -- -- -- -- 5c -- -- 5f 
+60: -- -- -- -- -- -- -- -- -- -- 6a -- -- -- -- -- 
+70: -- -- -- -- -- -- -- --                         
+```
+
+Referencing the table above, we see that the LSM9DS1's magnetometer (`0x1C`),
+LPS25H (`0x5C`), HTS221 (`0x5F`), and LSM9DS1's accelerometer/gyroscope (`0x6a`)
+are all detected.
 
 [sense hat pinout]: https://pinout.xyz/pinout/sense_hat
+
+## Accessing sensors with Python
+
+The easiest way to verify that you can talk to the Sense HAT's sensors is using
+CircuitPython libraries.  First set up a virtual environment with all the
+necessary libraries:
+
+```
+$ python3 -mvenv adafruit
+$ . adafruit/bin/activate
+(adafruit) $ pip install adafruit-blinka
+(adafruit) $ pip install adafruit_bbio
+```
+
+Then try out each sensor individually.
+
+### LPS25 pressure sensor
+
+Following the instructions on the [CircuitPython LPS2x Python library documentation][], first install the library:
+
+```
+(adafruit) $ pip3 install adafruit-circuitpython-lps2x
+```
+
+Then run this simple Python code, noting that we have to explicitly pass the I2C
+address because the CircuitPython library expects the LPS25 to be at a different
+address:
+
+```python
+import board
+import adafruit_lps2x
+
+i2c = board.I2C()
+lps = adafruit_lps2x.LPS25(i2c_bus=i2c, address=0x5c)
+
+print("Pressure:    {:.2f} hPa".format(lps.pressure))
+print("Temperature: {:.2f} C".format(lps.temperature))
+```
+
+To test this,
+
+```
+(adafruit) $ python3 test-lps25.py 
+Pressure:    1013.27 hPa
+Temperature: 29.06 C
+```
+
+Recall from physics class that atmospheric pressure is 1013.25 hectopascals.
+
+[CircuitPython LPS2x Python library documentation]: https://circuitpython.readthedocs.io/projects/lps2x/en/latest/index.html
+
+### LSM9DS1 accelerometer, gyroscope, and magnetometer
+
+Following the instructions on the [CircuitPython LSM9DS1 library documentation][], first install the library:
+
+```
+(adafruit) $ pip3 install adafruit-circuitpython-lsm9ds1
+```
+
+Then run this Python code:
+
+```python
+import board
+import adafruit_lsm9ds1
+
+i2c = board.I2C()
+sensor = adafruit_lsm9ds1.LSM9DS1_I2C(
+    i2c=i2c,
+    mag_address=0x1C,
+    xg_address=0x6A)
+
+print("Accelerometer: x={:7.3f}  y={:7.3f}  z={:7.3f} m/s^2".format(*sensor.acceleration))
+print("Magnetometer:  x={:7.3f}  y={:7.3f}  z={:7.3f} gauss".format(*sensor.magnetic))
+print("Gyroscope:     x={:7.3f}  y={:7.3f}  z={:7.3f} radians/sec".format(*sensor.gyro))
+print("Thermometer:   {:.2f} C".format(sensor.temperature))
+```
+
+Note that the LSM9DS1 exposes two I2C addresses: one for the magnetometer, and
+another for the accelerometer and gyroscope.  We have to specify the addresses
+for both explicitly here since the CircuitPython library's defaults are not the
+ones used by the Sense HAT.
+
+To then test this,
+
+```
+(adafruit) $ python3 test-lsm9ds1.py
+Accelerometer: x=  5.611  y=-10.551  z= 19.600 m/s^2
+Magnetometer:  x=  0.256  y=  0.315  z=  0.173 gauss
+Gyroscope:     x= -1.005  y= -3.195  z= -0.805 radians/sec
+Thermometer:   25.50 C
+```
+
+[CircuitPython LSM9DS1 library documentation]: https://circuitpython.readthedocs.io/projects/lsm9ds1/en/latest/
+
+### HTS221 temperature and humidity sensor
+
+Following the instructions on the [CircuitPython HTS221 library documentation][], first install the library:
+
+```
+(adafruit) $ pip3 install adafruit-circuitpython-hts221
+```
+
+Then run this Python code:
+
+```python
+import board
+import adafruit_hts221
+
+i2c = board.I2C()
+hts = adafruit_hts221.HTS221(i2c)
+
+print("Relative humidity: {:.1f}%".format(hts.relative_humidity))
+print("Temperature:       {:.2f} C".format(hts.temperature))
+```
+
+You should see output that looks like this:
+
+```
+(adafruit) $ python3 test-hts221.py
+Relative humidity: 51.0%
+Temperature:       30.23 C
+```
+
+[CircuitPython HTS221 library documentation]: https://circuitpython.readthedocs.io/projects/hts221/en/latest/index.html
