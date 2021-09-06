@@ -252,7 +252,7 @@ from adafruit_bus_device.i2c_device import I2CDevice
 
 DEVICE_ADDRESS = 0x46
 
-class LED2472G:
+class LEDMatrix:
     def __init__(self, i2c_bus, address=DEVICE_ADDRESS):
         self.i2c_device = I2CDevice(i2c, address)
         self.clear()
@@ -292,7 +292,7 @@ To test the above driver, you can do something like this:
 
 ```python
 i2c = board.I2C()
-display = LED2472G(i2c)
+display = LEDMatrix(i2c)
 
 print("Use ctrl+d to exit the following loop!")
 while True:
@@ -308,3 +308,12 @@ while True:
 Enter x and y coordinates (in zero-based indexing) and red, green, and blue
 values that range from 0.0 to 1.0, and the corresponding LED should illuminate
 to that color.
+
+You can make this `LEDMatrix` class as fancy as you'd like for fun projects.
+To demonstrate, I made a BeagleBone Black scrolling the default rainbow pattern:
+
+{{ figure("bbb-sensehat-ledmatrix.gif", alt="Sense HAT LED matrix driven by BeagleBone") }}
+
+You can find the [source for this demo in my GitHub repository][bbb sensehat demo].
+
+[bbb sensehat demo]: https://github.com/glennklockwood/beaglebone-sensehat/blob/85333c8b60ef0a0ebc0926336d2e277898f23efe/sensehatleds.py
