@@ -167,5 +167,8 @@ be extended to the second peak, which would yield the second-nearest-neighbors.
 This can be a very useful metric in determining the defect concentration in
 glasses, ionic coordination in solutions, etc.
 
+You can get a sense for how this RDF calculation is performed by looking at an
+[example RDF calculation I implemented in Python](https://github.com/glennklockwood/md-intro/blob/master/rdf.py).
+
 ---
 Next page: [Extracting Data from Output with grep](7-extracting-data-with-grep.html)
