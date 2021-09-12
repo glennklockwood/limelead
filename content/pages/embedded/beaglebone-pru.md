@@ -1,6 +1,7 @@
 ---
 title: Programming the BeagleBone PRU-ICSS
 shortTitle: BeagleBone PRU-ICSS
+order: 20
 ---
 
 ## The Programmable Real-time Unit (PRU)

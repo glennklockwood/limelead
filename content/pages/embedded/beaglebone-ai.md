@@ -1,6 +1,7 @@
 ---
 title: Getting started with the BeagleBone AI
 shortTitle: BeagleBone AI
+order: 30
 ---
 
 ## Out of box

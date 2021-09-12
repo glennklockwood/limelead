@@ -1,6 +1,7 @@
 ---
 title: Getting started with the BeagleBone Black
 shortTitle: BeagleBone
+order: 10
 ---
 
 ## System Configuration
