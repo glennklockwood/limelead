@@ -404,7 +404,7 @@ $ sudo lsof -i :8000
 If you restart the BoneScript service by hand, it will work now:
 
 ```
-$ sudo systemctl restart bonescript.service
+$ sudo systemctl enable bonescript.service
 ```
 
 You can now access the BeagleBone's proper web interface by going to
