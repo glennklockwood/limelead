@@ -272,7 +272,7 @@ as documented in the [TIDL on BeagleBone AI][] blog post, but I had an easier
 time running it directly from the command line.  To do so,
 
     $ cd /var/lib/cloud9/BeagleBone/AI/tidl
-    /var/lib/cloud9/BeagleBone/AI/tidl$ make
+    $ make
 
 This should compile.  Then plug your favorite webcam into the USB port of your
 BeagleBone AI.  Confirmed that Linux recognizes the webcam:
@@ -286,7 +286,7 @@ Sep 12 14:54:06 beaglebone kernel: usbcore: registered new interface driver uvcv
 
 Then run the demo app:
 
-    debian@beaglebone:/var/lib/cloud9/BeagleBone/AI/tidl$ make run
+    $ make run
     /var/lib/cloud9/common/Makefile:27: MODEL=BeagleBoard.org_BeagleBone_AI,TARGET=,COMMON=/var/lib/cloud9/common
     Makefile:10: warning: overriding recipe for target 'clean'
     /var/lib/cloud9/common/Makefile:224: warning: ignoring old recipe for target 'clean'
@@ -339,6 +339,11 @@ for (int i = 0; i < selected_items_size; i++)
 std::cout << "loading configuration" << std::endl;
 configuration.numFrames = 0;
 ```
+
+After this change, a bunch of incorrect labels are spit out by the application,
+but it is able to correctly classify George as a tabby cat:
+
+{{ figure("tidl-classifier-george.png", alt="Screenshot from TIDL demo app classifying George the cat") }}
 
 [TIDL on BeagleBone AI]: https://beagleboard.org/p/175809/tidl-on-beaglebone-ai-1ee263
 [tidl demo labels]: https://github.com/beagleboard/cloud9-examples/blob/v2020.01/BeagleBone/AI/tidl/classification.tidl.cpp#L106-L115
