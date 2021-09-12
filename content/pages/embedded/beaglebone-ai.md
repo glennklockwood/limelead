@@ -133,8 +133,113 @@ You may have to re-[disable the wireless AP](#disable-the-wifi-ap)
 
 ## Hardware
 
-The BeagleBone AI has significantly more peripherals than the BeagleBone Black,
-and many are exposed via the same remote processor interface as the PRUs:
+The BeagleBone AI features a Texas Instruments Sitara AM5749 system-on-a-chip
+with
+
+* Two Arm Cortex-A15 cores (1.5 GHz)
+* Two TMS320C66x digital signal processor (DSP) CorePacs (750 MHz)
+* Two Embedded Vision Engine (EVE) Deep Learning Accelerators (DLAs) (650 MHz)
+* Two dual-core ARM Cortex-M4 image processing unit (IPU) subsystems (213 MHz)
+* Two dual-core Programmable Real-time Unit / Industrial Communications
+  Subsystems (PRU-ICSSes) (200 MHz)
+
+### Microprocessor unit
+
+The **microprocessor unit (MPU)** has two Arm Cortex-A15 cores
+
+**Purpose**: The MPU is designed to run the host OS.
+
+### DSP subsystem
+
+The **DSP subsystem** has two C66x digital signal processors which can perform
+both fixed-point and floating-point arithmetic.  Each DSP core has two multiply
+units and six add units which enable up to 12 GFLOP/s for 32-bit floating point.
+or 48 GFLOP/s for 16-bit floating point.  It also has special hardware and
+instructions for Galois field multiplication to hardware-accelerate parity for
+error correction, RAID, etc.
+
+**Purpose**: The DSPs are power-efficient accelerators for signal processing
+algorithms that rely on dense fixed- and floating-point arithmetic such as
+parity calculations and fourier transforms.
+
+**Usage**: BeagleBone AI ships with the [TI TMS320C6000 C/C++ code generation
+tools][ti c6000-cgt] which include the `cl6x` C/C++ compiler.  TI also provides
+a bunch of offload libraries for [FFTs][fftlib], [transcendental math
+functions][mathlib], [image processing][imglib] such as de-noising, and [linear
+algebra][dsplib].
+
+**More info**: The [TMS320C66x DSP CPU and Instruction Set Reference
+Guide][c66x isa guide] contains a lot more detail about the features of these
+DSPs, and the [C6000-CGT][ti c6000-cgt] webpage points to documentation on how
+to use the DSP compiler toolchain.
+
+[ti c6000-cgt]: https://www.ti.com/tool/C6000-CGT
+[c66x isa guide]: https://www.ti.com/lit/ug/sprugh7/sprugh7.pdf
+[fftlib]: https://www.ti.com/tool/download/FFTLIB
+[mathlib]: https://www.ti.com/tool/MATHLIB
+[imglib]: https://www.ti.com/tool/SPRC264
+[dsplib]: https://www.ti.com/tool/SPRC265
+
+### Vector coprocessors
+
+The **EVE DLAs** each have two processors: a 32-bit general-purpose processor
+called "ARP32" and a 512-bit vector coprocessor called "VCOP."  The VCOP
+provides a peak capability of 20.8 GFLOP/s for 16-bit floating point.
+
+**Purpose**: The EVE DLAs are meant to accelerate machine vision applications
+including inference using neural networks.  EVE was designed as a low-power
+accelerator for autonomous vehicles.
+
+**Usage**: For the BeagleBone AI, it appears that you are meant to interact with
+the EVE DLA subsystem entirely through its [TI Deep Learning (TIDL)
+libraries][tidl] rather than write your own native code against these
+coprocessors.  It looks like the is a C compiler for the ARP32 (`cl-arp32`)
+, and the VCOP is programmed in a C++ dialect called VCOP Kernel C.  Neither
+compiler is not included with BeagleBone AI.
+
+**More info**: Accessing most of Texas Instruments' EVE developer documentation
+[requires a non-disclosure agreement][eve nda thread].  In addition, the
+[AM574x Technical Reference Manual][] is missing its chapter on the EVE, but
+you can find a copy of it in other places including [Chapter 8 of the TDA2Px
+Technical Reference Manual][tda2px trm].
+
+[eve nda thread]: https://e2e.ti.com/support/processors-group/processors/f/processors-forum/967910/am5728-sitara-eve-documentation
+[tidl]: https://software-dl.ti.com/processor-sdk-linux/esd/docs/05_00_00_15/linux/Foundational_Components_TIDL.html
+[AM574x Technical Reference Manual]: https://www.ti.com/lit/ug/spruhz6l/spruhz6l.pdf
+[tda2px trm]: https://www.ti.com/lit/ug/spruif0c/spruif0c.pdf
+
+### Cortex-M4 processors
+
+The two "image processor units" (IPUs) each have two ARM Cortex-M4 r0p1 cores
+that run at up to 212.8 MHz.  Interestingly, these cores support performing a
+multiply-accumulate in a single cycle.
+
+**Purpose**: These are general-purpose microcontroller cores that you can use
+for any near-real-time applications.  Their name arises from their intended use
+in real-time image processing pipelines on Sitara AM57x SoCs, and TI supports
+installing and running their real-time OS, [TI-RTOS][], on these IPU cores.
+Some application notes I've found suggest these are included to control separate
+coprocessors for image signal processing and display systems as you might find
+in automobile backup cameras.
+
+**Usage**: Because these are just standard Cortex-M processors at heart, you
+should be able to use the [Linaro GNU Arm Embedded Toolchain][linaro toolchain]
+to build applications for the IPU cores.  I haven't verified this though.
+
+[linaro toolchain]: https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm
+
+[TI-RTOS]: https://www.ti.com/tool/TI-RTOS-MCU
+
+### Programmable real-time processors
+
+BeagleBone AI includes two dual-core programmable real-time units (PRUs), twice
+as many as earlier BeagleBones.  These devices are programmed in the same way
+as I described on my [BeagleBone PRU page][].
+
+### Linux interfaces
+
+The BeagleBone AI exposes many of its coprocessors through the same remote processor
+interface as the PRUs:
 
 ```
 debian@beaglebone:~$ ls -l /sys/class/remoteproc 
@@ -152,16 +257,91 @@ lrwxrwxrwx 1 root root 0 Sep 11 23:04 remoteproc7 -> ../../devices/platform/4400
 This tells us that
 
 - remoteproc0 and remoteproc1 are the ARM Cortex-M4 "image processing units"
-  (IPUs).  Each IPU has two Cortex-M4 cores.
-- remoteproc2 and remoteproc3 are the TI TMS320C66x digital signal processor
-  (DSP) "CorePacs."  Each has wide vector instructions that can do up to 32&#215; 32-bit multiplies per cycle.
-- remoteproc4 through remoteproc7 are our good old friends, the BeagleBone 
-  programmable real-time units (PRUs).
-
-These devices can be programmed with a process similar to programming PRUs that
-I describe in my [BeagleBone PRU page][].
+  (IPUs)
+- remoteproc2 and remoteproc3 are the TI TMS320C66x DSPs
+- remoteproc4 through remoteproc7 are our good old friends, the programmable
+  real-time units (PRUs).
 
 [BeagleBone PRU page]: {filename}beaglebone-pru.md
+
+## TIDL Demo
+
+The BeagleBone AI comes with a single demo application that uses both the EVEs
+and C66x DSPs to demonstrate image classification.  You can run it in Cloud9
+as documented in the [TIDL on BeagleBone AI][] blog post, but I had an easier
+time running it directly from the command line.  To do so,
+
+    $ cd /var/lib/cloud9/BeagleBone/AI/tidl
+    /var/lib/cloud9/BeagleBone/AI/tidl$ make
+
+This should compile.  Then plug your favorite webcam into the USB port of your
+BeagleBone AI.  Confirmed that Linux recognizes the webcam:
+
+```
+$ journalctl | grep usb | tail
+Sep 12 14:54:06 beaglebone kernel: usb 1-1: SerialNumber: BCA5A510
+Sep 12 14:54:06 beaglebone kernel: input: UVC Camera (046d:0825) as /devices/platform/44000000.ocp/488c0000.omap_dwc3_2/488d0000.usb/xhci-hcd.1.auto/usb1/1-1/1-1:1.0/input/input2
+Sep 12 14:54:06 beaglebone kernel: usbcore: registered new interface driver uvcvideo
+```
+
+Then run the demo app:
+
+    debian@beaglebone:/var/lib/cloud9/BeagleBone/AI/tidl$ make run
+    /var/lib/cloud9/common/Makefile:27: MODEL=BeagleBoard.org_BeagleBone_AI,TARGET=,COMMON=/var/lib/cloud9/common
+    Makefile:10: warning: overriding recipe for target 'clean'
+    /var/lib/cloud9/common/Makefile:224: warning: ignoring old recipe for target 'clean'
+    ...
+    About to start ProcessFrame loop!!
+    http://localhost:8080/?action=stream
+
+You can then navigate to <http://beaglebone.local:8090/?action=stream> to see
+the video stream.  If you put something in front of your webcam, you should see
+a classification appear in green text in the upper-left corner of the video
+stream:
+
+{{ figure("tidl-classifier.png", alt="Screenshot from TIDL demo app classifier") }}
+
+You should also see the classification appear in the terminal:
+
+    (487)=cellular_telephone
+    (487)=cellular_telephone
+    (487)=cellular_telephone
+    (504)=coffee_mug
+    (504)=coffee_mug
+
+You may notice that the classifier thinks a lot of things are cellular
+telephones; this is because the demo app is only set up to [classify ten
+different types of items][tidl demo labels]: baseballs, sunglasses, coffee
+mugs, beer glasses, water bottles, bagels, digital watches, cell phones, ping
+pong balls, and pill bottles.  Since these are the only things this demo app
+is looking for, it will never label objects as anything else.
+
+Sadly, cats are not among the list, but you can edit the `classification.tidl.cpp`
+source and pick whatever labels you'd like from the imagenet list in
+`/usr/share/ti/examples/tidl/classification/imagenet.txt`.  Or you can just
+load _all_ the labels and let the classifier go nuts; change the definition of
+`selected_size` and replace the list of labels with a loop that just copies
+the loaded labels:
+
+```c++
+populate_labels("/usr/share/ti/examples/tidl/classification/imagenet.txt");
+
+selected_items_size = size; // 10;
+selected_items = (int *)malloc(selected_items_size*sizeof(int));
+if (!selected_items) {
+    std::cout << "selected_items malloc failed" << std::endl;
+    return false;
+}
+// instead of copying individual labels, copy all of them
+for (int i = 0; i < selected_items_size; i++)
+    selected_items[i] = i;
+
+std::cout << "loading configuration" << std::endl;
+configuration.numFrames = 0;
+```
+
+[TIDL on BeagleBone AI]: https://beagleboard.org/p/175809/tidl-on-beaglebone-ai-1ee263
+[tidl demo labels]: https://github.com/beagleboard/cloud9-examples/blob/v2020.01/BeagleBone/AI/tidl/classification.tidl.cpp#L106-L115
 
 ## Assorted Howtos
 
