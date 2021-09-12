@@ -309,10 +309,8 @@ are facing an uphill journey to piece together what documentation is presently a
 ### IoT Image 2020-04-06
 
 A lot broke between the 2018-10-07 image and the 2020-04-06 image, leaving the
-out-of-box experience for new BeagleBone owners very poor.  I hope anyone who
-gets discouraged by this finds these notes and my instructions on how to
-(mostly) get the 2020-04-06 image working the way older versions did.  Things
-that do not work:
+out-of-box experience for new BeagleBone owners very poor.  The following do
+not work out of the box with 2020-04-06:
 
 1. Instead of taking you to the BeagleBone 101 getting started page, going to
    <http://beaglebone.local/> dumps you into Cloud9 with a directory full of
@@ -325,11 +323,13 @@ that do not work:
    - In 2020-10-04, the BoneScript is completely broken out of the box so none
      of it works anyway.
 
-What follows are some notes on my experiences and how to fix them.
+What follows are some notes on my experiences and how to fix them.  I hope
+anyone who gets discouraged by this finds these notes and my instructions on
+how to (mostly) get the 2020-04-06 image working the way older versions did.
 
 #### Fixing USB-tunneled Ethernet
 
-**USB tunneled Ethernet doesn't work out of box**.  macOS picks up the adapter
+USB tunneled Ethernet doesn't work out of box.  macOS picks up the adapter
 (as being unresponsive), the BeagleBone assigns itself the correct address 
 192.168.7.2), but macOS doesn't see the BeagleBone network device as being
 connected.  To get this USB gadget functionality working, you have to
@@ -412,17 +412,15 @@ You can now access the BeagleBone's proper web interface by going to
 put in such an obscure place in the newer BeagleBone Debian images.
 
 If this all works, you should be dropped in the BeagleBone 101 page which
-contains links to the demo services included:
+contains links to the other demo services included along with brief
+explanations:
 
-- <http://beaglebone.local/> - Cloud9
-- <http://beaglebone.local/bone101/> - This just gives you a static "upgrade
-  your software" page
+- <http://beaglebone.local/> - the Cloud9 IDE
 - <http://beaglebone.local/nodered/> - Node-RED
-- <http://beaglebone.local/ui/> - A neat little interactive prober of the
-  BeagleBone pinout
+- <http://beaglebone.local/ui/> - the Node-RED dashboard (unsure what this is) 
 
 Unfortunately the BoneScript widgets and integration still doesn't work, but
-maybe someday I will figure out how to fix that
+maybe someday I will figure out how to fix them.
 
 [Ansible playbooks for SBCs]: http://github.com/glennklockwood/rpi-ansible
 [BeagleBone 101 page]: https://beagleboard.org/Support/bone101
