@@ -258,76 +258,16 @@ fresh OS installed.
 I got a couple of different BeagleBones at the same time, and they each came
 with different versions of the BeagleBone OS image.  Namely,
 
-1. My BeagleBone Black came preinstalled with the 2020-04-06 IoT image because
-   (apparently) the standard image is no longer updated.
-2. My BeagleBone Black Wireless came preinstalled with the 2018-10-07 standard
+1. My BeagleBone Black Wireless came preinstalled with the 2018-10-07 standard
    image
+2. My BeagleBone Black came preinstalled with the 2020-04-06 IoT image because
+   (apparently) the standard image is no longer updated.
 
 I had very different out-of-box experiences with these two.
 
-### IoT Image 2020-04-06
-
-The out-of-box experience, despite being zero-download, feels incomplete.  It
-uses a web-based user interface (nice), but dumps you into a directory full of
-examples without any tutorial (not nice).  The online documentation (for
-example, the [BeagleBone 101 page][]) claims that you can try code right there
-in your browser.  However this functionality relies on a custom Javascript-based
-framework that, while logically motivated, has no parallels outside of the
-BeagleBone ecosystem, and I couldn't actually get it to work for whatever
-definition of "work" makes sense.  I still don't really know what's supposed
-to happen when I connect to <http://beaglebone.local/bone101/>.
-
-In addition, a lot of the documentation is spread across [beagleboard.org][official Getting Started docs],
-[elinux.org][], and a [Texas Instruments wiki][] which appears to have had all
-its contents deleted from the internet recently.  The documentation contains
-screen shots that are out of date, and the elinux.org wiki appears to be more a
-historical record of how things have evolved rather than how things exist today
-for new users; for example, many references to Angstrom Linux still exist
-despite Beagleboard Black not shipping since 2013.  Sadly, it appears that there
-was a lot of excitement and activity around Beagleboards in the early 2010s, but
-if you weren't on the bandwagon then, you are facing an uphill journey to piece
-together what documentation is presently accurate.
-
-What follows are some notes on my experiences in June 2021.
-
-USB tunneled Ethernet doesn't appear to work out of box.  macOS picks up the
-adapter (as being unresponsive), the BeagleBone assigns itself the correct
-address (192.168.7.2), but macOS doesn't see the BeagleBone network device as
-being connected.  After some amount of time (I'm not sure what triggers it)
-though, the adapter does come up and the BeagleBone can be accessed via
-<http://192.168.7.2/>.  I think this configuration is specified in
-`/etc/default/bb-boot`
-
-The [official Getting Started docs][] suggest that there is a nice getting
-started guide hosted on the board at the device IP address, but this does not
-seem to be the case.  Cloud9 is what comes up if you connect to the BeagleBone
-via http, and it throws you in the deep end.  I think what is meant to show up
-is the [BeagleBone 101 page][].  Picking through `/etc/nginx/sites-enabled/default`
-reveals that this functionality has been moved to
-<http://beaglebone.local/bone101/> instead.  In total, the following sites are
-configured:
-
-- <http://beaglebone.local/> - Cloud9
-- <http://beaglebone.local/bone101/> - BeagleBone 101 - although this proxies to
-  port 8000 which is unresponsive.  _bonescript.service_ handles this, but
-  there's some kind of bug in the _bonescript.service_ and the underlying
-  nodejs script that prevents this from working.  As best I can tell, nodejs
-  says the socket is already in use.  If you start this manually though, going
-  to the link just gives you a static "upgrade your software" page.
-- <http://beaglebone.local/nodered/> - Node-RED
-- <http://beaglebone.local/ui/> - Unsure what this is about.
-
-First thing cloud9 says to do is upgrade per <https://bbb.io/upgrade>.  This has
-you just pull scripts from [some guy's GitHub repo][].  A little digging reveals
-that this repo is maintained by one of the Beagleboard Foundation board members
-who is engineer at Digikey; I am surprised there is no formal BeagleBone
-Foundation branding around this, but the code itself looks professional.  More
-information on the cast of characters involved appears [here](https://beagleboard.org/about).
-
-Beyond this, there's not much to do--browse the example source code, run some of
-the test scripts in cloud9, and move on with life.
-
 ### Debian Image 2018-10-07
+
+**The good:**
 
 The 2018-10-07 image was as-advertised.  I plugged the BeagleBone Black Wireless
 into my Mac using the provided micro-USB cable and it powered on.  Three
@@ -352,13 +292,137 @@ the beagleboard.org version, the embedded version of BeagleBone 101 has
 3. A link to and description of the onboard Node-RED services that are also
    included
 
-The out-of-box experience for this 2018-10-07 image is like night and day
-compared to the 2020-04-06 IoT image that shipped with my non-wireless
-BeagleBone Black.  Not only does everything work in the 2018-10-07 image, but
-everything seems documented and referenced even better than what's on
-beagleboard.org.  I don't know what regressed between 2018-10-07 and 2020-04-06,
-but it seems a shame that newer BeagleBone OS images give new users such a sour
-experience compared to what it used to be.
+**The bad:**
+
+A lot of BeagleBone documentation is spread across [beagleboard.org][official Getting Started docs],
+[elinux.org][], and a [Texas Instruments wiki][] which appears to have had all
+its contents deleted from the internet recently.  The documentation contains
+screen shots that are out of date, and the elinux.org wiki appears to be more a
+historical record of how things have evolved rather than how things exist today
+for new users; for example, many references to Angstrom Linux still exist
+despite Beagleboard Black not shipping since 2013.
+
+Sadly, it appears that there was a lot of excitement and activity around
+Beagleboards in the early 2010s, but if you weren't on the bandwagon then, you
+are facing an uphill journey to piece together what documentation is presently accurate.
+
+### IoT Image 2020-04-06
+
+A lot broke between the 2018-10-07 image and the 2020-04-06 image, leaving the
+out-of-box experience for new BeagleBone owners very poor.  I hope anyone who
+gets discouraged by this finds these notes and my instructions on how to
+(mostly) get the 2020-04-06 image working the way older versions did.  Things
+that do not work:
+
+1. Instead of taking you to the BeagleBone 101 getting started page, going to
+   <http://beaglebone.local/> dumps you into Cloud9 with a directory full of
+   examples without any tutorials or other documentation.
+2. The online documentation (for example, the [BeagleBone 101 page][]) claims
+   that you can try code right there in your browser, but this functionality
+   relies on BoneScript.
+   - BoneScript is a custom Javascript-based framework that, while logically
+     motivated, has no use or parallels outside of the BeagleBone ecosystem
+   - In 2020-10-04, the BoneScript is completely broken out of the box so none
+     of it works anyway.
+
+What follows are some notes on my experiences and how to fix them.
+
+#### Fixing USB-tunneled Ethernet
+
+**USB tunneled Ethernet doesn't work out of box**.  macOS picks up the adapter
+(as being unresponsive), the BeagleBone assigns itself the correct address 
+192.168.7.2), but macOS doesn't see the BeagleBone network device as being
+connected.  To get this USB gadget functionality working, you have to
+
+```
+$ cd /opt/scripts/tools
+$ git pull
+$ sudo ./update_kernel.sh
+$ sudo reboot
+```
+
+#### Fixing the web UI
+
+The [official Getting Started docs][] suggest that there is a nice getting
+started guide hosted on the board at the device IP address, but this is broken.
+Instead of the [BeagleBone 101 page][], you are dropped into Cloud9 without any
+documentation or information on how to use the other services that are included
+with BeagleBone's OS.
+
+You can get the original BeagleBone experience by fixing BoneScript and knowing
+where to point with your browser.  
+
+BoneScript doesn't work on the 2020-10-04 image because of this error which
+fills the systemd log:
+
+```
+Sep 12 03:16:36 beaglebone bonescript[839]: events.js:174
+Sep 12 03:16:36 beaglebone bonescript[839]:       throw er; // Unhandled 'error' event
+Sep 12 03:16:36 beaglebone bonescript[839]:       ^
+Sep 12 03:16:36 beaglebone bonescript[839]: Error: listen EADDRINUSE: address already in use systemd
+Sep 12 03:16:36 beaglebone bonescript[839]:     at Server.setupListenHandle [as _listen2] (net.js:1260:19)
+Sep 12 03:16:36 beaglebone bonescript[839]:     at listenInCluster (net.js:1325:12)
+Sep 12 03:16:36 beaglebone bonescript[839]:     at Server.listen (net.js:1423:5)
+Sep 12 03:16:36 beaglebone bonescript[839]:     at mylisten (/usr/local/lib/node_modules/bonescript/src/server.js:68:12)
+Sep 12 03:16:36 beaglebone bonescript[839]:     at Object.serverStart (/usr/local/lib/node_modules/bonescript/src/server.js:36:18)
+Sep 12 03:16:36 beaglebone bonescript[839]:     at ReadFileContext.read [as callback] (/usr/local/lib/node_modules/bonescript/server.js:11:20)
+Sep 12 03:16:36 beaglebone bonescript[839]:     at FSReqWrap.readFileAfterOpen [as oncomplete] (fs.js:238:13)
+Sep 12 03:16:36 beaglebone bonescript[839]: Emitted 'error' event at:
+Sep 12 03:16:36 beaglebone bonescript[839]:     at emitErrorNT (net.js:1304:8)
+Sep 12 03:16:36 beaglebone bonescript[839]:     at process._tickCallback (internal/process/next_tick.js:63:19)
+Sep 12 03:16:36 beaglebone systemd[1]: bonescript.service: Main process exited, code=exited, status=1/FAILURE
+Sep 12 03:16:36 beaglebone systemd[1]: bonescript.service: Failed with result 'exit-code'.
+```
+
+This is because the systemd integration for BoneScript simply doesn't work.  To
+make it work, first create `/etc/default/bonescript` which contains:
+
+```
+{
+    "port": 8000,
+    "passphrase": "hello world"
+}
+```
+
+You can set `passphrase` to whatever you'd like.
+
+Then disable the systemd socket for BoneScript; this is the magical piece that
+prevents anything from working:
+
+```
+$ sudo systemctl disable bonescript.socket
+```
+
+This will cause `bonescript.service` to die and not restart, and you can verify
+that systemd is no longer listening on the BoneScript socket by making sure that
+lsof shows nothing for port 8000:
+
+```
+$ sudo lsof -i :8000
+```
+
+If you restart the BoneScript service by hand, it will work now:
+
+```
+$ sudo systemctl restart bonescript.service
+```
+
+You can now access the BeagleBone's proper web interface by going to
+<http://beaglebone.local/bone101/Support/bone101/>.  I don't know why this was
+put in such an obscure place in the newer BeagleBone Debian images.
+
+If this all works, you should be dropped in the BeagleBone 101 page which
+contains links to the demo services included:
+
+- <http://beaglebone.local/> - Cloud9
+- <http://beaglebone.local/bone101/> - This just gives you a static "upgrade
+  your software" page
+- <http://beaglebone.local/nodered/> - Node-RED
+- <http://beaglebone.local/ui/> - A neat little interactive prober of the
+  BeagleBone pinout
+
+Unfortunately the BoneScript widgets and integration still doesn't work, but
+maybe someday I will figure out how to fix that
 
 [Ansible playbooks for SBCs]: http://github.com/glennklockwood/rpi-ansible
 [BeagleBone 101 page]: https://beagleboard.org/Support/bone101
