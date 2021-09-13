@@ -118,14 +118,14 @@ verify by the USR LEDs cycling in a pretty pattern.  Once the flashing has
 completed, the BeagleBone AI will power itself off.  Remove the SD card, power
 up, and you should boot off the new image written to the eMMC.
 
-{% call alert(type="info") %}
+{% call inset("Alternative OS images", "info") %}
 You may also choose to replace the BeagleBone Debian OS with one of TI's own
-OS images (Linux, TI-RTOS, or Android) with the [AM57x Processor SDK][].  Those
-are much more rough experiences than Debian, but if you want to try it, log in
-using the `root` user (no password) after booting from your SD image.
+OS images (Linux, TI-RTOS, or Android) with the <a href="https://www.ti.com/tool/PROCESSOR-SDK-AM57X">AM57x Processor SDK</a>.
+Those are much more rough experiences than Debian, but if you want to try it,
+log in using the `root` user (no password) after booting from your SD image.
 {% endcall %}
 
-[AM57x Processor SDK]: https://www.ti.com/tool/PROCESSOR-SDK-AM57X
+[AM57x Processor SDK]: 
 
 ### Boot script upgrade
 
@@ -145,11 +145,11 @@ You may have to re-[disable the wireless AP](#disable-the-wifi-ap)
 The BeagleBone AI features a Texas Instruments Sitara AM5749 system-on-a-chip
 with
 
-* Two Arm Cortex-A15 cores (1.5 GHz)
-* Two TMS320C66x digital signal processor (DSP) CorePacs (750 MHz)
-* Two Embedded Vision Engine (EVE) Deep Learning Accelerators (DLAs) (650 MHz)
-* Two dual-core ARM Cortex-M4 image processing unit (IPU) subsystems (213 MHz)
-* Two dual-core Programmable Real-time Unit / Industrial Communications
+* 2 &#215; [Arm Cortex-A15 cores](#cortex-a15-processors) (1.5 GHz)
+* 2 &#215; [TMS320C66x digital signal processor (DSP)](#c66x-dsps) CorePacs (750 MHz)
+* 4 &#215; [Embedded Vision Engine (EVE)](#eve-vector-processors) Deep Learning Accelerators (DLAs) (650 MHz)
+* 2 &#215; dual-core [ARM Cortex-M4](#cortex-m4-processors) image processing unit (IPU) subsystems (213 MHz)
+* 2 &#215; dual-core [Programmable Real-time Unit](#prus) / Industrial Communications
   Subsystems (PRU-ICSSes) (200 MHz)
 
 ### Cortex-A15 processors
@@ -198,7 +198,9 @@ provides a peak capability of 20.8 GFLOP/s for 16-bit floating point.
 
 **Purpose**: The EVE DLAs are meant to accelerate machine vision applications
 including inference using neural networks.  EVE was designed as a low-power
-accelerator for autonomous vehicles.
+accelerator for [autonomous vehicles][eve paper] and the like.  They are
+between [1.5x and 4x faster and use more than 2x more power-efficient than the
+C66x DSPs][eve perf and power].
 
 **Usage**: For the BeagleBone AI, it appears that you are meant to interact with
 the EVE DLA subsystem entirely through its [TI Deep Learning (TIDL)
@@ -213,6 +215,8 @@ compiler is not included with BeagleBone AI.
 you can find a copy of it in other places including [Chapter 8 of the TDA2Px
 Technical Reference Manual][tda2px trm].
 
+[eve paper]: https://doi.org/10.1109/ISCAS.2014.6865062
+[eve perf and power]: https://training.ti.com/texas-instruments-deep-learning-tidl-overview
 [eve nda thread]: https://e2e.ti.com/support/processors-group/processors/f/processors-forum/967910/am5728-sitara-eve-documentation
 [tidl]: https://software-dl.ti.com/processor-sdk-linux/esd/docs/05_00_00_15/linux/Foundational_Components_TIDL.html
 [AM574x Technical Reference Manual]: https://www.ti.com/lit/ug/spruhz6l/spruhz6l.pdf
@@ -230,15 +234,19 @@ in real-time image processing pipelines on Sitara AM57x SoCs, and TI supports
 installing and running their real-time OS, [TI-RTOS][], on these IPU cores.
 Some application notes I've found suggest these are included to control separate
 coprocessors for image signal processing and display systems as you might find
-in automobile backup cameras.
+in automobile backup cameras, and the TI Deep Learning (TIDL) library uses these
+cores to control the EVEs.
 
 **Usage**: Because these are just standard Cortex-M processors at heart, you
-should be able to use the [Linaro GNU Arm Embedded Toolchain][linaro toolchain]
-to build applications for the IPU cores.  I haven't verified this though.
-
-[linaro toolchain]: https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm
+should be able to use the [GNU Arm Embedded Toolchain][linaro toolchain]
+to build applications for the IPU cores.  Someone has demonstrated that
+[programming the Cortex-M4 using Rust][cortex-m4 with rust] is possible if
+difficult due to the vague documentation around these cores' integration on the
+AM5749 SoC.
 
 [TI-RTOS]: https://www.ti.com/tool/TI-RTOS-MCU
+[linaro toolchain]: https://developer.arm.com/tools-and-software/open-source-software/developer-tools/gnu-toolchain/gnu-rm
+[cortex-m4 with rust]: https://github.com/cambridgeconsultants/rust-beagleboardx15-demo
 
 ### PRUs
 
@@ -291,6 +299,25 @@ that use the EVEs (see below) reveals that EVEs are accessed through `/dev/mem`.
 The only way to know how to program the EVEs directly is to know their memory
 space and to perform memory-mapped I/O directly into EVE registers and buffers.
 Details on how to do this are likely locked away under NDA.
+
+The remoteproc interface also allows you to inspect what the Cortex-M4 and C66x
+DSPs are doing.  For example to get an idea of what code was running on the
+second Cortex-M4 core (`remoteproc1`):
+
+    $ sudo tail /sys/kernel/debug/remoteproc/remoteproc0/trace0
+    [0][      0.014] [t=0x01287e67] xdc.runtime.Main: EVE2 attached
+    [0][      0.017] [t=0x013bf9bb] xdc.runtime.Main: EVE3 attached
+    [0][      0.020] [t=0x014f8ea5] xdc.runtime.Main: EVE4 attached
+    [0][      0.020] [t=0x0150b475] xdc.runtime.Main: Opening MsgQ on EVEs...
+    [0][      1.020] [t=0x1aae9599] xdc.runtime.Main: OCL:EVE1:MsgQ opened
+    [0][      2.020] [t=0x340d5f4b] xdc.runtime.Main: OCL:EVE2:MsgQ opened
+    [0][      3.020] [t=0x4d6c1f01] xdc.runtime.Main: OCL:EVE3:MsgQ opened
+    [0][      4.020] [t=0x66caf409] xdc.runtime.Main: OCL:EVE4:MsgQ opened
+    [0][      4.020] [t=0x66cc11d7] xdc.runtime.Main: Pre-allocating msgs to EVEs...
+    [0][      4.021] [t=0x66d1cfd7] xdc.runtime.Main: Done OpenCL runtime initialization. Waiting for messages...
+
+We see that it was last executing code to control the four EVE vector
+coprocessors.  The TIDL library had loaded this code as part of its execution.
 
 [BeagleBone PRU page]: {filename}beaglebone-pru.md
 
