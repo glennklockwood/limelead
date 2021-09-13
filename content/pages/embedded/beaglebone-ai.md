@@ -143,13 +143,13 @@ with
 * Two dual-core Programmable Real-time Unit / Industrial Communications
   Subsystems (PRU-ICSSes) (200 MHz)
 
-### Microprocessor unit
+### Cortex-A15 processors
 
-The **microprocessor unit (MPU)** has two Arm Cortex-A15 cores
+The **microprocessor unit (MPU)** has two Arm Cortex-A15 cores.
 
 **Purpose**: The MPU is designed to run the host OS.
 
-### DSP subsystem
+### C66x DSPs
 
 The **DSP subsystem** has two C66x digital signal processors which can perform
 both fixed-point and floating-point arithmetic.  Each DSP core has two multiply
@@ -180,7 +180,7 @@ to use the DSP compiler toolchain.
 [imglib]: https://www.ti.com/tool/SPRC264
 [dsplib]: https://www.ti.com/tool/SPRC265
 
-### Vector coprocessors
+### EVE vector processors
 
 The **EVE DLAs** each have two processors: a 32-bit general-purpose processor
 called "ARP32" and a 512-bit vector coprocessor called "VCOP."  The VCOP
@@ -193,8 +193,8 @@ accelerator for autonomous vehicles.
 **Usage**: For the BeagleBone AI, it appears that you are meant to interact with
 the EVE DLA subsystem entirely through its [TI Deep Learning (TIDL)
 libraries][tidl] rather than write your own native code against these
-coprocessors.  It looks like the is a C compiler for the ARP32 (`cl-arp32`)
-, and the VCOP is programmed in a C++ dialect called VCOP Kernel C.  Neither
+coprocessors.  It looks like the is a C compiler for the ARP32 (`cl-arp32`),
+and the VCOP is programmed in a C++ dialect called VCOP Kernel C.  Neither
 compiler is not included with BeagleBone AI.
 
 **More info**: Accessing most of Texas Instruments' EVE developer documentation
@@ -230,11 +230,24 @@ to build applications for the IPU cores.  I haven't verified this though.
 
 [TI-RTOS]: https://www.ti.com/tool/TI-RTOS-MCU
 
-### Programmable real-time processors
+### PRUs
 
 BeagleBone AI includes two dual-core programmable real-time units (PRUs), twice
-as many as earlier BeagleBones.  These devices are programmed in the same way
-as I described on my [BeagleBone PRU page][].
+as many as earlier BeagleBones.  
+
+**Purpose**: These realtime processors are somewhere between microcontrollers
+and FPGAs in that they are programmed in a RISC assembly language but have
+deterministic, single-cycle execution of all operations.  This makes them ideal
+for implementing timing-sensitive protocols such as Ethernet; in fact, TI
+provides the code to [turn a PRU into a 100 Mbit Ethernet NIC][pru ethernet] to
+demonstrate how this can be done.
+
+**Usage**: These devices are programmed in the same way as I described on my
+[BeagleBone PRU page][].  BeagleBone AI ships with the [PRU Code Generation
+Tools][pru cgt] which includes the `clpru` C compiler.
+
+[pru ethernet]: https://software-dl.ti.com/processor-sdk-linux/esd/AM65X/latest/exports/docs/linux/Foundational_Components/PRU-ICSS/Linux_Drivers/PRU-ICSS_Ethernet.html
+[pru cgt]: https://www.ti.com/tool/PRU-CGT
 
 ### Linux interfaces
 
@@ -261,6 +274,13 @@ This tells us that
 - remoteproc2 and remoteproc3 are the TI TMS320C66x DSPs
 - remoteproc4 through remoteproc7 are our good old friends, the programmable
   real-time units (PRUs).
+
+You may notice that the EVEs are not represented here.  It looks like the EVEs
+do not have a userspace interface, and peeling apart the demo TIDL applications
+that use the EVEs (see below) reveals that EVEs are accessed through `/dev/mem`.
+The only way to know how to program the EVEs directly is to know their memory
+space and to perform memory-mapped I/O directly into EVE registers and buffers.
+Details on how to do this are likely locked away under NDA.
 
 [BeagleBone PRU page]: {filename}beaglebone-pru.md
 
