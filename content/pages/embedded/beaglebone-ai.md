@@ -118,6 +118,15 @@ verify by the USR LEDs cycling in a pretty pattern.  Once the flashing has
 completed, the BeagleBone AI will power itself off.  Remove the SD card, power
 up, and you should boot off the new image written to the eMMC.
 
+{% call alert(type="info") %}
+You may also choose to replace the BeagleBone Debian OS with one of TI's own
+OS images (Linux, TI-RTOS, or Android) with the [AM57x Processor SDK][].  Those
+are much more rough experiences than Debian, but if you want to try it, log in
+using the `root` user (no password) after booting from your SD image.
+{% endcall %}
+
+[AM57x Processor SDK]: https://www.ti.com/tool/PROCESSOR-SDK-AM57X
+
 ### Boot script upgrade
 
 Upgrade the boot scripts by pulling from Robert Nelson's repo.  This updates a
@@ -166,7 +175,7 @@ parity calculations and fourier transforms.
 tools][ti c6000-cgt] which include the `cl6x` C/C++ compiler.  TI also provides
 a bunch of offload libraries for [FFTs][fftlib], [transcendental math
 functions][mathlib], [image processing][imglib] such as de-noising, and [linear
-algebra][dsplib].
+algebra][dsplib].  Their [accelerated libraries][] page is pretty comprehensive.
 
 **More info**: The [TMS320C66x DSP CPU and Instruction Set Reference
 Guide][c66x isa guide] contains a lot more detail about the features of these
@@ -179,6 +188,7 @@ to use the DSP compiler toolchain.
 [mathlib]: https://www.ti.com/tool/MATHLIB
 [imglib]: https://www.ti.com/tool/SPRC264
 [dsplib]: https://www.ti.com/tool/SPRC265
+[accelerated libraries]: https://www.ti.com/microcontrollers-mcus-processors/processors/digital-signal-processors/libraries/libraries.html
 
 ### EVE vector processors
 

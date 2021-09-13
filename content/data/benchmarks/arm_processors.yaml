@@ -47,6 +47,24 @@
     - cores_used: 2
       wall_secs:    3203
       memreorder_secs: 2011
+- model:        "BeagleBone AI"
+  processor:    "ARM Cortex-A15"
+  clock_mhz:     1500
+  cache_l1i_kib: 32
+  cache_l1d_kib: 32
+  cache_l2_kib:  2048
+  mem:          "1024 MB"
+  mem_type:     "DDR3L-1066"
+  mem_speed:    "4.0 GB/s"
+  compiler:     "GNU GFortran 8.3"
+  compile_flags: "-mcpu=native -mtune=native -O3 -fdefault-real-8 -fdefault-double-8"
+  results:
+    - cores_used: 1
+      wall_secs: 1220
+      memreorder_secs: 1004
+    - cores_used: 2
+      wall_secs: 1146
+      memreorder_secs: 946
 - model:        "Raspberry Pi 3"
   hostname:     "clovermine"
   processor:    "ARM Cortex-A53"
