@@ -328,17 +328,14 @@ coprocessors to do inference.  There are demo applications in two places:
    mjpg-streamer plugin to classify a video stream coming from a webcam.  It was
    developed specifically for the BeagleBone AI based on TI demo apps.
 
-2. `/usr/share/ti/examples/tidl` contains the examples that ship with the TIDL
-   API source package which you can [download from TI][tidl api ti git repo] or
-   [Robert Nelson's clone on GitHub][tidl api rcn git repo].
+2. `/usr/share/ti/examples/tidl` contains the examples that ship with the [TIDL
+   API source package][tidl api ti git repo].
 
 [tidl api ti git repo]: https://git.ti.com/cgit/tidl/tidl-api/
-[tidl api rcn git repo]: https://github.com/rcn-ee/tidl-api
 
-The official examples from the TIDL API repo are much more expansive, but they
-don't all work because BeagleBone AI's OS actually ships with a hacky partial
-build of the TIDL API that was developed to work on Debian instead of TI's SDK
-image.
+The official examples from the TIDL API repo are much more expansive and include
+both C++ and Python versions of code, but they haven't been Cloud9-ified and
+must be accessed via command line.
 
 ### BeagleBone Demo App
 
