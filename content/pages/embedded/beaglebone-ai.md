@@ -21,7 +21,7 @@ So get into the BeagleBone AI through the AP then ssh into it:
 ```
 imac$ ssh 192.168.8.1 -l debian
 ...
-debian@192.168.8.1's password: 
+debian@192.168.8.1's password:
 ```
 
 [Upgrading the boot scripts](#upgrading-boot-scripts) and rebooting gets the
@@ -33,8 +33,8 @@ getting into the BeagleBone AI.
 Wifi is configured using connman.  To connect to your local wifi network:
 
 ```
-debian@beaglebone:~$ sudo connmanctl 
-[sudo] password for debian: 
+debian@beaglebone:~$ sudo connmanctl
+[sudo] password for debian:
 
 connmanctl> agent on
 Agent registered
@@ -124,8 +124,6 @@ OS images (Linux, TI-RTOS, or Android) with the <a href="https://www.ti.com/tool
 Those are much more rough experiences than Debian, but if you want to try it,
 log in using the `root` user (no password) after booting from your SD image.
 {% endcall %}
-
-[AM57x Processor SDK]: 
 
 ### Boot script upgrade
 
@@ -251,7 +249,7 @@ AM5749 SoC.
 ### PRUs
 
 BeagleBone AI includes two dual-core programmable real-time units (PRUs), twice
-as many as earlier BeagleBones.  
+as many as earlier BeagleBones.
 
 **Purpose**: These realtime processors are somewhere between microcontrollers
 and FPGAs in that they are programmed in a RISC assembly language but have
@@ -273,7 +271,7 @@ The BeagleBone AI exposes many of its coprocessors through the same remote proce
 interface as the PRUs:
 
 ```
-debian@beaglebone:~$ ls -l /sys/class/remoteproc 
+debian@beaglebone:~$ ls -l /sys/class/remoteproc
 total 0
 lrwxrwxrwx 1 root root 0 Sep 11 23:04 remoteproc0 -> ../../devices/platform/44000000.ocp/58820000.ipu/remoteproc/remoteproc0
 lrwxrwxrwx 1 root root 0 Sep 11 23:04 remoteproc1 -> ../../devices/platform/44000000.ocp/55020000.ipu/remoteproc/remoteproc1
@@ -321,7 +319,28 @@ coprocessors.  The TIDL library had loaded this code as part of its execution.
 
 [BeagleBone PRU page]: {filename}beaglebone-pru.md
 
-## TIDL Demo
+## TIDL
+
+TIDL is the C++ library that provides a simple interface atop the C66x and EVE
+coprocessors to do inference.  There are demo applications in two places:
+
+1. `/var/lib/cloud9/BeagleBone/AI/tidl` contains a demo app that acts as an
+   mjpg-streamer plugin to classify a video stream coming from a webcam.  It was
+   developed specifically for the BeagleBone AI based on TI demo apps.
+
+2. `/usr/share/ti/examples/tidl` contains the examples that ship with the TIDL
+   API source package which you can [download from TI][tidl api ti git repo] or
+   [Robert Nelson's clone on GitHub][tidl api rcn git repo].
+
+[tidl api ti git repo]: https://git.ti.com/cgit/tidl/tidl-api/
+[tidl api rcn git repo]: https://github.com/rcn-ee/tidl-api
+
+The official examples from the TIDL API repo are much more expansive, but they
+don't all work because BeagleBone AI's OS actually ships with a hacky partial
+build of the TIDL API that was developed to work on Debian instead of TI's SDK
+image.
+
+### BeagleBone Demo App
 
 The BeagleBone AI comes with a single demo application that uses both the EVEs
 and C66x DSPs to demonstrate image classification.  You can run it in Cloud9
@@ -405,6 +424,41 @@ but it is able to correctly classify George as a tabby cat:
 [TIDL on BeagleBone AI]: https://beagleboard.org/p/175809/tidl-on-beaglebone-ai-1ee263
 [tidl demo labels]: https://github.com/beagleboard/cloud9-examples/blob/v2020.01/BeagleBone/AI/tidl/classification.tidl.cpp#L106-L115
 
+### TIDL for Python
+
+TIDL also includes a Python3 interface which is included with the BeagleBone AI
+version of the TIDL API.  However it's not obvious _how_ to use it since naively
+trying to run the Python example apps fails:
+
+    $ cd /usr/share/ti/examples/tidl/pybind
+    $ ./one_eo_per_frame.py
+    Traceback (most recent call last):
+      File "./one_eo_per_frame.py", line 35, in <module>
+        from tidl import DeviceId, DeviceType, Configuration, Executor, TidlError
+    ModuleNotFoundError: No module named 'tidl'
+
+Unlike most Python packages, the TIDL Python interface is a `.so`, not a
+directory full of `.py` files so I had a hard time figuring out where to look
+for it.  It turns out the trick is to add the following to your `PYTHONPATH`:
+
+    $ PYTHONPATH=/usr/share/ti/tidl/tidl_api ./imagenet.py
+    Input: ../test/testvecs/input/objects/cat-pet-animal-domestic-104827.jpeg
+    TIOCL FATAL: Failed to open file /dev/mem
+
+This time TIDL was found, but we need to run as root due to TIDL's need to
+directly manipulate `/dev/mem`.  So,
+
+    $ sudo PYTHONPATH=/usr/share/ti/tidl/tidl_api ./imagenet.py
+    [sudo] password for debian:
+    Input: ../test/testvecs/input/objects/cat-pet-animal-domestic-104827.jpeg
+    1: Egyptian_cat,   prob = 34.12%
+    2: tabby,   prob = 34.12%
+    3: Angora,   prob =  9.41%
+    4: tiger_cat,   prob =  7.84%
+
+Since TIDL Python apps have to run as root, you may run into unexpected errors
+even if you `export PYTHONPATH=/usr/share/ti/tidl/tidl_api` in your `.bashrc`.
+
 ## Assorted Howtos
 
 Many how-to's are covered on my [BeagleBone Black howto section]({filename}beaglebone.md#assorted-howtos).
@@ -415,3 +469,118 @@ Many how-to's are covered on my [BeagleBone Black howto section]({filename}beagl
     37000
 
 This is 37 celsius.
+
+### Give all DRAM to Linux
+
+If you `free -m` on BeagleBone AI,
+
+    glock@greystone:~$ free -m
+                  total        used        free      shared  buff/cache   available
+    Mem:            612         120         365           4         127         474
+    Swap:             0           0           0
+
+You'll see that there's only 612 MiB of RAM available to Linux, not the full
+1 GiB advertised.  This is because BeagleBone's OS is configured to [reserve a
+lot of memory C66x DSPs and EVE DLAs][missing memory thread].  If you don't
+intend to use the DSPs or DLAs though, you can recover this memory.
+
+First check your kernel version:
+
+    $ uname -r
+    4.14.108-ti-r143
+
+Then edit the device tree that's loaded on boot, making sure to edit the correct
+version that matches our kernel (4.14 in our case):
+
+    $ cd /opt/source/dtb-4.14-ti
+    $ git pull
+    $ vi src/arm/am5729-beagleboneai.dts
+
+Scroll down a bit and at around line 23 you'll see a block that begins with
+`reserved-memory {`:
+
+```devicetree
+/*
+    reserved-memory {
+        #address-cells = <2>;
+        #size-cells = <2>;
+...
+        cmem_block_mem_0: cmem_block_mem@a0000000 {
+            reg = <0x0 0xa0000000 0x0 0x18000000>;
+            no-map;
+            status = "okay";
+        };
+    };
+*/
+```
+
+Comment this out using C-style comments (`/* ... */`).  Also comment out the
+following `cmem {` block because it references cmem memory blocks defined in the
+`reserved-memory` block we just disabled above:
+
+```devicetree
+/*
+    cmem {
+        compatible = "ti,cmem";
+        #address-cells = <1>;
+
+...
+
+        cmem_block_1: cmem_block@1 {
+            reg = <1>;
+            memory-region = <&cmem_block_mem_1_ocmc3>;
+        };
+    };
+*/
+```
+
+Finally, comment out the bits that reference these disabled memory regions.
+There are two for the IPUs (the Cortex-M4s which control the EVEs) and two for
+the DSPs (C66x):
+
+```devicetree
+/*
+&ipu1 {
+        status = "okay";
+        memory-region = <&ipu1_memory_region>;
+};
+
+&ipu2 {
+        status = "okay";
+        memory-region = <&ipu2_memory_region>;
+};
+
+&dsp1 {
+        status = "okay";
+        memory-region = <&dsp1_memory_region>;
+};
+
+&dsp2 {
+        status = "okay";
+        memory-region = <&dsp2_memory_region>;
+};
+*/
+```
+
+Then back in `/opt/source/dtb-4.14-ti` (or whatever directory matches your
+kernel), run `make` as the `debian` user:
+
+    $ make
+    ...
+      DTC     src/arm/am5729-beagleboneai.dtb
+
+Then install the rebuilt device tree:
+
+    $ sudo make install
+    ...
+    'src/arm/am5729-beagleboneai.dtb' -> '/boot/dtbs/4.14.108-ti-r143/am5729-beagleboneai.dtb'
+
+After this, cross your fingers and `sudo reboot`.  Once the system comes back
+up, you should see almost the full 1 GiB now:
+
+    $ free -m
+                  total        used        free      shared  buff/cache   available
+    Mem:            993          51         865           5          76         913
+    Swap:             0           0           0
+
+[missing memory thread]: https://groups.google.com/g/beagleboard/c/-kDcIPsLCkc/m/xHyrFKepAgAJ
