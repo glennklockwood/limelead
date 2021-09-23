@@ -456,6 +456,22 @@ directly manipulate `/dev/mem`.  So,
 Since TIDL Python apps have to run as root, you may run into unexpected errors
 even if you `export PYTHONPATH=/usr/share/ti/tidl/tidl_api` in your `.bashrc`.
 
+## Issues
+
+### Random segmentation faults
+
+I found that TIDL requires you to initialize `Executor` objects before
+allocating any memory buffers for TIDL devices, but Python will garbage collect
+these Executors if they fall out of scope.  This will result in subsequent
+TIDL calls segfaulting.
+
+The trick I used to keep Executor objects alive is to keep them in a global
+dictionary.  Even though they may not need to be referenced after they are
+initialized in Python, stuffing them in global variables keeps them from being
+garbage collected while not requiring they be passed between functions.  An
+alternative may be to create a more Pythonic API on top of the official pybind
+TIDL library.
+
 ## Assorted Howtos
 
 Many how-to's are covered on my [BeagleBone Black howto section]({filename}beaglebone.md#assorted-howtos).
