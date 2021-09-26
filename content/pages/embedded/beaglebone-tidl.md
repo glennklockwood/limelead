@@ -274,8 +274,14 @@ ExecutionObjectPipeline in a round-robin fashion and does the following:
    representation that TIDL expects][tidl tensor format]
 5. Asynchronously launches the ExecutionObjectPipeline to classify the image
 
-By using TIDL asynchronously and looping over ExecutionObjectPipelines (which
-map N-to-1 to ExecutionObjects, which map 1-to-1 to EVEs and DSPs), we can
+{% call alert("info") %}
+Remember: One EVE or DSP can have one ExecutionObject (EO) at most.  It seems
+that EOs can be assembled into ExecutionObjectPipelines (EOPs) without much
+restriction, but one EOP typically has only one EO when doing image
+classification.  This means that one EVE or DSP processes one image frame.
+{% endcall %}
+
+By using TIDL asynchronously and looping over ExecutionObjectPipelines, we can
 load one frame on to each DSP and EVE to be classified in parallel.  As EVEs
 and DSPs finish classifying their frame, we can load up another frame and
 launch it asynchronously while we look at the results we just got back.
