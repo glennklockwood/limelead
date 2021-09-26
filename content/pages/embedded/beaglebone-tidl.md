@@ -94,7 +94,7 @@ Member                       | Type
 -----------------------------|----------------
 tidl.ArgInfo.size            | instancemethod
 
-### tidle.Configuration
+### tidl.Configuration
 
 Member                                  | Type
 ----------------------------------------|----------------
