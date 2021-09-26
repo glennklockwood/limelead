@@ -189,12 +189,16 @@ _, image = camera.read()
 cv2.imwrite('cv2capture.jpg', image)
 ```
 
+[PIL]: https://pillow.readthedocs.io/en/stable/
+[Jetson Nano classification demo]: https://github.com/glennklockwood/jetson-nano-fun/blob/main/classification/classify.py
+
 ## Streaming OpenCV over HTTP
 
 Flask comes with BeagleBone's OS and provides everything you need to stream
-video over HTTP as the BeagleBone AI's classification demo app does.  There's
-just a little glue code needed to [read images using OpenCV](#image-interface-into-python)
-and [writing them to an mjpg stream][miguelgrinberg blog]:
+video over HTTP as the [BeagleBone AI's classification demo][c++ demo] app does.
+There's just a little glue code needed to 
+[read images using OpenCV](#image-interface-into-python) and
+[write them to an mjpg stream][miguelgrinberg blog]:
 
 ```python3
 #!/usr/bin/env python3
@@ -222,11 +226,69 @@ if __name__ == '__main__':
 ```
 
 The beauty here is that you can modify `frame` after it is read in
-`stream_camera` using OpenCV to manipulate the image before sending it to the
-HTTP video stream.  This is where you can insert functionality such as
-image classification and overlaying text on each video frame.
+`stream_camera()` to manipulate the image before sending it to the HTTP video
+stream.  This is where you can insert functionality (such as using OpenCV to
+add a text overlay) on each video frame.
+
+## Classifying video frames
+
+You can intercept frames in `stream_camera()` and apply an arbitrary `filter_function()`
+before passing it to the mjpg stream:
+
+```python
+def stream_camera(camera):
+    while True:
+        ret, frame = camera.read()
+        if ret:
+            frame = filter_function(frame)
+            _, imstr = cv2.imencode(".jpg", frame)
+            yield (b'--frame\r\nContent-Type: image/jpeg\r\n\r\n'
+                + bytes(imstr) + b'\r\n')
+```
+
+Naively, this `filter_function()` could do something like...
+
+1. run the frame through a neural net by way of TIDL or any other ML framework
+   to classify the contents of image
+2. overlay a text message with the label we got from step 1
+
+On BeagleBone AI this would be slow though; every frame would have to be
+processed and streamed before the next frame could begin, bottlenecking
+inference on the inference performance of a single frame.  With more
+careful integration, you can round-robin image frames over all EVEs and
+DSPs to keep them all busy processing frames though.
+
+I've written an example app that integrates [TIDL, OpenCV, and Flask to do
+streaming classification][classify_webcam].  Its core loop looks at each
+ExecutionObjectPipeline in a round-robin fashion and does the following:
+
+1. Checks to see if an ExecutionObjectPipeline (EOP) is done processing its work
+    1. If so, read the results from the EOP's EVE or DSP.
+    2. Find out the label with the highest confidence from those results
+    3. Use `cv2.putText()` to write that topmost label on the image
+    4. Send the image as the next video frame via Flask
+2. Reads an image frame from the webcam
+3. Squeezes the frame down to 224 &#215; 224 pixels, which is what the TIDL
+   model being used expects
+4. Rearranges the layout of the image in memory to match [the in-memory image
+   representation that TIDL expects][tidl tensor format]
+5. Asynchronously launches the ExecutionObjectPipeline to classify the image
+
+By using TIDL asynchronously and looping over ExecutionObjectPipelines (which
+map N-to-1 to ExecutionObjects, which map 1-to-1 to EVEs and DSPs), we can
+load one frame on to each DSP and EVE to be classified in parallel.  As EVEs
+and DSPs finish classifying their frame, we can load up another frame and
+launch it asynchronously while we look at the results we just got back.
+
+This is like having your washer and dryer going at the same time--if you've
+got multiple loads of laundry to wash, you can let your dryer run while you
+load your second load into the washer, and you can fold your laundry when both
+washer and dryer are running.  On BeagleBone AI, we have four EVEs and two DSPs
+which allows us to have five other video frames being processed while we
+use `cv2.putText()` to overlay text on the image we're about to stream out.
+
+[classify_webcam]: https://github.com/glennklockwood/beaglebone-ai/blob/main/pyclassify/classify_webcam.py
 
 [miguelgrinberg blog]: https://blog.miguelgrinberg.com/post/video-streaming-with-flask
+[tidl tensor format]: https://software-dl.ti.com/jacinto7/esd/processor-sdk-rtos-jacinto7/06_02_00_21/exports/docs/tidl_j7_01_01_00_10/ti_dl/docs/user_guide_html/md_tidl_fsg_io_tensors_format.html
 
-[PIL]: https://pillow.readthedocs.io/en/stable/
-[Jetson Nano classification demo]: https://github.com/glennklockwood/jetson-nano-fun/blob/main/classification/classify.py
