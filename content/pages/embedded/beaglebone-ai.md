@@ -191,15 +191,23 @@ to use the DSP compiler toolchain.
 ### EVE vector processors
 
 The **EVE DLAs** each have two processors: a 32-bit general-purpose processor
-called "ARP32" and a 320-bit vector coprocessor called "VCOP."  The VCOP
-is an exotic architecture that supports 8-way SIMD of 32-bit integer arithmetic
-using 40-bit registers, supports up to four levels of nested looping in
-hardware, and has dedicated functional units for vectorized table lookups and
-histogram calculation.  It was designed for real-time applications in
-automotive machine vision but is (sadly) no longer being developed.  Instead,
-TI's C7000 DSPs superseded its functionality by implementing wider (512-bit)
-vectors and full floating-point support, but dropping the exotic features like
-the histogram unit, table lookup unit, and hardware nested loop support.
+called "ARP32" and a 320-bit vector coprocessor called "VCOP."  The ARP32 sounds
+a lot like the PRU in that it is essentially a single-cycle RISC processor for
+real-time processing, and its sole role is to manage and drive the VCOP.  The
+VCOP is an exotic architecture that supports 8-way SIMD of 32-bit integer
+arithmetic using 40-bit registers, supports up to four levels of nested looping
+in hardware, and has dedicated functional units for vectorized table lookups and
+histogram calculation.
+
+The EVE processor was designed for real-time applications in automotive
+machine vision but is (sadly) no longer being developed.  Instead, TI's C7000
+DSPs superseded its functionality by implementing wider (512-bit) vectors and
+full floating-point support, but dropping the exotic features like the
+histogram unit, table lookup unit, and hardware nested loop support.  The [VCOP
+Kernel-C to C7000 Migration Tool][vcop-c7000 guide] has a great feature
+comparison of EVE and C7000 in Section 1.1.
+
+[vcop-c7000 guide]: https://www.ti.com/lit/ug/spruig3c/spruig3c.pdf
 
 **Purpose**: The EVE DLAs are meant to accelerate machine vision applications
 including inference using neural networks.  EVE was designed as a low-power
