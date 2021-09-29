@@ -191,8 +191,15 @@ to use the DSP compiler toolchain.
 ### EVE vector processors
 
 The **EVE DLAs** each have two processors: a 32-bit general-purpose processor
-called "ARP32" and a 512-bit vector coprocessor called "VCOP."  The VCOP
-provides a peak capability of 20.8 GFLOP/s for 16-bit floating point.
+called "ARP32" and a 320-bit vector coprocessor called "VCOP."  The VCOP
+is an exotic architecture that supports 8-way SIMD of 32-bit integer arithmetic
+using 40-bit registers, supports up to four levels of nested looping in
+hardware, and has dedicated functional units for vectorized table lookups and
+histogram calculation.  It was designed for real-time applications in
+automotive machine vision but is (sadly) no longer being developed.  Instead,
+TI's C7000 DSPs superseded its functionality by implementing wider (512-bit)
+vectors and full floating-point support, but dropping the exotic features like
+the histogram unit, table lookup unit, and hardware nested loop support.
 
 **Purpose**: The EVE DLAs are meant to accelerate machine vision applications
 including inference using neural networks.  EVE was designed as a low-power
