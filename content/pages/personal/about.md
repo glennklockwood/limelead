@@ -65,15 +65,21 @@ life and be a part of such a rapidly growing industry lured me away from SDSC.
 
 ## Foray into Genomics
 
-After eighteen months in San Diego, I moved up to Oakland and joined [10X 
+After eighteen months in San Diego, I moved up to Oakland and joined [10x 
 Genomics][10x genomics] as a DevOps Engineer (a job which I had no idea how to
 do).  My job involved running a small cluster, maintaining a couple hundred
-terabytes of storage, and integrating 10X's software product with HPC
-infrastructure and cutting-edge DNA sequencers.  My heart never left
-supercomputing though, and shortly after my one-year anniversary at 10X, I
+terabytes of storage, and integrating 10x's software product with HPC
+infrastructure and cutting-edge DNA sequencers.
+
+My heart never left supercomputing though, and shortly after my one-year anniversary at 10x, I
 returned to the world of supercomputing at the [National Energy Research
 Scientific Computing Center][nersc] (NERSC) at the [Lawrence Berkeley National
 Laboratory][lbl.gov] (LBNL).
+Although I only worked there thirteen months, working at 10x was the experience
+of a lifetime. 
+I had the honor of working with some of the most exceptional people I've ever encountered in my
+professional life, and I learned skills and perspective that have benefitted me
+tremendously in my career since.
 
 ## Storage and I/O at NERSC
 
@@ -88,6 +94,35 @@ non-volatile storage media][nvme page], new software technologies for
 for various parallel storage systems including Lustre, Spectrum Scale, and
 [object stores][object stores page], and where all of these technologies were
 going.
+
+In late 2019, I was asked to lead NERSC's [Storage Systems Group][nersc ssg]
+which is responsible for managing most of the center's production storage
+systems totalling over 200 PB of tape and 120 PB of disk.
+I was responsible for managing eight storage engineers and a significant capital
+budget, and during my tenure we brought in two new staff and procuring and
+deploying a 60 PB Spectrum Scale file system.
+However, the challenges of being a first-time manager amidst a global pandemic
+and the loss of the technical responsibilities led me to step down from this
+acting position a year later and return to the Advanced Technologies Group at
+NERSC.
+
+As of 2021, my role is still predominantly storage-focused and is comprised of
+three major responsibilities:
+
+1. Staying abreast of new technologies, coordinating relationships with storage
+   vendors, and evaluating new technologies as they may pertain to future HPC
+   systems.
+2. Advocating for NERSC externally (whether it be to other HPC facilities, the
+   vendor community, or the public at large) to ensure that the great work we
+   do, the great systems we deploy, and the unique workload requirements we face
+   are well represented across the HPC community.
+3. Shepherding cross-team projects and providing technical accountability for
+   the purposes of procurement, contracting, external oversight, and project
+   management.
+
+My favorite part of the job is getting to interact with smart people from all
+over the world and connecting great tools, technologies, and techniques with
+hard problems to create clever solutions.
 
 [ru engineering]: http://soe.rutgers.edu
 [imsl]: http://glass.rutgers.edu/
@@ -108,3 +143,4 @@ going.
 [nvme page]: ../data-intensive/storage/nvram.html
 [io forwarding page]: ../data-intensive/storage/io-forwarding.html
 [object stores page]: ../data-intensive/storage/object-storage.html
+[nersc ssg]: https://www.nersc.gov/about/nersc-staff/storage-systems-group/
