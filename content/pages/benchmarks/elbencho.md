@@ -41,7 +41,7 @@ benchmark actually does.
 The following define the general parameters of the benchmark:
 
 - `--threads 8` uses eight I/O threads
-- `--size 1M` generates files that are 1M (1,048,576 bytes) large
+- `--size 1M` generates a file that is 1M (1,048,576 bytes) large
 - `--block 1M` performs writes using 1M (1,048,576 bytes) transfers
 - `--blockvaralgo fast` uses the "fast" algorithm for filling the write I/O buffers with randomized data
 - `--blockvarpct 0` generates new random data in 0% of the write blocks (i.e., every write will contain the same randomized data)
@@ -61,6 +61,18 @@ The following affects what information is actually presented to you:
 The order of these options is not important.  elbencho will always order the
 tests in the sensible way (create dirs, create files, write files, delete files,
 delete dirs).
+
+By default, elbencho performs all I/Os to one file, analogous to the IOR
+shared-file mode.  You can have elbencho create multiple files like this:
+
+
+```
+./bin/elbencho ./outputfile.{0..4}
+```
+
+In this case, five files (`outputfile.0`, `outputfile.1`, etc) will be created
+and filled in parallel, but I'm not completely clear on what the relationship
+between processes, threads and offsets in each file is.
 
 ## Getting Started - Multiple Clients
 
