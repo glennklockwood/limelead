@@ -74,6 +74,13 @@ In this case, five files (`outputfile.0`, `outputfile.1`, etc) will be created
 and filled in parallel, but I'm not completely clear on what the relationship
 between processes, threads and offsets in each file is.
 
+{% call alert(type="info") %}
+elbencho does not appear to designed to test metadata rates, so you should not
+expect it to make millions of files or create empty files.  See [this
+issue](https://github.com/breuner/elbencho/issues/28) for my notes on what
+doesn't work.
+{% endcall %}
+
 ## Getting Started - Multiple Clients
 
 To run on a cluster, you need to be able to open TCP sockets between your
