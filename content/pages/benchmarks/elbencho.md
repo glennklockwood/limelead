@@ -15,11 +15,15 @@ This page is a work in progress; I update it as I experiment with elbencho and
 learn more.
 {% endcall %}
 
-## Getting Started - Single Client
+[elbencho]: https://github.com/breuner/elbencho
+
+## Getting Started 
+
+### Single Client
 
 To do an fio-like write bandwidth test, I do something like this:
 
-```bash
+```
 mkdir elbencho.seq.1M
 ./bin/elbencho ./elbencho.seq.1M \
     --threads 8 \
@@ -71,17 +75,10 @@ shared-file mode.  You can have elbencho create multiple files like this:
 ```
 
 In this case, five files (`outputfile.0`, `outputfile.1`, etc) will be created
-and filled in parallel, but I'm not completely clear on what the relationship
-between processes, threads and offsets in each file is.
+and filled in parallel.  [How different threads fill different offsets in
+different files is described by Sven](https://github.com/breuner/elbencho/issues/28#issuecomment-1054708665).
 
-{% call alert(type="info") %}
-elbencho does not appear to designed to test metadata rates, so you should not
-expect it to make millions of files or create empty files.  See [this
-issue](https://github.com/breuner/elbencho/issues/28) for my notes on what
-doesn't work.
-{% endcall %}
-
-## Getting Started - Multiple Clients
+### Multiple Clients
 
 To run on a cluster, you need to be able to open TCP sockets between your
 compute nodes.  Provided you can do that, first consult the official [Using
@@ -90,7 +87,7 @@ page to get an idea of what has to happen.
 
 At NERSC, I had to modify the provided example script to appear as follows:
 
-```bash
+```
 #!/usr/bin/env bash
 #SBATCH -J elbencho
 #SBATCH -C gpu
@@ -136,4 +133,83 @@ elbencho service run on each of the eight compute nodes, and that process is
 responsible for spawning 16 I/O threads.  You could run one thread per service
 and 16 service processes per node like a straight MPI job I suppose.
 
-[elbencho]: https://github.com/breuner/elbencho
+## Metadata Testing
+
+elbencho can also perform metadata performance testing like what mdtest does.
+To test the rate at which a client create empty files, do something like
+
+```
+mkdir somedirs
+./bin/elbencho --threads 1 \
+               --size 0 \
+               --files 10000 \
+               --mkdirs \
+               --write \
+               --delfiles \
+               --deldirs \
+               ./somedirs
+```
+
+This will run, using a single thread (`--threads 1`), a test where 
+
+1. a new directory is created called `/somedirs/r0/d0/` (`--mkdirs)
+2. 10,000 new files are created (`--files 10000`)
+3. nothing is written to them so they stay empty (`--size 0`)
+4. those files are deleted (`--delfiles`)
+5. the directory structure created in step 1 is all deleted (`--deldirs`)
+
+Like with mdtest, the `--files` argument specifies the files to create _per
+parallel worker_ - so using two threads will create twice as many files and
+directories:
+
+```
+mkdir somedirs
+./bin/elbencho --threads 2 \
+               --size 0 \
+               --files 10000 \
+               --mkdirs \
+               --write \
+               ./somedirs
+```
+
+This will create the following:
+
+```
+$ find somedirs -type d
+somedirs
+somedirs/r0
+somedirs/r0/d0
+somedirs/r1
+somedirs/r1/d0
+
+$ find somedirs/r0 -type f | wc -l
+10000
+
+$ find somedirs/r1 -type f | wc -l
+10000
+```
+
+You can force all threads to create all files in a single shared directory using
+the `--dirsharing` argument.  Re-running the above example with this additional
+argument gives us a different directory tree:
+
+```
+$ mkdir somedirs
+$ ./bin/elbencho --threads 2 \
+                 --size 0 \
+                 --files 10000 \
+                 --mkdirs \
+                 --write \
+                 --dirsharing \
+                 ./somedirs
+
+...
+
+$ find somedirs -type d
+somedirs
+somedirs/r0
+somedirs/r0/d0
+
+$ find somedirs/r0 -type f | wc -l
+20000
+```
