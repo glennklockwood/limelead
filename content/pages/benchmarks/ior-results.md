@@ -129,3 +129,38 @@ The peak results were
 
 - 184,743.00 MiB/sec (POSIX file-per-process write)
 - 155,214.17 MiB/sec (POSIX file-per-process read)
+
+## Perlmutter
+
+Perlmutter has a 36 petabyte all-flash Lustre file system composed of 274 OSSes
+and 16 MDSes.
+
+### Lustre Phase 1
+
+There were bandwidth and IOPS tests run for Perlmutter's file system acceptance.
+The **write bandwidth** test was run as
+
+```
+srun ./ior -w -t 1m -b 1m -s 100000 -a POSIX -F -e -g -vv -C -o /pscratch/IOR-strided.out -D 45
+```
+
+The **read bandwidth** test was run in two parts.  First, a dataset was created
+that was large enough to take over 30 seconds to be read without hitting any
+ends-of-file.  Once this dataset was created, it was then read using a
+30-second stonewalled run:
+
+```
+# Generate dataset
+srun ./ior -w -t 1m -b 1m -s 100000 -a POSIX -F -e -g -vv -C -o /pscratch/IOR-strided.out -k -O stoneWallingWearOut=1 -D 90
+
+# Read dataset
+srun ./ior -r -t 1m -b 1m -s 100000 -a POSIX -F -e -g -vv -C -o /pscratch//IOR-strided.out -k -D 30
+```
+
+The 30 seconds is significant because the acceptance criteria required that the
+performance be sustained for 30 seconds.  Note that we do _not_ use stonewalling
+wear-out on the second run because we are not trying to emulate the performance
+of an application that was writing the same amount of data from all MPI
+processes.  Instead, we were testing how much performance the file system could
+sustain under any conditions.
+
