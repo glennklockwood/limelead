@@ -2,6 +2,15 @@
 title: Parallel I/O Benchmarks
 ---
 
+This page started as a place for me to keep track of the acceptance test
+parameters were used to obtain the hero numbers on the file systems on which
+I've worked, but it's evolving into a page on how to think about crafting
+acceptance tests for parallel file systems.
+
+Skip straight to the [Perlmutter](#perlmutter) section to see more musings on
+_why_ the parameters used were chosen; I wrote the acceptance criteria for that
+file system and remember why I did what I did.
+
 ## Cori
 
 The Cori acceptance test for both the Lustre file system (cscratch) and the
@@ -138,11 +147,33 @@ and 16 MDSes.
 ### Lustre Phase 1
 
 There were bandwidth and IOPS tests run for Perlmutter's file system acceptance.
+
+#### Bandwidth
+
+Bandwidth tests used 1,382 compute nodes and 4 processes per node.  The node
+count was dictated by the requirement that 90% of compute nodes could achieve
+high performance.  We didn't require 100% of compute nodes because, in practice,
+it's hard to get every single node up and running during the acceptance period
+since hardware is still new.
+
 The **write bandwidth** test was run as
 
 ```
 srun ./ior -w -t 1m -b 1m -s 100000 -a POSIX -F -e -g -vv -C -o /pscratch/IOR-strided.out -D 45
 ```
+
+This resulted in a bandwidth of 3,427,179.21 MiB/s.  Notably, I was able to
+observe significantly higher write bandwidth by playing tricks; for example, 
+running using 1,024 nodes, 4 processes per node, and a significantly higher
+transfer size:
+
+```
+srun ./ior -w -F -e -g -vv -O lustrestripecount=1 -t 64m -b 64g -D 45 -k -o /global/homes/g/glock/testFile
+```
+
+yielded 4,435,971.20 MiB/s.  These larger transfer sizes better utilize
+parallelization in RPCs which can increase overall performance, and I don't know
+what the upper limit for the Phase 1 system was.
 
 The **read bandwidth** test was run in two parts.  First, a dataset was created
 that was large enough to take over 30 seconds to be read without hitting any
@@ -164,3 +195,47 @@ of an application that was writing the same amount of data from all MPI
 processes.  Instead, we were testing how much performance the file system could
 sustain under any conditions.
 
+This test resulted in a bandwidth of 3,818,284.19 MiB/s.
+
+#### IOPS
+
+IOPS tests used 230 nodes and 32 processes per node.  The node count reflects
+15% of the compute nodes which was the requirement since it reflects the
+most-likely case of a large number of small jobs all bursting random(ish) data
+to and from the file system at once.  Like the bandwidth tests, this was not
+intended to emulate a single application's I/O pattern; it was meant to
+demonstrate the capability of the file system under duress.
+
+The **write IOPS** test was run similar to the write bandwidth test:
+
+```
+srun ./ior -w -t 4k -z -a POSIX -F -b 16g -e -g -vv -C -D 45 -o /pscratch/IOR-random.write.out
+```
+
+There are problems with this way of testing since Lustre implements write-back
+caching and random writes can be aggregated and reordered before they are sent
+over the network to Lustre servers.  [There is no effective way to measure write
+IOPS](https://glennklockwood.blogspot.com/2021/10/iops-are-dumb.html) so we just
+ran a workload that emulated what a user would experience--write back caching
+and all--and got a commensurately large number.  I would argue that this test
+was not well conceived when I crafted it, but you would need a lot of clients
+to drive a truly random write workload on the servers using `O_DIRECT`.
+
+The performance from this test came back at 24,807,129.18 IOPS.
+
+The **read IOPS** test was also run in two phases--first by generating a large
+dataset to be read (using 4 MiB sequential transfers so that the dataset would
+be large), then reading from it in 4 KiB transfers at random offsets:
+
+```
+# Generate dataset
+srun ./ior -w -t 4m -k -a POSIX -F -b 16g -e -g -vv -C -D 45 -o /pscratch/IOR-random.read.out -O stoneWallingWearOut=1
+
+# Read dataset
+srun ./ior -r -t 4k -z -a POSIX -F -b 16g -e -g -vv -C -D 45 -o /pscratch/IOR-random.read.out
+```
+
+The performance of this test came back at 35,098,607.79 IOPS.  It's worth noting
+that this test was client-limited; using more than 230 clients (15% of the total
+node count) was found to drive this number significantly higher (116,434,587.92
+read IOPS) using 1,024 clients.
