@@ -213,3 +213,68 @@ somedirs/r0/d0
 $ find somedirs/r0 -type f | wc -l
 20000
 ```
+
+## File Per Process
+
+The default mode for elbencho is to perform all I/O to a single file.  This
+makes sense when you consider elbencho as a replacement to fio, but it can also
+aggravate performance problems caused by file system locking which may not be
+desirable.
+
+To run elbencho in file-per-process mode (in a way analogous to `ior -F`), you
+can do
+
+```
+$ mkdir somedirs
+$ ./bin/elbencho --threads 32 \
+                 --files 1 \
+                 --size 1t \
+                 --block 1m \
+                 --dirsharing \
+                 --mkdirs \
+                 --sync \
+                 --write \
+                 ./somedirs
+```
+
+The important parts here are
+
+* `--threads 32` is analogous to using 32 processes per node
+* `--files 1` is files **per thread, per process**.  In this case, each of our
+  32 threads will each create one file and will perform I/O to it exclusively.
+* `--size 1t` will make **each file** 1 TiB.  In the above case we have 32
+  threads, so we will create 32 &#215; 1 TiB files (or 32 TiB total spread
+  over 32 files)
+ * `--dirsharing` makes each thread and process create its files in a single shared
+  directory.  This isn't strictly necessary, but this makes elbencho emulate the
+  behavior of IOR's `-F` (file per process) option.
+ 
+If you are running in multiprocess mode (using `--hosts`), each thread from each
+process will create the number of files specified by `--files`.  For example,
+
+```
+$ srun -N 6 -n 6 \
+       --nodelist node06,node07,node08,node09,node10,node11 \
+       ./bin/elbencho --service --foreground
+
+$ mkdir somedirs
+
+$ elbencho --hosts node06,node07,node08,node09,node10,node11 \
+           --threads 32 \
+           --files 1 \
+           --size 1t \
+           --block 1m \
+           --dirsharing \
+           --mkdirs \
+           --sync \
+           --write \
+           ./somedirs
+```
+
+The above
+
+1. Starts one elbencho service on each of six nodes (`srun -N 6 -n 6`)
+2. Creates the directory in which elbencho will generate its directory tree
+3. Runs a test across six nodes, each with 32 processes per node, and each
+   generating a single 1 TiB file.  A total of 6 &#215; 32 &#215; 1 = 192 files will
+   be created.  That's a lot of data!
