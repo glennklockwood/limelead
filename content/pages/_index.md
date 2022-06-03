@@ -2,19 +2,17 @@
 title: Glenn K. Lockwood
 status: hidden
 ---
-I am a high-performance computing systems architect at the [National
-Energy Research Scientific Computing Center (NERSC)][nersc] at [Lawrence
-Berkeley National Laboratory][lbnl].  NERSC provides high-performance computing
-resources for thousands of researchers around the world each year, and my role
-is to ensure that our storage systems balance advanced technologies with
-production reliability to enable science that can be done nowhere else.  To this
-end, my work focuses on I/O performance analysis, extreme-scale storage
-architectures, and emerging I/O technologies and interfaces.
+I design storage infrastructure for high-performance computing applications in
+Azure, Microsoft's cloud platform.  Prior to working at Microsoft, I was a
+systems architect at the [National Energy Research Scientific Computing Center
+(NERSC)][nersc] at [Lawrence Berkeley National Laboratory][lbnl] where I helped
+define long-term storage strategy, designed a 35 PB NVMe Lustre file system,
+and managed the team responsible for hundreds of petabytes of disk and tape.
 
-I have worked in the genomics industry in the past, and my formal education is
+I worked in the genomics industry previous to that, and my formal education is
 in ceramic engineering.  More information about my current and past work can
-be found in [my CV][] and on [LinkedIn][], and excruciating details about my
-life are in my [biography][].
+be found on [LinkedIn][] and [Google Scholar][], and excruciating details about
+my life are in my [biography][].
 
 This site contains various notes I've taken related to technical computing over
 the years.  I welcome any feedback about its contents at the e-mail address
@@ -25,6 +23,6 @@ the `#hpc` channel on [Libera][].
 [lbnl]: https://www.lbl.gov/
 [Libera]: https://libera.chat/
 [LinkedIn]: https://www.linkedin.com/in/glennklockwood
-[my CV]: personal/cv.html
+[Google Scholar]: https://scholar.google.com/citations?user=_P_S1A8AAAAJ
 [biography]: personal/about.html
 [on Twitter]: https://twitter.com/glennklockwood

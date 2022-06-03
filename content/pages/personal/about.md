@@ -106,8 +106,8 @@ and the loss of the technical responsibilities led me to step down from this
 acting position a year later and return to the Advanced Technologies Group at
 NERSC.
 
-As of 2021, my role is still predominantly storage-focused and is comprised of
-three major responsibilities:
+After returning to Advanced Technologies, my role was still predominantly
+storage-focused and composed of three major responsibilities:
 
 1. Staying abreast of new technologies, coordinating relationships with storage
    vendors, and evaluating new technologies as they may pertain to future HPC
@@ -120,9 +120,19 @@ three major responsibilities:
    the purposes of procurement, contracting, external oversight, and project
    management.
 
-My favorite part of the job is getting to interact with smart people from all
-over the world and connecting great tools, technologies, and techniques with
-hard problems to create clever solutions.
+My role had me oversee increasingly larger projects.  Once the 35 PB all-flash
+Lustre file system I oversaw was delivered and accepted as part of the
+Perlmutter system, I moved on to overseeing the overall technology integration
+strategy and program surrounding NERSC's follow-on system, NERSC-10.  I
+[struggled to settle into this role][life and leaving nersc] and ultimately
+left NERSC in May 2022.
+
+## Moving to the cloud
+
+In June 2022 I started a new position at Microsoft Azure as a Principal Product
+Manager.  My responsibilities broadly revolve around delivering storage
+solutions for customers who rely on Azure for AI and high-performance computing
+workloads.
 
 [ru engineering]: http://soe.rutgers.edu
 [imsl]: http://glass.rutgers.edu/
@@ -144,3 +154,4 @@ hard problems to create clever solutions.
 [io forwarding page]: ../data-intensive/storage/io-forwarding.html
 [object stores page]: ../data-intensive/storage/object-storage.html
 [nersc ssg]: https://www.nersc.gov/about/nersc-staff/storage-systems-group/
+[life and leaving nersc]: https://glennklockwood.blogspot.com/2022/05/life-and-leaving-nersc.html

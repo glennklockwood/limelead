@@ -1,23 +1,12 @@
 ---
 title: Cirriculum Vitae
-overrideLastMod: January 20, 2017
 ---
 
-<h2 class="cv-h2">Summary</h2>
+This page has fallen out of date.  Please see my [LinkedIn][] and
+[Google Scholar][] for the most up-to-date information.
 
-Computational scientist with extensive experience in all aspects of operational
-high-performance computing.  Formal education in materials science with a
-specialty in molecular dynamics.  Extensive, hands-on experience in system
-administration, application support, debugging, performance analysis, parallel
-application development, system and user documentation, and education, outreach,
-and training.  Deep specific expertise in extreme-scale parallel I/O, parallel
-file system architectures, I/O middleware, and future I/O technologies and
-architectures.
-
-Fundamentally driven by philosophy that HPC must be usable by users to be
-useful.  Active participant in user engagement, classroom and written training,
-community outreach, and collaboration with the global HPC user, vendor, and
-operations communities.
+[LinkedIn]: https://www.linkedin.com/in/glennklockwood
+[Google Scholar]: https://scholar.google.com/citations?user=_P_S1A8AAAAJ&hl=en
 
 <h2 class="cv-h2">Education</h2>
 
@@ -62,9 +51,39 @@ operations communities.
 
 <div class="cv-block">
     <div class="cv-head-container">
+        <div class="cv-head-left">Azure Storage</div>
+        <div class="cv-head-mid">Microsoft</div>
+        <div class="cv-head-right">June 2022 - Present</div>
+    </div>
+    <ul class="cv-vertical-list">
+        <li>I'll let you know when I find out.</li>
+    </ul>
+
+    <div class="cv-head-container">
+        <div class="cv-head-left">Advanced Technologies</div>
+        <div class="cv-head-mid">NERSC/LBL</div>
+        <div class="cv-head-right">November 2020 - May 2022</div>
+    </div>
+    <ul class="cv-vertical-list">
+        <li>Lead for the 35 PB all-flash Perlmutter Lustre file system</li>
+        <li>Lead of Technology Integration on NERSC-10 project</li>
+    </ul>
+
+    <div class="cv-head-container">
+        <div class="cv-head-left">Manager of Storage Systems,</div>
+        <div class="cv-head-mid">NERSC/LBL</div>
+        <div class="cv-head-right">October 2019 - November 2020</div>
+    </div>
+    <ul class="cv-vertical-list">
+        <li>Managed team of eight engineers</li>
+        <li>Oversaw procurement and acceptance of 120 PB file system</li>
+        <li>Representative on the HPSS Executive Committee</li>
+    </ul>
+
+    <div class="cv-head-container">
         <div class="cv-head-left">Advanced Technologies,</div>
         <div class="cv-head-mid">NERSC/LBL</div>
-        <div class="cv-head-right">August 2015 - Present</div>
+        <div class="cv-head-right">August 2015 - October 2019</div>
     </div>
     <ul class="cv-vertical-list">
         <li>Performance analysis of parallel file systems</li>
