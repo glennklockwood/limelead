@@ -20,12 +20,14 @@ was `18_04-lts-gen2` - the `gen2` was the incompatible part.  To find all the
 compatible VMs:
 
 ```
-$ az vm image list -o table --all --publisher Canonical --sku 22_04-lts
-
-Offer                         Publisher    Sku                 Urn                                                                     Version
-----------------------------  -----------  ------------------  ----------------------------------------------------------------------  ---------------
-0001-com-ubuntu-server-jammy  Canonical    22_04-lts           Canonical:0001-com-ubuntu-server-jammy:22_04-lts:22.04.202204200        22.04.202204200
-0001-com-ubuntu-server-jammy  Canonical    22_04-lts           Canonical:0001-com-ubuntu-server-jammy:22_04-lts:22.04.202206040        22.04.202206040
-0001-com-ubuntu-server-jammy  Canonical    22_04-lts-gen2      Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2:22.04.202204200   22.04.202204200
-0001-com-ubuntu-server-jammy  Canonical    22_04-lts-gen2      Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2:22.04.202206040   22.04.202206040
+$ az vm image list-skus --location westcentralus --publisher Canonical --offer UbuntuServer --output table
+Location       Name
+-------------  --------------------
+westcentralus  12.04.5-LTS
+westcentralus  14.04.0-LTS
+westcentralus  14.04.1-LTS
+westcentralus  14.04.2-LTS
+...
 ```
+
+See [this page](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/cli-ps-findimage) for the full documentation.
