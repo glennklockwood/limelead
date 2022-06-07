@@ -790,3 +790,34 @@
     - cores_used: 128
       wall_secs: 472
       memreorder_secs: 425
+- model: "Lenovo P14s Gen2"
+  processor: "Intel i7-1185G7"
+  cache_l1i_kib: 32
+  cache_l1d_kib: 48
+  cache_l2_kib: 1280
+  cache_l3_kib: 12288
+  _cache_comment: "private L2, shared L3"
+  mem: "48 GB"
+  mem_type: "DDR4-3200"
+  mem_speed: "52.2 GB/s"
+  compiler: "GNU Fortran (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0"
+  hostname: "glenovo"
+  compile_flags: "-mcpu=native -mtune=native -O3 -fdefault-real-8 -fdefault-double-8"
+  clock_mhz: 2995
+  clock_turbo: true
+  results:
+    - cores_used: 1
+      wall_secs: 116
+      memreorder_secs: 97
+    - cores_used: 2
+      wall_secs: 89
+      memreorder_secs: 83
+    - cores_used: 3
+      wall_secs: 86
+      memreorder_secs: 81
+    - cores_used: 4
+      wall_secs: 89
+      memreorder_secs: 85
+    - cores_used: 8
+      wall_secs: 172
+      memreorder_secs: 127
