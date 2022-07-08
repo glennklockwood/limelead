@@ -2,15 +2,16 @@
 title: Glenn K. Lockwood
 status: hidden
 ---
-I design storage infrastructure for high-performance computing applications in
-Azure, Microsoft's cloud platform.  Prior to working at Microsoft, I was a
-systems architect at the [National Energy Research Scientific Computing Center
-(NERSC)][nersc] at [Lawrence Berkeley National Laboratory][lbnl] where I helped
-define long-term storage strategy, designed a 35 PB NVMe Lustre file system,
-and managed the team responsible for hundreds of petabytes of disk and tape.
+I develop storage product directions for high-performance computing
+applications in Azure, Microsoft's cloud platform.  Prior to working at
+Microsoft, I was a systems architect at the [National Energy Research
+Scientific Computing Center (NERSC)][nersc] at [Lawrence Berkeley National
+Laboratory][lbnl] where I helped define [long-term storage strategy][s2020],
+[designed a 35 PB NVMe Lustre file system][n9scratchnp], and managed the team
+responsible for [hundreds of petabytes of disk and tape][hpciodc20talk].
 
-I worked in the genomics industry previous to that, and my formal education is
-in ceramic engineering.  More information about my current and past work can
+I worked in the [genomics industry][] previous to that, and my formal education
+is in ceramic engineering.  More information about my current and past work can
 be found on [LinkedIn][] and [Google Scholar][], and excruciating details about
 my life are in my [biography][].
 
@@ -21,6 +22,10 @@ the `#hpc` channel on [Libera][].
 
 [nersc]: https://www.nersc.gov/
 [lbnl]: https://www.lbl.gov/
+[s2020]: https://www.nersc.gov/news-publications/nersc-news/nersc-center-news/2017/new-storage-2020-report-outlines-future-hpc-storage-vision/
+[n9scratchnp]: https://www.nextplatform.com/2021/06/07/a-35-petabyte-all-flash-balancing-act/
+[hpciodc20talk]: https://www.youtube.com/watch?v=O3977O94FzE&list=PL_PBXYC_ExoOggQRV98QLNMhT8u-iRxt2&index=13
+[genomics industry]: https://www.10xgenomics.com/
 [Libera]: https://libera.chat/
 [LinkedIn]: https://www.linkedin.com/in/glennklockwood
 [Google Scholar]: https://scholar.google.com/citations?user=_P_S1A8AAAAJ
