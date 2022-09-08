@@ -212,3 +212,69 @@
     wall_secs:        65
     memreorder_secs:  65
     stream_triad_mbs: 48025.0
+- model:        "MacBook Pro M1 Pro"
+  hostname:     "-"
+  processor:    "Apple M1 Pro"
+  cache_l1i_kib: 192
+  cache_l1d_kib: 128
+  cache_l2_kib:  28672
+  _cache_comment: "big cores: 192K L1I, 128K L1D, 2x12 M L2; small cores: 128K L1I, 64K L1D, 4M L2"
+  mem:          "16384 MB"
+  mem_type:     "LPDDR5-6400"
+  mem_speed:    "204.8 GB/s"
+  compiler:     "GNU Fortran (Homebrew GCC 12.2.0) 12.2.0"
+  compile_flags: "-mtune=generic -O3 -fdefault-real-8 -fdefault-double-8"
+  clock_mhz:    3228
+  results:
+  - cores_used:       1
+    wall_secs:        93
+    memreorder_secs:  106
+  - cores_used:       2
+    wall_secs:        72
+    memreorder_secs:  65
+  - cores_used:       4
+    wall_secs:        60
+    memreorder_secs:  60
+  - cores_used:       6
+    wall_secs:        60
+    memreorder_secs:  61
+  - cores_used:       8
+    wall_secs:        63
+    memreorder_secs:  64
+- model:        "D64pls_v5"
+  hostname:     "-"
+  processor:    "Ampere Altra Q80-30"
+  cache_l1i_kib: 64
+  cache_l1d_kib: 64
+  cache_l2_kib:  65536
+  mem:          "125546 MB"
+  mem_type:     "DDR4-3200"
+  mem_speed:    "204.8 GB/sec"
+  compiler:     "GNU Fortran (Ubuntu 9.4.0-1ubuntu1~20.04.1) 9.4.0"
+  compile_flags: "-mtune=generic -O3 -fdefault-real-8 -fdefault-double-8"
+  clock_mhz:    3000
+  results:
+  - cores_used:       1
+    wall_secs:        212
+    memreorder_secs:  195
+  - cores_used:       2
+    wall_secs:        163
+    memreorder_secs:  148
+  - cores_used:       3
+    wall_secs:        144
+    memreorder_secs:  136
+  - cores_used:       4
+    wall_secs:        136
+    memreorder_secs:  134
+  - cores_used:       8
+    wall_secs:        144
+    memreorder_secs:  145
+  - cores_used:       16
+    wall_secs:        196
+    memreorder_secs:  197
+  - cores_used:       32
+    wall_secs:        313
+    memreorder_secs:  310
+  - cores_used:       64
+    wall_secs:        548
+    memreorder_secs:  557
