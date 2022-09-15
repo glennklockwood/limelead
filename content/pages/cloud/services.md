@@ -24,3 +24,9 @@ running list of them that I add to as I look into more.
 | Microsoft Azure       | Amazon Web Services   | Google Cloud
 |-----------------------|-----------------------|------------------------
 | ARM                   | CloudFormation        |
+
+## Other stuff
+
+| Microsoft Azure       | Amazon Web Services   | Google Cloud
+|-----------------------|-----------------------|------------------------
+| Azure Orbital Ground Station | AWS Ground Station |
