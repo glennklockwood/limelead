@@ -147,3 +147,19 @@ policies, stolen user delegation SAS tokens can be invalidated by revoking the
 user delegation keys used to generate them.
 
 [stored access policies]: https://docs.microsoft.com/en-us/rest/api/storageservices/define-stored-access-policy
+
+## Managed Identities
+
+If your VM has an assigned managed identity, you can get it (and a bearer token)
+using
+
+```
+curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fmanagement.azure.com%2F' -H Metadata:true -s
+```
+
+Of note, `169.254.169.254` is a magical REST endpoint in Azure that stores
+instance metadata.  Poking this endpoint from inside a VM is how you inspect
+metadata about yourself.  More information on what can be done with this is
+on [How to use managed identities for Azure resources on an Azure VM][].
+
+[How to use managed identities for Azure resources on an Azure VM]: https://docs.microsoft.com/en-us/azure/active-directory/managed-identities-azure-resources/how-to-use-vm-token
