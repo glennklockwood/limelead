@@ -1,6 +1,7 @@
 __pycache__
 output
 .DS_Store
+pelican/
 
 # all index.md files are dynamically generated
 index.md
