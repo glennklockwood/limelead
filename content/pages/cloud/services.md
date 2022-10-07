@@ -1,5 +1,6 @@
 ---
 title: Cloud Service Comparison
+order: 50
 ---
 
 The big cloud providers generally provide the same or comparable services under

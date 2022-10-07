@@ -1,6 +1,7 @@
 ---
 title: Managing Process Affinity in Linux
 shortTitle: Process Affinity
+order: 10
 ---
 
 ## 1. Introduction

@@ -1,6 +1,7 @@
 ---
 title: Building and Managing Darshan
 shortTitle: Managing Darshan
+order: 20
 ---
 
 ## Introduction
