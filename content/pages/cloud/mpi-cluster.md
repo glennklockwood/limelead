@@ -8,9 +8,39 @@ order: 10
 This page is still a work in progress because the notes and inputs/outputs are not well explained yet.
 {% endcall %}
 
-We're going to use a [cloud-init][] to ensure that our compute node VMs start up
-with two pieces of software that we'll need to get this MPI cluster configured
-and running.  Create a file called `cloud-init.txt` that contains this:
+These instructions show the most basic way to create a cluster that's capable
+of running MPI across the general-purpose network in Azure.  This is meant to
+be a _simple_ illustration of how to do it, using the most basic steps, to show
+what the process looks like. This is _not_ how you would create a production
+HPC cluster for real; [CycleCloud][] and similar tools automate and simplify
+most of this, but my goal here is to show what is happening underneath those
+automations so you can play around.
+
+A couple of details about the cluster we're going to build:
+
+- It will use (mostly) standard Ubuntu just because that's easy
+- It will use the cheapest VMs (`Standard_DS1_v2`), not real HPC nodes -
+  because I'm cheap
+- It will put all nodes near each other to minimize network latency, but
+- It will still use the standard Azure network, not InfiniBand. Again,
+  because I'm cheap
+- We will use the [Azure CLI][] to do everything and assume you have already
+  set that up with your Azure account and subscription
+
+The only extra "cheat" we'll use is [cloud-init][], which we use to 
+install two software packages that make it easier to get up and running.
+
+
+[clush]: https://clustershell.readthedocs.io/en/latest/tools/clush.html
+[CycleCloud]: https://learn.microsoft.com/en-us/azure/cyclecloud/overview?view=cyclecloud-8
+[Azure CLI]: https://learn.microsoft.com/en-us/cli/azure/install-azure-cli
+[cloud-init]: https://cloudinit.readthedocs.io/en/latest/
+[OpenMPI]: https://www.open-mpi.org/
+
+## Create compute nodes
+
+On your local machine (same place you'll run your <kbd>az</kbd> commands),
+create a file called `cloud-init.txt` that contains this:
 
 ```
 #cloud-config
@@ -21,43 +51,66 @@ packages:
   - libopenmpi-dev
 ```
 
-We'll then pass this into the VMs we create to install [clush][] (which lets
-us run the same command across all our nodes) and [OpenMPI][] (which we need to
-build and run MPI applications).
+We'll pass this file into Azure's VM provisioning process to install [clush][]
+(which lets us run the same command across all our nodes) and [OpenMPI][]
+(which we need to build and run MPI applications).
 
-[clush]: https://clustershell.readthedocs.io/en/latest/tools/clush.html
-[cloud-init]: https://cloudinit.readthedocs.io/en/latest/
-[OpenMPI]: https://www.open-mpi.org/
-
-## Create compute nodes
-
-The Azure CLI makes it pretty easy to create a cluster of nodes nowadays:
+First, create a _resource group_ which is how we will group our cluster parts.
 
 <div class="codehilite"><pre>
-# create resource group
 $ <kbd>az group create --name <span style="color:#1b9e77">glocktestrg</span> --location eastus</kbd>
+</pre></div>
 
-# create proximity placement group
+Then create a _proximity placement group_ (ppg). Every VM we put in here will be
+within the same low-latency network bubble.
+
+<div class="codehilite"><pre>
 $ <kbd>az ppg create --name <span style="color:#a65628">glocktestppg</span> \
                --resource-group <span style="color:#1b9e77">glocktestrg</span> \
                --intent-vm-sizes <span style="color:#e7298a">Standard_DS1_v2</span></kbd>
+</pre></div>
 
-# create four VMs
-$ <kbd>az vm create --name glocluster \
+Now we create a group of four compute nodes in that ppg.  The [Azure CLI][]
+makes this pretty easy nowadays.
+
+<div class="codehilite"><pre>
+$ <kbd>az vm create --name <span style="color:#ff7f00">glocluster</span> \
              --resource-group <span style="color:#1b9e77">glocktestrg</span> \
-             --image <span style="color:#66a61e">UbuntuLTS</span> \
+             --image UbuntuLTS \
              --ppg <span style="color:#a65628">glocktestppg</span> \
              --generate-ssh-keys \
              --size <span style="color:#e7298a">Standard_DS1_v2</span> \
              --accelerated-networking true \
-             --admin-username glock \
              --custom-data cloud-init.txt \
              --count 4</kbd>
 </pre></div>
 
-If you want to use something other than the <code style="color:#66a61e">UbuntuLTS</code> image (which is an alias for Ubuntu 18.04, which is quite old) you can scroll through the output of `az vm image list -p canonical -o table --all`.  A newer Ubuntu can be used via the image named `Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2:latest`, for example.
+What this means:
 
-To see everything this command created:
+- the nodes will be named
+  <code><span style="color:#ff7f00">glocluster</span>0</code>,
+  <code><span style="color:#ff7f00">glocluster</span>1</code>,
+  <code><span style="color:#ff7f00">glocluster</span>2</code>,
+  <code><span style="color:#ff7f00">glocluster</span>3</code>,
+- `--image UbuntuLTS` installs Ubuntu on each VM. This aliases to an old (18.04)
+  version; if you want something else, use `az vm image list -p canonical
+  -o table --all` to find all Ubuntu (canonical) images.  For example,
+  `Canonical:0001-com-ubuntu-server-jammy:22_04-lts-gen2:latest` will use
+  Ubuntu 22.04 instead.
+- `--generate-ssh-keys` puts your local ssh key `~/.ssh/id_rsa.pub`
+  into the `authorized_keys` file in all the nodes you're creating
+- `--size Standard_DS1_v2` says to use [DS1\_v2][ds1v2] VM types
+- `--accelerated-networking true` says to pass the NIC through to your VM
+  using SR-IOV. It doesn't cost anything, so I don't really know why you would
+  _not_ want this.
+- `--custom-data cloud-init.txt` passes in our cloud-init.txt file to the
+  provisioning process
+- `--count 4` says to make four VMs total.
+
+[ds1v2]: https://learn.microsoft.com/en-us/azure/virtual-machines/dv2-dsv2-series
+
+This command will block until all VMs are up and running. Then, we can see what
+all was created using:
 
 <div class="codehilite"><pre>
 $ <kbd>az resource list --resource-group <span style="color:#1b9e77">glocktestrg</span> -o table</kbd>
@@ -65,13 +118,19 @@ $ <kbd>az resource list --resource-group <span style="color:#1b9e77">glocktestrg
 Name                   ResourceGroup    Location    Type                                          Status
 ---------------------  ---------------  ----------  --------------------------------------------  --------
 <span style="color:#a65628">glocktestppg</span>           <span style="color:#1b9e77">glocktestrg</span>      eastus      Microsoft.Compute/proximityPlacementGroups
-gloclusterPublicIP3    <span style="color:#1b9e77">glocktestrg</span>      eastus      Microsoft.Network/publicIPAddresses
-gloclusterNSG          <span style="color:#1b9e77">glocktestrg</span>      eastus      Microsoft.Network/networkSecurityGroups
-gloclusterPublicIP2    <span style="color:#1b9e77">glocktestrg</span>      eastus      Microsoft.Network/publicIPAddresses
+<span style="color:#ff7f00">glocluster</span>PublicIP3    <span style="color:#1b9e77">glocktestrg</span>      eastus      Microsoft.Network/publicIPAddresses
+<span style="color:#ff7f00">glocluster</span>NSG          <span style="color:#1b9e77">glocktestrg</span>      eastus      Microsoft.Network/networkSecurityGroups
+<span style="color:#ff7f00">glocluster</span>PublicIP2    <span style="color:#1b9e77">glocktestrg</span>      eastus      Microsoft.Network/publicIPAddresses
 ...
 </div></pre>
 
-The VMs created all have public IPs and share a common subnet on a common VNet within close physical proximity thanks to our proximity placement group.  You can list the public and private IP addresses of your cluster:
+The VMs created all have public IPs and share a common subnet on a common VNet
+within close physical proximity thanks to our proximity placement group.
+
+### SSH to your cluster
+
+First, list the public and private IP addresses of your cluster.  We'll need to
+SSH to one of the nodes using its public IP address:
 
 <div class="codehilite"><pre>
 $ <kbd>az vm list-ip-addresses --resource-group <span style="color:#1b9e77">glocktestrg</span> -o table</kbd>
@@ -84,34 +143,38 @@ glocluster2       20.25.24.166         10.0.0.4
 glocluster3       20.169.149.181       10.0.0.5
 </pre></div>
 
-You will need to get the name of the subnet of the vnet you just created:
-
-<div class="codehilite"><pre>
-$ <kbd>az network vnet subnet list --resource-group <span style="color:#1b9e77">glocktestrg</span> --vnet-name gloclusterVNET -o table</kbd>
-
-AddressPrefix    Name              PrivateEndpointNetworkPolicies    PrivateLinkServiceNetworkPolicies    ProvisioningState    ResourceGroup
----------------  ----------------  --------------------------------  -----------------------------------  -------------------  ---------------
-10.0.0.0/24      gloclusterSubnet  Disabled                          Enabled                              Succeeded            <span style="color:#1b9e77">glocktestrg</span>
-</pre></div>
-
-The <kbd>az vm create</kbd> command creates a user for you on your VMs with the same name as your local user (in my case, `glock`) and puts your local ssh key `~/.ssh/id_rsa.pub` in there.  So at this point, you should be able to log into your head node:
+The <kbd>az vm create</kbd> command created a user for you on your VMs with
+the same name as your local user (the one who ran the `az` command; in my case,
+`glock`, but you can override this using `--admin-username`). It also puts your
+local ssh key (`~/.ssh/id_rsa.pub`) in each VM's `authorized_keys` file.  So
+at this point, you should be able to log into your head node:
 
 <div class="codehilite"><pre>
 $ <kbd>ssh <span style="color:#d95f02">20.25.28.201</span></kbd>
 $ <kbd>exit</kbd>
 </pre></div>
 
-Copy your private ssh key from your local laptop to remote node so you can then ssh from your login node to your other nodes.
+Copy your private ssh key from your local laptop to remote node so you can then
+ssh from your login node to your other nodes.
 
 <div class="codehilite"><pre>
 $ <kbd>scp ~/.ssh/id_rsa <span style="color:#d95f02">20.25.28.201</span>:.ssh/</kbd>
 </pre></div>
 
+Note this is **very bad security practice** that you shouldn't do unless you're
+messing around, since you shouldn't be sharing private keys between your home
+computer and this cluster (think: if someone breaks into our cloud cluster, they
+have the same key you use at home).
+
 ### Generate a hosts file
-We'll add our cluster nodes to the hosts file so we don't have to remember
-their IP addresses.  Use the output from the <kbd>az vm list-ip-addresses
---resource-group <span style="color:#1b9e77">glocktestrg</span> -o table</kbd>
-command above, or try some fancy querying:
+
+To make it easy for compute nodes to talk to each other, we'll add the private
+IPs of each node to a hosts file and then duplicate that hosts file across all
+our nodes.
+
+Use the output from the <kbd>az vm list-ip-addresses --resource-group <span
+style="color:#1b9e77">glocktestrg</span> -o table</kbd> command above, or try
+some fancy querying:
 
 <div class="codehilite"><pre>
 $ <kbd>az vm list-ip-addresses --resource-group <span style="color:#1b9e77">glocktestrg</span> \
@@ -126,15 +189,21 @@ glocluster2  10.0.0.4
 glocluster3  10.0.0.5
 </pre></div>
 
-So log into your cluster head node:
+Copy this mapping of nodename to private IP address.
+
+Then log into your cluster head node:
 
 <div class="codehilite"><pre>
 $ <kbd>ssh <span style="color:#d95f02">20.25.28.201</span></kbd>
 $ <kbd>sudo vi /etc/hosts</kbd>
+</pre></div>
 
-# paste in the above mappings
+And paste that mapping to the end of `/etc/hosts`. Your hosts file should then
+look like this:
 
+<div class="codehilite"><pre>
 $ <kbd>cat /etc/hosts</kbd>
+
 127.0.0.1 localhost
 
 # The following lines are desirable for IPv6 capable hosts
@@ -152,23 +221,35 @@ glocknode3  10.0.0.7
 glocknode4  10.0.0.6
 </pre></div>
 
-Now we need to get passwordless ssh up and working.  First add all the compute nodes to your known hosts file:
+Now we need to get passwordless ssh up and working so we can noninteractively
+run commands on other nodes through SSH. First add all the compute nodes' host
+keys to your SSH `known_hosts` file:
 
 <div class="codehilite"><pre>
 $ <kbd>for i in {0..3};do ssh-keyscan glocluster${i};done > ~/.ssh/known_hosts</kbd>
 </pre></div>
 
-This allows the `clush` command to work which we'll use to avoid having to keep using these for loops to do something on all our nodes.   Make sure clush works:
+The `ssh-keyscan` command just connects to another hosts and retrieves its host
+keys, which we then store in `~/.ssh/known_hosts` on our main `glocluster0`
+node.
+
+Now the `clush` command (which we installed via [cloud-init][]) will work and
+don't have to keep using bash for loops to do something on all our nodes.
+Make sure clush works across all nodes:
 
 <div class="codehilite"><pre>
 $ <kbd>clush -w glocluster[0-3] uname -n</kbd>
 </pre></div>
 
-Then copy your `known_hosts` and private key to all cluster nodes:
+Then copy your `known_hosts` and private key to all cluster nodes using
+`clush -c`:
 
 <div class="codehilite"><pre>
 $ <kbd>clush -w glocluster[0-3] -c ~/.ssh/id_rsa ~/.ssh/known_hosts</kbd>
 </pre></div>
+
+Now we have passwordless ssh working between all our nodes, and we are ready to
+run an MPI application!
 
 ### Run MPI hello world
 
@@ -344,6 +425,18 @@ $ <kbd>az storage account create --name glockteststorage \
 </pre></div>
 
 Blob NFS would be super insecure since it uses NFS v3 and relies on access control via the network which is decidedly un-cloudlike since storage accounts otherwise are meant to be accessed from the public Internet.  This requires us to set `--default-action deny` to disallow all traffic by default and only allow traffic from specific subnets.  Let's add ours:
+
+You will need to get the name of the subnet of the vnet you just created:
+
+<div class="codehilite"><pre>
+$ <kbd>az network vnet subnet list --resource-group <span style="color:#1b9e77">glocktestrg</span> --vnet-name gloclusterVNET -o table</kbd>
+
+AddressPrefix    Name              PrivateEndpointNetworkPolicies    PrivateLinkServiceNetworkPolicies    ProvisioningState    ResourceGroup
+---------------  ----------------  --------------------------------  -----------------------------------  -------------------  ---------------
+10.0.0.0/24      gloclusterSubnet  Disabled                          Enabled                              Succeeded            <span style="color:#1b9e77">glocktestrg</span>
+</pre></div>
+
+
 
 <div class="codehilite"><pre>
 # enable the service endpoint for Azure Storage on our subnet
