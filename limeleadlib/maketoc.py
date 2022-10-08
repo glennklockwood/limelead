@@ -91,7 +91,10 @@ def draw_toc_2level(toc, maxlevel=2):
                 html[-1] += '\n</ul>\n'
                 open_tags.pop()
             html[-1] += "</li>"
-            open_tags.pop()
+            try:
+                open_tags.pop()
+            except IndexError as e:
+                raise TypeError("maketoc found unmatched tags - html syntax error?") from e
 
         html.append('<li class="toc-entry"><a href="#%s">%s</a></li>' % (
             entry['anchor'],
