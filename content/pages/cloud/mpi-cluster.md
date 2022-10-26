@@ -353,7 +353,20 @@ $ <kbd>mpirun -np 2 --host glocluster1,glocluster2 ./osu-micro-benchmarks-6.1/in
 
 Using `clush` to copy your binaries and files to your home directory on every
 compute node is really tedious.  An easier way to manage data is to put this
-shared data in a shared network file system.
+shared data in a shared network file system.  Here we show how to do this the
+easy way (just export a directory from your head node) and cool way (mount an
+object container using NFS).
+
+In both cases, first install the NFS client packages and create the directory
+where we'll mount this NFS volume (`/scratch`):
+
+<div class="codehilite"><pre>
+# install the nfs client and server on all nodes
+$ <kbd>clush -w glocluster[0-3] sudo apt -y install nfs-common nfs-kernel-server</kbd>
+
+# create the shared mountpoint on all nodes
+$ <kbd>clush -w glocluster[0-3] sudo mkdir /scratch</kbd>
+</pre></div>
 
 ### Exporting from a node
 
@@ -368,12 +381,6 @@ goal to mount it everywhere as the `/scratch` directory:
 # make the directory we're going to share and make sure we can write to it
 $ <kbd>sudo mkdir /shared</kbd>
 $ <kbd>sudo chown glock:glock /shared</kbd>
-
-# create the shared mountpoint on all nodes
-$ <kbd>clush -w glocluster[0-3] sudo mkdir /scratch</kbd>
-
-# install the nfs client and server on all nodes
-$ <kbd>clush -w glocluster[0-3] sudo apt -y install nfs-common nfs-kernel-server</kbd>
 
 # share the directory - limit it only to our subnet (10.0.&#42;) though since all our nodes have public IP addresses
 $ <kbd>sudo bash -c 'echo "/shared 10.0.&#42;(rw,no_root_squash,no_subtree_check)" >> /etc/exports'</kbd>
@@ -435,8 +442,6 @@ AddressPrefix    Name              PrivateEndpointNetworkPolicies    PrivateLink
 ---------------  ----------------  --------------------------------  -----------------------------------  -------------------  ---------------
 10.0.0.0/24      gloclusterSubnet  Disabled                          Enabled                              Succeeded            <span style="color:#1b9e77">glocktestrg</span>
 </pre></div>
-
-
 
 <div class="codehilite"><pre>
 # enable the service endpoint for Azure Storage on our subnet
