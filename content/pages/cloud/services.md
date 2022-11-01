@@ -36,7 +36,7 @@ Google Cloud Storage | unlimited    | 5,000 + autoscale | 1,000 + autoscale | 20
 
 | Microsoft Azure       | Amazon Web Services   | Google Cloud
 |-----------------------|-----------------------|------------------------
-| ARM                   | CloudFormation        |
+| ARM                   | CloudFormation        | Deployment Manager
 
 ## Other stuff
 
