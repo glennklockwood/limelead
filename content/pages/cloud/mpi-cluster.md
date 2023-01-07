@@ -168,61 +168,11 @@ have the same key you use at home).
 
 ### Generate a hosts file
 
-To make it easy for compute nodes to talk to each other, we'll add the private
-IPs of each node to a hosts file and then duplicate that hosts file across all
-our nodes.
+These VMs can already resolve each others' hostnames thanks to Azure magic, so
+there's no need to add `glocluster0`, `glocluster1`, etc to `/etc/hosts`.
 
-Use the output from the <kbd>az vm list-ip-addresses --resource-group <span
-style="color:#1b9e77">glocktestrg</span> -o table</kbd> command above, or try
-some fancy querying:
-
-<div class="codehilite"><pre>
-$ <kbd>az vm list-ip-addresses --resource-group <span style="color:#1b9e77">glocktestrg</span> \
-                           --query '[*].virtualMachine.[name, network.privateIpAddresses[0]]' \
-                           -o table</kbd>
-
-Column1      Column2
------------  ---------
-glocluster0  10.0.0.7
-glocluster1  10.0.0.6
-glocluster2  10.0.0.4
-glocluster3  10.0.0.5
-</pre></div>
-
-Copy this mapping of nodename to private IP address.
-
-Then log into your cluster head node:
-
-<div class="codehilite"><pre>
-$ <kbd>ssh <span style="color:#d95f02">20.25.28.201</span></kbd>
-$ <kbd>sudo vi /etc/hosts</kbd>
-</pre></div>
-
-And paste that mapping to the end of `/etc/hosts`. Your hosts file should then
-look like this:
-
-<div class="codehilite"><pre>
-$ <kbd>cat /etc/hosts</kbd>
-
-127.0.0.1 localhost
-
-# The following lines are desirable for IPv6 capable hosts
-::1 ip6-localhost ip6-loopback
-fe00::0 ip6-localnet
-ff00::0 ip6-mcastprefix
-ff02::1 ip6-allnodes
-ff02::2 ip6-allrouters
-ff02::3 ip6-allhosts
-
-glocknode0  10.0.0.4
-glocknode1  10.0.0.5
-glocknode2  10.0.0.8
-glocknode3  10.0.0.7
-glocknode4  10.0.0.6
-</pre></div>
-
-Now we need to get passwordless ssh up and working so we can noninteractively
-run commands on other nodes through SSH. First add all the compute nodes' host
+To get passwordless ssh up and working (so we can noninteractively
+run commands on other nodes through SSH), first add all the compute nodes' host
 keys to your SSH `known_hosts` file:
 
 <div class="codehilite"><pre>
