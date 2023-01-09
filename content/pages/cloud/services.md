@@ -7,6 +7,8 @@ The big cloud providers generally provide the same or comparable services under
 different names.  I can't keep track of them all in my head, so this is a
 running list of them that I add to as I look into more.
 
+Microsoft maintains a [handy mapping between Azure and AWS services](https://learn.microsoft.com/en-us/azure/architecture/aws-professional/services).
+
 ## Core services
 
 | Microsoft Azure       | Amazon Web Services   | Google Cloud
