@@ -217,4 +217,31 @@ westcentralus  14.04.2-LTS
 ```
 
 See [this page](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/cli-ps-findimage) for the full documentation.
->>>>>>> reorder a bunch of pages based on popularity/relevance
+
+## Query filtering
+
+Figuring out what you can do in a subscription often involves running a bunch of
+`az XYZ list -o table` commands and poring through the results.  You can filter
+the query (without using `| grep`) as such:
+
+```
+az vm list-usage --location "East US" --query '[?contains(name.localizedValue, `Standard H`)]' -o table
+```
+
+This works because the `az vm list-usage` command returns a list of dicts of
+the form
+
+```json
+[
+  {
+    "currentValue": "0",
+    "limit": "8",
+    "localName": "Standard H Family vCPUs",
+    "name": {
+      "localizedValue": "Standard H Family vCPUs",
+      "value": "standardHFamily"
+    }
+  },
+  ...
+]
+```
