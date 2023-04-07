@@ -166,7 +166,7 @@ messing around, since you shouldn't be sharing private keys between your home
 computer and this cluster (think: if someone breaks into our cloud cluster, they
 have the same key you use at home).
 
-### Generate a hosts file
+### Configure inter-host connectivity
 
 These VMs can already resolve each others' hostnames thanks to Azure magic, so
 there's no need to add `glocluster0`, `glocluster1`, etc to `/etc/hosts`.
