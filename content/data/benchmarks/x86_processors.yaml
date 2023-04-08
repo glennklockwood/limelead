@@ -855,3 +855,45 @@
     - cores_used: 20
       wall_secs:  125
       memreorder_secs: 134
+- model: "Azure HBv3"
+  processor: "AMD EPYC 7V73X"
+  cache_l1i_kib: 0
+  cache_l1d_kib: 0
+  cache_l2_kib: 0
+  cache_l3_kib: 0
+  mem: "448 GB"
+  mem_type: "DDR4"
+  mem_speed: ""
+  compiler: "GNU Fortran (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0"
+  hostname: ""
+  compile_flags: "-mcpu=native -mtune=native -O3 -fdefault-real-8 -fdefault-double-8"
+  clock_mhz: 1847
+  #turbo at 3498.312 MHz
+  results:
+    - cores_used: 1
+      wall_secs: 130
+      memreorder_secs: 115
+    - cores_used: 2
+      wall_secs: 102
+      memreorder_secs: 88
+    - cores_used: 3
+      wall_secs: 90
+      memreorder_secs: 80
+    - cores_used: 4
+      wall_secs: 83
+      memreorder_secs: 76
+    - cores_used: 8
+      wall_secs: 82
+      memreorder_secs: 80
+    - cores_used: 16
+      wall_secs: 103
+      memreorder_secs: 100
+    - cores_used: 32
+      wall_secs: 142
+      memreorder_secs: 136
+    - cores_used: 64
+      wall_secs: 256
+      memreorder_secs: 249
+    - cores_used: 120
+      wall_secs: 430
+      memreorder_secs: 423
