@@ -4,11 +4,12 @@ shortTitle: elbencho
 ---
 
 [elbencho][] is an I/O benchmarking tool developed by the illustrious Sven
-Breuner to combine the best aspects of fio and IOR into a modern, flexible
-I/O testing tool.  It is much friendlier to run on non-HPC parallel environments
-since it does not rely on MPI for its inter-node synchronization, and it has
-really nice features like a live text UI so you can watch I/O performance in
-real time.  Its code base is much cleaner and nicer than IOR as well.
+Breuner to combine the best aspects of [fio]({filename}fio.md) and
+[IOR][my ior blog] into a modern, flexible I/O testing tool.  It
+is much friendlier to run on non-HPC parallel environments since it does not
+rely on MPI for its inter-node synchronization, and it has really nice
+features like a live text UI so you can watch I/O performance in real time.
+Its code base is much cleaner and nicer than IOR as well.
 
 {% call alert(type="info") %}
 This page is a work in progress; I update it as I experiment with elbencho and
@@ -16,6 +17,7 @@ learn more.
 {% endcall %}
 
 [elbencho]: https://github.com/breuner/elbencho
+[my ior blog]: https://glennklockwood.blogspot.com/2016/07/basics-of-io-benchmarking.html
 
 ## Getting Started 
 
