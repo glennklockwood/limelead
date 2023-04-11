@@ -857,18 +857,20 @@
       memreorder_secs: 134
 - model: "Azure HBv3"
   processor: "AMD EPYC 7V73X"
-  cache_l1i_kib: 0
-  cache_l1d_kib: 0
-  cache_l2_kib: 0
-  cache_l3_kib: 0
+  cache_l1i_kib: 32
+  cache_l1d_kib: 32
+  cache_l2_kib: 512
+  cache_l3_kib: 786432
   mem: "448 GB"
-  mem_type: "DDR4"
-  mem_speed: ""
+  # 204.8 GB/s per socket at DDR4-3200
+  mem_type: "DDR4-3200"
+  mem_speed: "409.6 GB/s"
   compiler: "GNU Fortran (Ubuntu 11.3.0-1ubuntu1~22.04) 11.3.0"
   hostname: ""
   compile_flags: "-mcpu=native -mtune=native -O3 -fdefault-real-8 -fdefault-double-8"
-  clock_mhz: 1847
-  #turbo at 3498.312 MHz
+  clock_mhz: 2200
+  # idle at 1847 MHz
+  # turbo at 3498 MHz
   results:
     - cores_used: 1
       wall_secs: 130
