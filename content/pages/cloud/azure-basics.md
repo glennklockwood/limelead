@@ -53,8 +53,14 @@ See [this page](https://docs.microsoft.com/en-us/azure/virtual-machines/linux/cl
 ## Query filtering
 
 Figuring out what you can do in a subscription often involves running a bunch of
-`az XYZ list -o table` commands and poring through the results.  You can filter
-the query (without using `| grep`) as such:
+`az XYZ list -o table` commands and poring through the results.  For example, you
+may wish to look up how much quota you have for H-series VMs:
+
+```
+az vm list-usage --location "East US" -o table | grep 'Standard H'
+```
+
+But a better way to do this may be to filter the query as such:
 
 ```
 az vm list-usage --location "East US" --query '[?contains(name.localizedValue, `Standard H`)]' -o table
@@ -77,3 +83,11 @@ the form
   ...
 ]
 ```
+
+## Searching for capacity
+
+Specialized VM types (like those used in HPC) are not available in all regions,
+so requesting quota for them requires knowing which region to target. I haven't
+figured out the API for this yet, but there is a website that lets you search
+for service availability by region.  To search for NDv2 (8-way NVIDIA V100
+instances), you can check out [this example](https://azure.microsoft.com/en-us/explore/global-infrastructure/products-by-region/?regions=&products=ndv2-series,virtual-machines).
