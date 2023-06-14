@@ -19,12 +19,17 @@ scientific research and demonstrate:
    equivalent to MiB/s per FLOPS and you can multiply it by the FLOPS
    capability of a GPU (or a whole system) to get an order-of-magnitude
    estimate of the bandwidth required per GPU to train a specific model.
-2. They show that DeepCAM is a computationally inexpensive model and requires
-   65 GB/s per petaFLOP/s. They found that, in practice, DeepCAM can only
+2. They show that CosmoFlow is a computationally inexpensive model and requires
+   65 GB/s per petaFLOP/s. They found that, in practice, CosmoFlow can only
    utilize 35-50 TFLOP/s per NVIDIA V100 GPU, so training this model on a single
    V100 requires 2.275 - 3.250 GB/s, and **an 8-way V100 node would require
    18.2 GB/s - 26 GB/s. By comparison, a typical NFS client cannot achieve more
    than 3 GB/s over TCP.**
+3. By comparison, ResNet-50 being trained on ImageNet is the least I/O-intensive
+   and only requires, at most, 573 MB/s per V100 or **3.9 GB/s per 8-way V100
+   node.**
+
+[Architectural Requirements for Deep Learning Workloads in HPC Environments]: https://dx.doi.org/10.1109/PMBS54543.2021.00007
 
 [Exascale deep learning for climate analytics][] by Kurth et al directly
 calculated their required storage bandwidth for a modified "Tiramisu" network
@@ -34,5 +39,3 @@ TB/s for the full scale of the training job they ran. Their FLOP/s/sample was
 4.188 on V100 GPUs, and they achieved 20.93 TFLOP/s/GPU during training.
 
 [Exascale deep learning for climate analytics]: https://dl.acm.org/doi/10.5555/3291656.3291724
-
-[Architectural Requirements for Deep Learning Workloads in HPC Environments]: https://dx.doi.org/10.1109/PMBS54543.2021.00007
