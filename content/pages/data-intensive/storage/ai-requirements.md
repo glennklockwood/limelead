@@ -29,7 +29,16 @@ scientific research and demonstrate:
    and only requires, at most, 573 MB/s per V100 or **3.9 GB/s per 8-way V100
    node.**
 
+I've created a simple tool that illustrates how to do this arithmetic and
+[calculates the GB/s required to train a model on different GPUs][ml-model-io-tool].
+It's a very loose model and estimates the upper bound of bandwidth required by
+assuming that each GPU has enough memory bandwidth, PCIe bandwidth, power,
+cooling, etc to train at the full rated performance on their respective spec
+sheets.  As shown in this Ibrahim paper (they find that CosmoFlow trains at
+35-50 TFLOPS of the theoretical 130 TFLOPS), this is never the case.
+
 [Architectural Requirements for Deep Learning Workloads in HPC Environments]: https://dx.doi.org/10.1109/PMBS54543.2021.00007
+[ml-model-io-tool]: https://github.com/glennklockwood/atgtools/blob/master/ml-model-io-requirements.py
 
 [Exascale deep learning for climate analytics][] by Kurth et al directly
 calculated their required storage bandwidth for a modified "Tiramisu" network
