@@ -44,11 +44,16 @@ mkdir elbencho.seq.1M
 where all of the arguments fall into one of several groups that affect what the
 benchmark actually does.
 
-The following define the general parameters of the benchmark:
+By default, elbencho performs all I/Os to one file, analogous to the IOR
+shared-file mode.  With that in mind, the following define the general
+parameters of the benchmark:
 
+- `elbencho.seq.1M` is the name of the output file or directory.
 - `--threads 8` uses eight I/O threads
-- `--size 1M` generates a file that is 1M (1,048,576 bytes) large
-- `--block 1M` performs writes using 1M (1,048,576 bytes) transfers
+- `--size 8M` generates a file that is 8M (8,388,608 bytes) large
+- `--block 1M` performs writes using 1M (1,048,576 bytes) transfers.  Since
+  we're generating an 8 MiB file using 8 threads, this test will have each
+  thread write exactly 1 MiB at different offsets.
 - `--blockvaralgo fast` uses the "fast" algorithm for filling the write I/O buffers with randomized data
 - `--blockvarpct 0` generates new random data in 0% of the write blocks (i.e., every write will contain the same randomized data)
 - `--sync` calls sync after every step of the test to ensure that we capture the performance of writing data down to persistent media
@@ -68,8 +73,9 @@ The order of these options is not important.  elbencho will always order the
 tests in the sensible way (create dirs, create files, write files, delete files,
 delete dirs).
 
-By default, elbencho performs all I/Os to one file, analogous to the IOR
-shared-file mode.  You can have elbencho create multiple files like this:
+Since we only specified one output file (`elbencho.seq.1M`), all threads will
+write to one shared file.  You can have elbencho create multiple files like
+this:
 
 
 ```
