@@ -1,5 +1,5 @@
 PY?=python3
-SED?=sed
+SED=$(shell which gsed 2>/dev/null || which sed)
 PELICAN?=pelican
 PELICANOPTS=
 
