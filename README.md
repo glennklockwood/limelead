@@ -109,9 +109,10 @@ it expects.
 
 To build the site, use
 
-    $ make clean html serve
+    $ SITEURL=http://127.0.0.1:8000 make clean html devserver PORT=8000
 
-Pelican will then serve the site at http://localhost:8000/.
+Pelican will then serve the site at http://localhost:8000/ and update whenever
+changes to the markdown are detected.
 
 ### Publishing
 
