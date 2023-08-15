@@ -53,23 +53,61 @@ _minibatches_ and each model instance gets a minibatch). Then,
    each layer's gradients have been calculated.
 3. There is a barrier at the end of backpropagation to ensure that all gradients
    have been added up appropriately.
-4. After the backpropagation has completed, the sum of all gradients are then
-   used to update weights on each instance. Since the weights on each model
-   instance were identical at step 1 and AllReduce ensures our gradients are
-   all identical, there is no communication needed to update the weights.
+4. After the backpropagation has completed, the optimizer is applied.  In the
+   simplest case (like plain old stochastic gradient descent), the sum of all
+   gradients are then used to update weights on each instance. Since the
+   weights on each model instance were identical at step 1 and AllReduce
+   ensures our gradients are all identical, there is no communication needed
+   to update the weights.
 
 I found an article by [Simon Boehm on Data-Parallel Distributed Training of Deep
 Learning Models][boehm2022] really helpful in understanding how this works.
+
+Running the optimizer (step 4 above) can be a can of worms though, since many
+optimizers (like Adam) are stateful. They maintain quantities (like momentum)
+that persist across epochs to help them converge faster, and these quantities
+do need to be synchronized across all nodes. The communication pattern of these
+stateful optimizers can vary though.
 
 [boehm2022]: https://siboehm.com/articles/22/data-parallel-training
 
 ## Memory
 
-According to [Microsoft DeepSpeed introduction][], a 40 GB GPU can hold a
+The [ZeRO-DP paper][] (2020) states that a trillion-parameter model using a
+stateful optimizer (like Adam) requires 16 TiB of GPU memory at 16-bit
+precision.  This implies around 16 bytes (128 bits) per parameter with 8&times; that for other
+quantities like optimizer states and gradients. This paper also enumerates what
+contributes to this 8&times; and breaks this down using Adam as an example. In
+brief, the 16 bytes per parameter is composed of
+
+- a 16-bit weight
+- a 16-bit gradient
+- a 32-bit copy of the weight for the optimizer reduction
+- a 32-bit momentum (one part of the optimizer state)
+- a 32-bit variance (the other part of the optimizer state)
+
+Mixed precision is used to minimize numerical instabilities (things like
+floating point underflow and overflow) that can result from performing
+multiply-accumulate operations found throughout training. For example, [NVIDIA's
+Tensor Cores](https://developer.nvidia.com/blog/programming-tensor-cores-cuda-9/)
+can take two 16-bit arrays, multiply them together using 32-bit precision, then
+add a 32-bit array to the result.
+
+According to [Microsoft DeepSpeed introduction][] (2020), a 40 GB GPU can hold a
 model containing 1.2 billion parameters which corresponds to 32 bytes (256 bits)
-per parameter. This isn't to say the model stores 256-bit precision parameters;
-there is just a lot of supporting data (optimizer states, activations, etc)
-that also need to be stored in memory for training.
+per parameter. This number probably includes what the [ZeRO-DP paper][] refers
+to as _residual memory consumption_ - things that don't strictly scale with the
+number of weights but otherwise consume practically usable memory.
+
+A lot of research goes into reducing the memory footprint of models since
+a smaller footprint allows you to train a model on fewer GPUs.  For example,
+[checkpointing activations][] is a technique that allows you to trade GPU
+memory consumption for GPU computation; you can checkpoint activations and
+recompute using these checkpoints to fit more parameters into memory.
+
+[checkpointing activations]: https://doi.org/10.48550/arXiv.1604.06174
+
+[ZeRO-DP paper]: https://dx.doi.org/10.1109/SC41405.2020.00024
 
 ## Storage
 
