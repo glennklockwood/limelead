@@ -134,7 +134,31 @@ scientific research and demonstrate:
    node.**
 
 I've created a simple tool that illustrates how to do this arithmetic and
-[calculates the GB/s required to train a model on different GPUs][ml-model-io-tool].
+[calculates the GB/s required to train a model on different GPUs][ml-model-io-tool]:
+
+<div style="display: flex; flex-direction: row; justify-content: center; text-align: center;">
+    <div style="flex: 1;">
+        <label for="model">Model:</label>
+        <select id="model"></select>
+    </div>
+    <div style="flex: 1;">
+        <label for="gpu">GPU:</label>
+        <select id="gpu"></select>
+    </div>
+    <div style="flex: 1;">
+        <label for="base">Base:</label>
+        <select id="base">
+            <option value="2">2</option>
+            <option value="10">10</option>
+        </select>
+    </div>
+    <div>
+        <button onclick="calculate()">Calculate</button>
+    </div>
+</div>
+<p id="output" style="text-align:center;"></p>
+<script src="ml-model-io-requirements.js"></script>
+
 It's a very loose model and estimates the upper bound of bandwidth required by
 assuming that each GPU has enough memory bandwidth, PCIe bandwidth, power,
 cooling, etc to train at the full rated performance on their respective spec
@@ -142,7 +166,7 @@ sheets.  As shown in this Ibrahim paper (they find that CosmoFlow trains at
 35-50 TFLOPS of the theoretical 130 TFLOPS), this is never the case.
 
 [Architectural Requirements for Deep Learning Workloads in HPC Environments]: https://dx.doi.org/10.1109/PMBS54543.2021.00007
-[ml-model-io-tool]: https://github.com/glennklockwood/atgtools/blob/master/ml-model-io-requirements.py
+[ml-model-io-tool]: https://github.com/glennklockwood/limelead/blob/master/content/static/data-intensive/analysis/ml-model-io-requirements.js
 
 [Exascale deep learning for climate analytics][] by Kurth et al directly
 calculated their required storage bandwidth for a modified "Tiramisu" network
