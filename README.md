@@ -136,7 +136,9 @@ of Markdown with special div decorations, e.g.,
 
     {% call alert(type="info") %}
     Some _markdown_ goes [here](index.html).
-    {% end call %}
+    {% endcall %}
+
+The contents of these info boxes get rendered as standalone Markdown documents, so be sure any links referenced therein are also within the call/endcall.
 
 The second form are Jinja2 filters and are used in Jinja2 templates since they
 typically modify something from the Pelican context, e.g.,
