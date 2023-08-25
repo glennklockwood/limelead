@@ -38,7 +38,12 @@ tensor parallelism within the DGX node (since it has NVLink which makes the
 communication fast), pipeline parallelism across 16 DGX nodes, and data
 parallelism to accelerate training by scaling to a thousand DGX nodes.
 
-[Microsoft DeepSpeed introduction]: https://www.youtube.com/watch?v=wbG2ZEDPIyw
+Implementing these levels of parallelism concurrently is complicated, and a
+set of frameworks and further refinements to them have popped up. [Huggingface
+has a page on parallelism][huggingface parallelism] that explains some of
+the more sophiciated combinations such as ZeRO.
+
+[huggingface parallelism]: https://huggingface.co/docs/transformers/v4.17.0/en/parallelism
 
 ### Communication
 
@@ -70,6 +75,10 @@ do need to be synchronized across all nodes. The communication pattern of these
 stateful optimizers can vary though.
 
 [boehm2022]: https://siboehm.com/articles/22/data-parallel-training
+
+There are ways to perform asynchronous data-parallel tranining where not all
+replicas of the model synchronize their weights after each pass, but extra
+consideration must be taken to ensure the model still converges.
 
 ## Memory
 
@@ -104,6 +113,8 @@ a smaller footprint allows you to train a model on fewer GPUs.  For example,
 [checkpointing activations][] is a technique that allows you to trade GPU
 memory consumption for GPU computation; you can checkpoint activations and
 recompute using these checkpoints to fit more parameters into memory.
+
+[Microsoft DeepSpeed introduction]: https://www.youtube.com/watch?v=wbG2ZEDPIyw
 
 [checkpointing activations]: https://doi.org/10.48550/arXiv.1604.06174
 
