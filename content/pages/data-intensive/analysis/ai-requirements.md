@@ -26,7 +26,7 @@ nodes:
     - requires moderate rewriting the training code to include communication
       within each epoch
     - scales well for models with lots of big layers
-3. Model parallelism (aka tensor parallelism, tensor slicing)
+3. Operator parallelism (aka tensor parallelism, tensor slicing)
     - break layers of a neural network up and distribute them across GPU nodes
     - requires significant rewriting the training code to include communication
       within each epoch
