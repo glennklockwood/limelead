@@ -122,6 +122,8 @@ recompute using these checkpoints to fit more parameters into memory.
 
 ## Storage
 
+### Performance
+
 [Architectural Requirements for Deep Learning Workloads in HPC Environments][]
 by Ibrahim et al establishes a nice method for calculating how much storage
 bandwidth is required to keep a GPU fully utilized when training different
@@ -187,3 +189,41 @@ TB/s for the full scale of the training job they ran. Their FLOP/s/sample was
 4.188 on V100 GPUs, and they achieved 20.93 TFLOP/s/GPU during training.
 
 [Exascale deep learning for climate analytics]: https://dl.acm.org/doi/10.5555/3291656.3291724
+
+### Capacity
+
+The datasets involved in AI include
+
+- model checkpoints
+- model weights (a subset of a checkpoint)
+- raw training data
+- preprocessed training data
+
+Model checkpoints and model weights are described in the [memory requirements](#memory)
+section above.
+
+Raw training data are text, images, audio files, that have not been wedged into
+a shape that the model training framework can accept.
+
+Preprocessed training data is almost always smaller than raw training data and
+is ready to consume by the model training process.  For large language models,
+this means tokenized text.
+
+[According to OpenAI][what are tokens], a token in a typical English-language
+dataset is about four bytes.  [The Pile][] paper has both tokens and words for
+different datasets and found an average 3.41 bytes per token.  Assuming OpenAI's
+4 bytes/token for all but The Pile dataset, we can estimate the size (in GB) of
+various LLM training datasets:
+
+Dataset                                 | Training tokens | Training Bytes
+----------------------------------------|-----------------|---------------
+[LLaMa-2][] 70B dataset                 | 2.0 trillion    | 8 TB (7.3 TiB)
+[OPT-175][] dataset                     | 180 billion     | 720 GB (670 GiB)
+[GPT-3][] dataset                       | 300 billion     | 1.2 TB (1.1 TiB)
+[The Pile][] dataset                    | 260 billion     | 890 GB (830 GiB)
+
+[what are tokens]: https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them
+[LLaMa-2]: https://arxiv.org/pdf/2307.09288.pdf
+[OPT-175]: https://arxiv.org/pdf/2205.01068.pdf
+[GPT-3]: https://arxiv.org/pdf/2005.14165.pdf
+[The Pile]: https://arxiv.org/pdf/2101.00027.pdf
