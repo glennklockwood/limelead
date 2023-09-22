@@ -221,9 +221,12 @@ Dataset                                 | Training tokens | Training Bytes
 [OPT-175][] dataset                     | 180 billion     | 720 GB (670 GiB)
 [GPT-3][] dataset                       | 300 billion     | 1.2 TB (1.1 TiB)
 [The Pile][] dataset                    | 260 billion     | 890 GB (830 GiB)
+[ROOTS][]/[BLOOM][] dataset             | 341 billion     | 1.6 TB (1.5 TiB)
 
 [what are tokens]: https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them
 [LLaMa-2]: https://arxiv.org/pdf/2307.09288.pdf
 [OPT-175]: https://arxiv.org/pdf/2205.01068.pdf
 [GPT-3]: https://arxiv.org/pdf/2005.14165.pdf
 [The Pile]: https://arxiv.org/pdf/2101.00027.pdf
+[BLOOM]: https://arxiv.org/pdf/2211.05100.pdf
+[ROOTS]: https://arxiv.org/pdf/2302.14035.pdf
