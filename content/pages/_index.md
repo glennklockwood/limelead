@@ -2,13 +2,15 @@
 title: Glenn K. Lockwood
 status: hidden
 ---
-I develop storage product directions for high-performance computing
-applications in Azure, Microsoft's cloud platform.  Prior to working at
-Microsoft, I was a systems architect at the [National Energy Research
-Scientific Computing Center (NERSC)][nersc] at [Lawrence Berkeley National
-Laboratory][lbnl] where I helped define [long-term storage strategy][s2020],
-[designed a 35 PB NVMe Lustre file system][n9scratchnp], and managed the team
-responsible for [hundreds of petabytes of disk and tape][hpciodc20talk].
+
+I am a principal engineer at Microsoft where I am responsible for bringing a
+workload-centric view to systems design for the largest AI supercomputers
+being built in Azure. Prior to working at Microsoft, I was a systems architect
+at the [National Energy Research Scientific Computing Center (NERSC)][nersc] at
+[Lawrence Berkeley National Laboratory][lbnl] where I helped define [long-term
+storage strategy][s2020], [designed a 35 PB NVMe Lustre file
+system][n9scratchnp], and managed the team responsible for [hundreds of
+petabytes of disk and tape][hpciodc20talk].
 
 I worked in the [genomics industry][] previous to that, and my formal education
 is in ceramic engineering.  More information about my current and past work can
@@ -17,8 +19,10 @@ my life are in my [biography][].
 
 This site contains various notes I've taken related to technical computing over
 the years.  I welcome any feedback about its contents at the e-mail address
-listed at the bottom of every page.  You can also find me [on Twitter][] and in
-the `#hpc` channel on [Libera][].
+listed at the bottom of every page.  You can also find me
+on [Twitter][twitter],
+HPC.social ([chat][hpc.social chat] and [Mastodon][]),
+and in the `#hpc` channel on [Libera][].
 
 [nersc]: https://www.nersc.gov/
 [lbnl]: https://www.lbl.gov/
@@ -30,4 +34,6 @@ the `#hpc` channel on [Libera][].
 [LinkedIn]: https://www.linkedin.com/in/glennklockwood
 [Google Scholar]: https://scholar.google.com/citations?user=_P_S1A8AAAAJ
 [biography]: personal/about.html
-[on Twitter]: https://twitter.com/glennklockwood
+[twitter]: https://twitter.com/glennklockwood
+[hpc.social chat]: https://hpc.social/projects/chat/
+[mastodon]: https://mast.hpc.social/@glennklockwood

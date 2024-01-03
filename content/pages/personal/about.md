@@ -129,10 +129,40 @@ left NERSC in May 2022.
 
 ## Moving to the cloud
 
-In June 2022 I started a new position at Microsoft Azure as a Principal Product
-Manager.  My responsibilities broadly revolve around delivering storage
-solutions for customers who rely on Azure for AI and high-performance computing
-workloads.
+In June 2022, I joined Microsoft as a Principal Product Manager in the Azure
+Storage organization.  I was designated Azure's go-to expert in HPC storage, and
+I was tasked with developing an overall product strategy for HPC storage across
+Azure's first-party and marketplace services. In practice, this meant helping
+Azure's own storage product teams (like the [Blob][] and [Azure Managed Lustre][])
+define the performance and features required by HPC workloads. I also worked
+with external HPC storage companies to figure out ways their products could
+complement Azure's own storage offerings.
+
+Over the course of eighteen months as an Azure Storage product manager though, I
+learned that there is a huge difference between being an _HPC person in a
+storage organization_ and being a _storage person in an HPC organization_. I
+also learned that HPC, not storage, is what gets me out of the bed in the
+morning, and I don't make a great product manager.  These epiphanies led me to
+realize that being a product manager in a storage organization was not what I
+wanted to do for the rest of my life.
+
+So, in January 2024, I changed roles within Microsoft. I moved laterally along
+two dimensions:
+
+1. I went from the product management discipline into the engineering
+   discipline. This brought me closer to the familiar world of being hands-on
+   with HPC technologies.
+2. I left the Azure Storage organization and joined the Azure Specialized
+   Workloads organization. Azure Specialized is the umbrella under which all
+   the compute infrastructure that isn't general-purpose (like GPUs and
+   InfiniBand) falls.
+
+I am now a Principal Software Engineer supporting the HPC infrastructure used by
+Microsoft's largest AI customers. My responsibility is to understand what
+massive-scale AI workloads will need to accomplish in the coming years, how
+those workloads plan to approach those problems from a software standpoint, and
+how that workload-centric view should steer the overall system architecture of
+next-generation supercomputers.
 
 [ru engineering]: http://soe.rutgers.edu
 [imsl]: http://glass.rutgers.edu/
@@ -155,3 +185,5 @@ workloads.
 [object stores page]: ../data-intensive/storage/object-storage.html
 [nersc ssg]: https://www.nersc.gov/about/nersc-staff/storage-systems-group/
 [life and leaving nersc]: https://glennklockwood.blogspot.com/2022/05/life-and-leaving-nersc.html
+[Blob]: https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-overview
+[Azure Managed Lustre]: https://learn.microsoft.com/en-us/azure/azure-managed-lustre/amlfs-overview
