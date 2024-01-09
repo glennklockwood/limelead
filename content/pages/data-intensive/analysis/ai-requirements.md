@@ -43,7 +43,13 @@ set of frameworks and further refinements to them have popped up. [Huggingface
 has a page on parallelism][huggingface parallelism] that explains some of
 the more sophiciated combinations such as ZeRO.
 
+Many papers that propose new parallelization schemes also describe these
+approaches in their introductions. For example, the [PyTorch FSDP paper][]
+explains these very well and introduces a more advanced approach, sharded data
+parallel.
+
 [huggingface parallelism]: https://huggingface.co/docs/transformers/v4.17.0/en/parallelism
+[PyTorch FSDP paper]: https://arxiv.org/abs/2304.11277
 
 ### Communication
 
@@ -87,13 +93,22 @@ stateful optimizer (like Adam) requires 16 TiB of GPU memory at 16-bit
 precision.  This implies around 16 bytes (128 bits) per parameter with 8&times; that for other
 quantities like optimizer states and gradients. This paper also enumerates what
 contributes to this 8&times; and breaks this down using Adam as an example. In
-brief, the 16 bytes per parameter is composed of
+brief, the 16 bytes (128 bits) per parameter is composed of the following:
 
-- a 16-bit weight
-- a 16-bit gradient
-- a 32-bit copy of the weight for the optimizer reduction
-- a 32-bit momentum (one part of the optimizer state)
-- a 32-bit variance (the other part of the optimizer state)
+- 16-bit (2-byte) weight
+- 16-bit (2-byte) gradient
+- 32-bit (4-byte) copy of the weight for the optimizer reduction
+- 32-bit (4-byte) momentum (one part of the optimizer state)
+- 32-bit (4-byte) variance (the other part of the optimizer state)
+
+The [Frontier trillion-parameter training paper][frontier paper] (2023) states
+that each model parameter requires 24 bytes (192 bits). However their breakdown
+only adds up to 14 bytes per parameter:
+
+- 16-bit (2-byte) weight
+- 32-bit (4-byte) gradient
+- 32-bit (4-byte) copy of the weight
+- 32-bit (4-byte) momentum (the optimizer state)
 
 Mixed precision is used to minimize numerical instabilities (things like
 floating point underflow and overflow) that can result from performing
@@ -119,6 +134,8 @@ recompute using these checkpoints to fit more parameters into memory.
 [checkpointing activations]: https://doi.org/10.48550/arXiv.1604.06174
 
 [ZeRO-DP paper]: https://dx.doi.org/10.1109/SC41405.2020.00024
+
+[frontier paper]: https://arxiv.org/abs/2312.12705v2
 
 ## Storage
 
