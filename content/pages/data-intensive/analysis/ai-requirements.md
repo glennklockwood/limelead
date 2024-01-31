@@ -14,8 +14,8 @@ nodes:
 
 1. Data parallelism
     - simplest way to train at scale (thousands of GPUs)
-    - partition the training dataset (the batch) and give each GPU node its own
-      subset of the training dataset (a minibatch)
+    - partition the training batch and give each GPU node its own subset of the
+      training dataset (a minibatch)
     - each GPU node holds the entire model
     - communication happens after each epoch
     - scales very well since multiple copies of the model are training in
@@ -26,7 +26,7 @@ nodes:
     - requires moderate rewriting the training code to include communication
       within each epoch
     - scales well for models with lots of big layers
-3. Operator parallelism (aka tensor parallelism, tensor slicing)
+3. Tensor parallelism (aka operator parallelism, tensor slicing)
     - break layers of a neural network up and distribute them across GPU nodes
     - requires significant rewriting the training code to include communication
       within each epoch
@@ -239,6 +239,12 @@ Dataset                                 | Training tokens | Training Bytes
 [GPT-3][] dataset                       | 300 billion     | 1.2 TB (1.1 TiB)
 [The Pile][] dataset                    | 260 billion     | 890 GB (830 GiB)
 [ROOTS][]/[BLOOM][] dataset             | 341 billion     | 1.6 TB (1.5 TiB)
+[C4.en.noBlocklist][C4] dataset         | 156 billion     | 1,003 GiB<sup>*</sup>
+
+<sup>*</sup> C4's size is the size of the download (in TFDS format), not the
+size of the training tokens. I don't know how much TFDS overhead is included
+here, but the bytes per token for C4 comes out very high (6.9) which indicates
+TFDS is very inefficient.
 
 [what are tokens]: https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them
 [LLaMa-2]: https://arxiv.org/pdf/2307.09288.pdf
@@ -247,3 +253,4 @@ Dataset                                 | Training tokens | Training Bytes
 [The Pile]: https://arxiv.org/pdf/2101.00027.pdf
 [BLOOM]: https://arxiv.org/pdf/2211.05100.pdf
 [ROOTS]: https://arxiv.org/pdf/2302.14035.pdf
+[C4]: https://arxiv.org/pdf/2104.08758v1.pdf
