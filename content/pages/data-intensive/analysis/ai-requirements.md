@@ -254,3 +254,18 @@ TFDS is very inefficient.
 [BLOOM]: https://arxiv.org/pdf/2211.05100.pdf
 [ROOTS]: https://arxiv.org/pdf/2302.14035.pdf
 [C4]: https://arxiv.org/pdf/2104.08758v1.pdf
+
+## CPUs
+
+Training large language models requires a significant amount of text data, and
+these data are often derived from massive amounts of html scraped from the
+Internet. The process of converting these web scrapes into tokenized datasets of
+high quality requires extensive data preprocessing which typically happens on
+CPUs that are good at processing large amounts of uneven, messy data in memory.
+
+The process of converting web scrapes into clean, tokenized data is described in
+the following resources:
+
+- [AI2 Dolma: 3 Trillion Token Open Corpus for Language Model Pretraining](https://blog.allenai.org/dolma-3-trillion-tokens-open-llm-corpus-9a0ff4b8da64)
+- [Deduplicating Training Data Makes Language Models Better](https://arxiv.org/abs/2107.06499)
+- [RedPajama-Data: The RedPajama-Data repository contains code for preparing large datasets for training large language models](https://github.com/togethercomputer/RedPajama-Data)
