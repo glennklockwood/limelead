@@ -16,20 +16,8 @@ HPC cluster for real; [CycleCloud][] and similar tools automate and simplify
 most of this, but my goal here is to show what is happening underneath those
 automations so you can play around.
 
-A couple of details about the cluster we're going to build:
-
-- It will use (mostly) standard Ubuntu just because that's easy
-- It will use the cheapest VMs (`Standard_DS1_v2`), not real HPC nodes -
-  because I'm cheap
-- It will put all nodes near each other to minimize network latency, but
-- It will still use the standard Azure network, not InfiniBand. Again,
-  because I'm cheap
-- We will use the [Azure CLI][] to do everything and assume you have already
-  set that up with your Azure account and subscription
-
-The only extra "cheat" we'll use is [cloud-init][], which we use to 
-install two software packages that make it easier to get up and running.
-
+We will use the [Azure CLI][] to do everything and assume you have already
+set that up with your Azure account and subscription.
 
 [clush]: https://clustershell.readthedocs.io/en/latest/tools/clush.html
 [CycleCloud]: https://learn.microsoft.com/en-us/azure/cyclecloud/overview?view=cyclecloud-8
@@ -51,17 +39,26 @@ packages:
   - libopenmpi-dev
 ```
 
-We'll pass this file into Azure's VM provisioning process to install [clush][]
-(which lets us run the same command across all our nodes) and [OpenMPI][]
-(which we need to build and run MPI applications).
+We'll pass this [cloud-init][] file into Azure's VM provisioning process to
+preinstall [clush][] (which lets us run the same command across all our nodes)
+and [OpenMPI][] (which we need to build and run MPI applications) as part of
+the VM provisioning process.  If you want to get fancy, you can also jam an
+entire bash script into this text file to have it run verbatim upon VM boot.
 
-First, create a _resource group_ which is how we will group our cluster parts.
+The first Azure resource we create is a _resource group_. This is just a logical
+container that will group all our cluster parts.
 
 <div class="codehilite"><pre>
 $ <kbd>az group create --name <span style="color:#1b9e77">glocktestrg</span> --location eastus</kbd>
 </pre></div>
 
-Then create a _proximity placement group_ (ppg). Every VM we put in here will be
+Once this resource group is created, we can start creating compute nodes inside
+it. There are two ways to do this: the cheap/easy way and the proper/expensive
+way.
+
+### Cheap (Ethernet) nodes
+
+Create a _proximity placement group_ (ppg). Every VM we put in here will be
 within the same low-latency network bubble.
 
 <div class="codehilite"><pre>
@@ -126,6 +123,60 @@ Name                   ResourceGroup    Location    Type       
 
 The VMs created all have public IPs and share a common subnet on a common VNet
 within close physical proximity thanks to our proximity placement group.
+
+### Proper (InfiniBand) nodes
+
+InfiniBand is only available on HPC (read: expensive) VM types, and provisioning
+nodes on the same InfiniBand fabric requires creating a VM Scale Set (VMSS)
+instead of individual VMs. To create a VMSS of HBv2 nodes with InfiniBand,
+
+<div class="codehilite"><pre>
+<kbd>az vmss create --name <span style="color:#ff7f00">glocluster</span> \
+               --resource-group <span style="color:#1b9e77">glocktestrg</span> \
+               --image Microsoft-dsvm:ubuntu-hpc:2204:latest \
+               --generate-ssh-keys \
+               --vm-sku <span style="color:#e7298a">Standard_HB120rs_v2</span> \
+               --accelerated-networking true \
+               --public-ip-per-vm \
+               --custom-data cloud-init.txt \
+               --instance-count 4 </kbd>
+</div></pre>
+
+What this means:
+
+- the nodes' name will be prefixed with <span style="color:#ff7f00">glocluster</span>
+  followed by some hexadecimal number to uniquely identify them.
+- `--image Microsoft-dsvm:ubuntu-hpc:2204:latest` installs the special Azure HPC
+  flavor of Ubuntu on each VM. This VM image includes all the InfiniBand
+  drivers.
+- `--generate-ssh-keys` puts your local ssh key `~/.ssh/id_rsa.pub`
+  into the `authorized_keys` file in all the nodes you're creating.
+- `--size Standard_HB120rs_v2` says to use [HBv2][hbv2] VM types.
+- `--accelerated-networking true` says to pass the NIC through to your VM
+  using SR-IOV. It doesn't cost anything, so I don't really know why you would
+  _not_ want this.
+- `--public-ip-per-vm` assigns a public IP address to each node. This makes it
+  easier for you to connect to them in this example, but each public IP does
+  cost money.
+- `--custom-data cloud-init.txt` passes in our cloud-init.txt file to the
+  provisioning process.
+- `--instance-count 4` says to make four VMs total to start. You can manually
+  scale this up or down with a single command (`az vmss scale`) later.
+
+VMSSes are nice because they essentially establish a VM template from which VMs
+can be instantiated and torn down with a single command. In combination with
+a well-formed cloud-init script, you can get a VMSS set up just the way you
+like it, then spin up a whole cluster (using `az vmss scale`) and have nodes
+just come online and be ready to use. At the end of the day, you can then scale
+the VMSS down to zero nodes to stop racking up costs without losing your VMSS
+configuration. When it's time to spin up, you just use `az vmss scale` again to
+go from zero nodes to however many you want to play with.
+
+[hbv2]: https://learn.microsoft.com/en-us/azure/virtual-machines/hbv2-series
+
+## Log into nodes
+
+At this point you should have a cluster of running VMs.
 
 ### SSH to your cluster
 
