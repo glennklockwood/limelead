@@ -279,7 +279,7 @@ The [GPT-3 paper][] describes a very specific approach to data processing
 that relies on a combination of a few Apache Spark built-in tools:
 
 - [Tokenizer](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.ml.feature.MinHashLSH.html) 
-- [HashingTF](https://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.feature.hashingTF)
+- [HashingTF](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.ml.feature.HashingTF.html)
 - [Spark's MinHashLSH](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.ml.feature.MinHashLSH.html) with ten hashes
 
 To identify overlaps between the training dataset and benchmark datasets, they
