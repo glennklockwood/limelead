@@ -257,6 +257,8 @@ TFDS is very inefficient.
 
 ## CPUs
 
+### Text processing
+
 Training large language models requires a significant amount of text data, and
 these data are often derived from massive amounts of html scraped from the
 Internet. The process of converting these web scrapes into tokenized datasets of
@@ -266,6 +268,37 @@ CPUs that are good at processing large amounts of uneven, messy data in memory.
 The process of converting web scrapes into clean, tokenized data is described in
 the following resources:
 
-- [AI2 Dolma: 3 Trillion Token Open Corpus for Language Model Pretraining](https://blog.allenai.org/dolma-3-trillion-tokens-open-llm-corpus-9a0ff4b8da64)
+- The [Dolma][] dataset used the [CCNet][] processing pipeline
 - [Deduplicating Training Data Makes Language Models Better](https://arxiv.org/abs/2107.06499)
-- [RedPajama-Data: The RedPajama-Data repository contains code for preparing large datasets for training large language models](https://github.com/togethercomputer/RedPajama-Data)
+- [RedPajama-Data: The RedPajama-Data repository](https://github.com/togethercomputer/RedPajama-Data) contains code for preparing large datasets for training large language models
+
+[Dolma]: https://blog.allenai.org/dolma-3-trillion-tokens-open-llm-corpus-9a0ff4b8da64
+[CCNet]: https://arxiv.org/abs/1911.00359
+
+The [GPT-3 paper][] describes a very specific approach to data processing
+that relies on a combination of a few Apache Spark built-in tools:
+
+- [Tokenizer](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.ml.feature.MinHashLSH.html) 
+- [HashingTF](https://spark.apache.org/docs/latest/api/python/pyspark.ml.html#pyspark.ml.feature.hashingTF)
+- [Spark's MinHashLSH](https://spark.apache.org/docs/latest/api/python/reference/api/pyspark.ml.feature.MinHashLSH.html) with ten hashes
+
+To identify overlaps between the training dataset and benchmark datasets, they
+also identified exact overlaps based on documents that had overlapping N-grams
+that ranged from 8-grams to 13-grams.
+
+The [MM1 paper][] cited both the [GPT-3 paper][] and [CCNet][] as
+representative of their text processing pipeline.
+
+[GPT-3 paper]: https://arxiv.org/abs/2005.14165
+[MM1 paper]: https://arxiv.org/abs/2403.09611
+
+### Multimodal dataset creation
+
+The [MM1 paper][] cites the [OBELICS][] paper as a representation of how they
+constructed datasets that interleaved text and images for multimodal training.
+They specifically filter images based on aspect ratio, size, and URI contents.
+They deduplicate based on URL and MD5 across documents (images appearing more
+than ten times) and only retain the first copy of an image within each document
+that replicates an image.
+
+[OBELICS]: https://arxiv.org/abs/2306.16527
