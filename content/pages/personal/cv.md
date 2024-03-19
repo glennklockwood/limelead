@@ -51,12 +51,24 @@ This page has fallen out of date.  Please see my [LinkedIn][] and
 
 <div class="cv-block">
     <div class="cv-head-container">
-        <div class="cv-head-left">Azure Storage</div>
-        <div class="cv-head-mid">Microsoft</div>
-        <div class="cv-head-right">June 2022 - Present</div>
+        <div class="cv-head-left">Principal Engineer</div>
+        <div class="cv-head-mid">Microsoft/Azure AI Engineering</div>
+        <div class="cv-head-right">January 2024 - Present</div>
     </div>
     <ul class="cv-vertical-list">
-        <li>I'll let you know when I find out.</li>
+        <li>Leading workload-based requirements gathering and documentation for Microsoft's largest AI training customers.</li>
+        <li>Contributed technical requirements and architectural design for aspects of large-scale GPU clusters for HPC customers.</li>
+    </ul>
+
+    <div class="cv-head-container">
+        <div class="cv-head-left">Principal Product Manager</div>
+        <div class="cv-head-mid">Microsoft/Azure Storage</div>
+        <div class="cv-head-right">June 2022 - December 2023</div>
+    </div>
+    <ul class="cv-vertical-list">
+        <li>Defined positioning and composition of Azure Storage services for the HPC and AI markets.</li>
+        <li>Led product management for an internal distributed cache for AI workloads.</li>
+        <li>Led strategy for investing in partnerships with HPC/AI storage companies.</li>
     </ul>
 
     <div class="cv-head-container">
