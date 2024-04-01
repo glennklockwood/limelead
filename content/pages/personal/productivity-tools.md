@@ -22,11 +22,25 @@ My requirements:
 2. Must synchronize across both desktop (Mac) and mobile (iOS). Mobile can be read-only for now. Windows support is a bonus.
 3. Indexable by Copilot is highly desirable.
 
+### Obsidian
+
+The good:
+
+- Extensible with plugins.
+- Wikilinks is very straightforward for connecting knowledgebase with notes.
+
+Problems:
+
+- Embedding images in notes is janky.
+- Incompatible with Copilot so far (Copilot does not index OneDrive, and it does index Markdown in Sharepoint).
+- Integrating non-markdown content in Vault (docx, external URLs) is extremely limited.
+
 ### Microsoft Loop
 
 The good:
 
 - Pretty overall UI.
+- Can have URLs (docx/pptx Sharepoint links, external webpages) appear in the navigation next to notes.
 
 Problems:
 
