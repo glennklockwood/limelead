@@ -2,7 +2,49 @@
 title: About Me
 ---
 
-## Early Life and Education
+## Short version
+
+Here's a few vignettes I've had to write for different speaking engagements and
+proposals.  I put them here so I don't have to write them from scratch every
+time I'm asked, and hopefully they're up to date.
+
+### Biosketch
+
+Here's a biosketch as of April 2024:
+
+> Glenn K. Lockwood is a Principal Engineer at Microsoft, where he is
+> responsible for supporting Microsoft’s largest AI supercomputers through
+> workload-driven systems design. His work has focused on applied research and
+> development in extreme-scale and parallel computing systems for
+> high-performance computing, and he has specific expertise in scalable
+> architectures, performance modeling, and emerging technologies for I/O and
+> storage. Prior to joining Microsoft, Glenn led the design of several
+> large-scale storage systems, including the world’s first 30+ PB all-NVMe
+> Lustre file system for the Perlmutter supercomputer at NERSC. He holds a Ph.D.
+> in Materials Science.
+
+### Research statement
+
+The SC conference asked for my research statement (ostensibly) to match me to
+paper submissions as a technical program committee referee. I don't actually do
+research, so it's mostly a restatement of my biosketch.
+
+> Glenn K. Lockwood's research interests lie in the intersection of artificial
+> intelligence and supercomputing infrastructure, with a specific focus on
+> workload-driven system architecture design. His previous work focused on
+> applied research and development in extreme-scale and parallel computing
+> systems for high-performance computing, and he has specific expertise in
+> scalable architectures, performance modeling, and emerging technologies for
+> I/O and storage. His current work has pivoted towards holistic system design
+> specifically for AI training and inferencing workloads and understanding how
+> to map the needs of specific AI applications to different compute, network,
+> storage, and infrastructure technologies.
+
+## Long version
+
+Here's the story of my professional life. I try to keep it up to date.
+
+### Early Life and Education
 
 I was born in Hawaii and moved to the mainland when I was quite young.  I grew
 up in the suburbs of central New Jersey, just off of 8A on the turnpike.  After
@@ -26,7 +68,7 @@ sense).
 Those plans did not pan out, and after a semester in Pennsylvania, I returned to
 Rutgers to continue doing research with molecular dynamics simulations.
 
-## Getting into Supercomputing
+### Getting into Supercomputing
 
 In the four years I was doing my Ph.D. work at Rutgers, I started collecting old
 UNIX workstations.  In the course of playing with them all, I began benchmarking
@@ -63,7 +105,7 @@ opportunity to join an [early-stage sequencing startup][10xtech] that was
 developing a revolutionary new product, and my desire to experience the startup
 life and be a part of such a rapidly growing industry lured me away from SDSC.
 
-## Foray into Genomics
+### Foray into Genomics
 
 After eighteen months in San Diego, I moved up to Oakland and joined [10x 
 Genomics][10x genomics] as a DevOps Engineer (a job which I had no idea how to
@@ -81,7 +123,7 @@ I had the honor of working with some of the most exceptional people I've ever en
 professional life, and I learned skills and perspective that have benefitted me
 tremendously in my career since.
 
-## Storage and I/O at NERSC
+### Storage and I/O at NERSC
 
 At NERSC, I joined the [Advanced Technologies Group][nersc atg] where I helped 
 with systems design and procurement to ensure that the next generation of
@@ -127,7 +169,7 @@ strategy and program surrounding NERSC's follow-on system, NERSC-10.  I
 [struggled to settle into this role][life and leaving nersc] and ultimately
 left NERSC in May 2022.
 
-## Moving to the cloud
+### Moving to the cloud
 
 In June 2022, I joined Microsoft as a Principal Product Manager in the Azure
 Storage organization.  I was designated Azure's go-to expert in HPC storage, and
