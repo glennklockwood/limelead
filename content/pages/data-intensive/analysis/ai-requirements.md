@@ -158,7 +158,7 @@ scientific research and demonstrate:
    utilize 35-50 TFLOP/s per NVIDIA V100 GPU, so training this model on a single
    V100 requires 2.275 - 3.250 GB/s, and **an 8-way V100 node would require
    18.2 GB/s - 26 GB/s. By comparison, a typical NFS client cannot achieve more
-   than 3 GB/s over TCP.**
+   than 3 GB/s over TCP**, and even with nconnect, this only goes up to 10 GB/s.
 3. By comparison, ResNet-50 being trained on ImageNet is the least I/O-intensive
    and only requires, at most, 573 MB/s per V100 or **3.9 GB/s per 8-way V100
    node.**
