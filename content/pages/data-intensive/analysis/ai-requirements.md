@@ -234,8 +234,9 @@ various LLM training datasets:
 
 Dataset                                 | Training tokens | Training Bytes
 ----------------------------------------|-----------------|---------------
-[Llama-3][]                             | &gt; 15 trillion | unknown
+[Llama-3][] dataset                     | &gt; 15 trillion | unknown
 [LLaMa-2][] 70B dataset                 | 2.0 trillion    | 8 TB (7.3 TiB)
+[OpenELM][] dataset                     | 1.5 trillion    | unknown
 [OPT-175][] dataset                     | 180 billion     | 720 GB (670 GiB)
 [GPT-3][] dataset                       | 300 billion     | 1.2 TB (1.1 TiB)
 [The Pile][] dataset                    | 260 billion     | 890 GB (830 GiB)
@@ -250,6 +251,7 @@ TFDS is very inefficient.
 [what are tokens]: https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them
 [Llama-3]: https://github.com/meta-llama/llama3/blob/main/MODEL_CARD.md
 [LLaMa-2]: https://arxiv.org/pdf/2307.09288.pdf
+[OpenELM]: https://arxiv.org/pdf/2306.01116
 [OPT-175]: https://arxiv.org/pdf/2205.01068.pdf
 [GPT-3]: https://arxiv.org/pdf/2005.14165.pdf
 [The Pile]: https://arxiv.org/pdf/2101.00027.pdf
