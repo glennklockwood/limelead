@@ -236,14 +236,18 @@ Dataset                                 | Training tokens | Training Bytes
 ----------------------------------------|-----------------|---------------
 [Llama-3][] dataset                     | &gt; 15 trillion | unknown
 [LLaMa-2][] 70B dataset                 | 2.0 trillion    | 8 TB (7.3 TiB)
-[OpenELM][] dataset                     | 1.5 trillion    | unknown
+[OpenELM][] dataset                     | 1.5 trillion    | unknown<sup>1</sup>
 [OPT-175][] dataset                     | 180 billion     | 720 GB (670 GiB)
 [GPT-3][] dataset                       | 300 billion     | 1.2 TB (1.1 TiB)
 [The Pile][] dataset                    | 260 billion     | 890 GB (830 GiB)
 [ROOTS][]/[BLOOM][] dataset             | 341 billion     | 1.6 TB (1.5 TiB)
-[C4.en.noBlocklist][C4] dataset         | 156 billion     | 1,003 GiB<sup>*</sup>
+[C4.en.noBlocklist][C4] dataset         | 156 billion     | 1,003 GiB<sup>2</sup>
 
-<sup>*</sup> C4's size is the size of the download (in TFDS format), not the
+<sup>1</sup> OpenELM's dataset is public and calculable; I simply haven't had
+the time to peel it apart myself.  The training process is detailed in
+[corenet/projects/openelm/](https://github.com/apple/corenet/blob/main/projects/openelm/README-pretraining.md).
+
+<sup>2</sup> C4's size is the size of the download (in TFDS format), not the
 size of the training tokens. I don't know how much TFDS overhead is included
 here, but the bytes per token for C4 comes out very high (6.9) which indicates
 TFDS is very inefficient.
