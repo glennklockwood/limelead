@@ -251,7 +251,7 @@ TFDS is very inefficient.
 [what are tokens]: https://help.openai.com/en/articles/4936856-what-are-tokens-and-how-to-count-them
 [Llama-3]: https://github.com/meta-llama/llama3/blob/main/MODEL_CARD.md
 [LLaMa-2]: https://arxiv.org/pdf/2307.09288.pdf
-[OpenELM]: https://arxiv.org/pdf/2306.01116
+[OpenELM]: https://arxiv.org/pdf/2404.14619
 [OPT-175]: https://arxiv.org/pdf/2205.01068.pdf
 [GPT-3]: https://arxiv.org/pdf/2005.14165.pdf
 [The Pile]: https://arxiv.org/pdf/2101.00027.pdf
