@@ -88,6 +88,8 @@ consideration must be taken to ensure the model still converges.
 
 ## Memory
 
+### Training
+
 The [ZeRO-DP paper][] (2020) states that a trillion-parameter model using a
 stateful optimizer (like Adam) requires 16 TiB of GPU memory at 16-bit
 precision.  This implies around 16 bytes (128 bits) per parameter with 8&times; that for other
@@ -136,6 +138,18 @@ recompute using these checkpoints to fit more parameters into memory.
 [ZeRO-DP paper]: https://dx.doi.org/10.1109/SC41405.2020.00024
 
 [frontier paper]: https://arxiv.org/abs/2312.12705v2
+
+### Inferencing
+
+Inferencing is different from training in that models are often _quantized_ to
+reduced precisions to save on the memory and computational requirements to
+process requests.
+
+Until I have time to summarize it, I recommend reading [Efficient Memory
+Management for Large Language Model Serving with PagedAttention](https://arxiv.org/abs/2309.06180)
+by Kwon et al to understand how GPU memory is consumed during inferencing.
+This paper explains the role of key-value caches to store parts of the
+attention mechanism.
 
 ## Storage
 
