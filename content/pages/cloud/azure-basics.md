@@ -18,6 +18,66 @@ imperative [Azure CLI][] approach is a good place to start.
 [Azure CLI]: https://docs.microsoft.com/en-us/cli/azure/
 [Bicep]: https://docs.microsoft.com/en-us/azure/azure-resource-manager/bicep/overview
 
+## Getting instance metadata
+
+Every VM can access the [Azure Instance Metadata Service (IMDS)][imds] which is
+a magic REST endpoint that allows you to inspect properties of a VM from inside
+that VM. For example, this is how you can get the managed identity of a VM
+from within that VM:
+
+    curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fmanagement.azure.com%2F' -H Metadata:true -s
+
+where `169.254.169.254` is the magical REST endpoint for the [IMDS][imds].
+
+[imds]: https://learn.microsoft.com/en-us/azure/virtual-machines/linux/instance-metadata-service
+
+## Getting physical server info
+
+In addition to the Instance Metadata Service which lets you learn about
+the VM in which you are running, you can also query the hypervisor for
+information about the bare metal server on which you are running. This relies
+on a service referred to as KVP:
+
+```
+cat /var/lib/hyperv/.kvp_pool_3 | tr -s '\000' '\n'
+HostName
+CO2AA1050611004
+HostingSystemEditionId
+168
+HostingSystemNestedLevel
+0
+HostingSystemOsMajor
+10
+HostingSystemOsMinor
+0
+HostingSystemProcessorArchitecture
+9
+HostingSystemProcessorIdleStateMax
+0
+HostingSystemProcessorThrottleMax
+100
+HostingSystemProcessorThrottleMin
+100
+HostingSystemSpMajor
+0
+HostingSystemSpMinor
+0
+PhysicalHostName
+CO2AA1050611004
+PhysicalHostNameFullyQualified
+CO2AA1050611004
+VirtualMachineDynamicMemoryBalancingEnabled
+0
+VirtualMachineId
+670093CC-C644-4167-8076-E9678D22C459
+VirtualMachineName
+902d6ba5-9ac4-4223-a8d9-1c7ca05a9a2c
+```
+
+It is fully documented on [Azure's KVP/Hyper-V Data Exchange][kvp] page.
+
+[kvp]: https://learn.microsoft.com/en-us/previous-versions/windows/it-pro/windows-server-2012-R2-and-2012/dn798287(v=ws.11)#linux-guests
+
 ## VM SKU / hypervisor conflicts
 
 I tried this:
