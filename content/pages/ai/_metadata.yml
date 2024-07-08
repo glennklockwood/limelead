@@ -1,0 +1,7 @@
+title: Artificial Intelligence
+shortTitle: AI
+order: 5
+links:
+  - title: A closer look at "training" a trillion-parameter model on Frontier
+    linktype: blog
+    url: https://blog.glennklockwood.com/2024/01/a-closer-look-at-training-trillion.html
