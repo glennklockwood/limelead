@@ -339,7 +339,7 @@ the shared batch system we were using at the <a href="http://glass.rutgers.edu">
 Molecular Science Laboratory</a>.  While <code>numactl</code> is an easier way
 to accomplish some of this, it still requires that you know what other processes
 are sharing your node and on what CPU cores they are running.  I've experienced
-problems with <a href="http://glennklockwood.blogspot.com/2012/07/braindead-thread-scheduling-in-linux.html">Linux's 
+problems with <a href="https://blog.glennklockwood.com/2012/07/braindead-thread-scheduling-in-linux.html">Linux's 
 braindead thread scheduling</a> so this <code>getfreesocket</code> finds
 completely unused sockets that can be fed into <code>taskset</code>,
 <var>KMP_AFFINITY</var>, or <code>numactl</code>.

@@ -17,7 +17,7 @@ learn more.
 {% endcall %}
 
 [elbencho]: https://github.com/breuner/elbencho
-[my ior blog]: https://glennklockwood.blogspot.com/2016/07/basics-of-io-benchmarking.html
+[my ior blog]: https://blog.glennklockwood.com/2016/07/basics-of-io-benchmarking.html
 
 ## Getting Started 
 

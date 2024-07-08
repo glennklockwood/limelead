@@ -4,7 +4,7 @@ order: 20
 links:
   - title: VAST Data's storage system architecture
     linktype: blog
-    url: https://glennklockwood.blogspot.com/2019/02/vast-datas-storage-system-architecture.html
+    url: https://blog.glennklockwood.com/2019/02/vast-datas-storage-system-architecture.html
   - title: Reviewing the state of the art of burst buffers
     linktype: blog
-    url: https://glennklockwood.blogspot.com/2017/03/reviewing-state-of-art-of-burst-buffers.html
+    url: https://blog.glennklockwood.com/2017/03/reviewing-state-of-art-of-burst-buffers.html

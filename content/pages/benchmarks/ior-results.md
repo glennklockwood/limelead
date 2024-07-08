@@ -215,7 +215,7 @@ srun ./ior -w -t 4k -z -a POSIX -F -b 16g -e -g -vv -C -D 45 -o /pscratch/IOR-ra
 There are problems with this way of testing since Lustre implements write-back
 caching and random writes can be aggregated and reordered before they are sent
 over the network to Lustre servers.  [There is no effective way to measure write
-IOPS](https://glennklockwood.blogspot.com/2021/10/iops-are-dumb.html) so we just
+IOPS](https://blog.glennklockwood.com/2021/10/iops-are-dumb.html) so we just
 ran a workload that emulated what a user would experience--write back caching
 and all--and got a commensurately large number.  I would argue that this test
 was not well conceived when I crafted it, but you would need a lot of clients

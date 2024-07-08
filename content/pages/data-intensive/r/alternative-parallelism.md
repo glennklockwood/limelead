@@ -189,6 +189,6 @@ is installed with <code>install.packages()</code>
 <!-- references -->
 [my parallel r github repository]: https://github.com/glennklockwood/paraR/tree/master/kmeans
 [running r on hpc clusters]: on-hpc.html
-[whats killing cloud interconnect performance]: http://glennklockwood.blogspot.com/2013/06/whats-killing-cloud-interconnect.html
+[whats killing cloud interconnect performance]: https://blog.glennklockwood.com/2013/06/whats-killing-cloud-interconnect.html
 [foreach cran page]: http://cran.r-project.org/web/packages/foreach/index.html
 [revolution analytics foreach whitepaper]: http://www.revolutionanalytics.com/whitepaper/using-foreach-package-r-combine-iterators-and-other-functions

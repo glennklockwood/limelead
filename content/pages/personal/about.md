@@ -215,7 +215,7 @@ next-generation supercomputers.
 [sdsc]: http://www.sdsc.edu/
 [gordon]: http://www.sdsc.edu/services/hpc/hpc_systems.html#gordon
 [janssen slides]: http://www.slideshare.net/glennklockwood/janssen-presentation
-[sequencing cost blog]: http://glennklockwood.blogspot.com/2014/01/the-1000-genome-computational.html
+[sequencing cost blog]: http://blog.glennklockwood.com/2014/01/the-1000-genome-computational.html
 [10xtech]: https://web.archive.org/web/20140321154310/http://www.10xtechnologies.com/
 [ilmn stocks]: https://www.google.com/finance?q=NASDAQ:ILMN
 [nersc]: http://www.nersc.gov/
@@ -226,6 +226,6 @@ next-generation supercomputers.
 [io forwarding page]: ../data-intensive/storage/io-forwarding.html
 [object stores page]: ../data-intensive/storage/object-storage.html
 [nersc ssg]: https://www.nersc.gov/about/nersc-staff/storage-systems-group/
-[life and leaving nersc]: https://glennklockwood.blogspot.com/2022/05/life-and-leaving-nersc.html
+[life and leaving nersc]: https://blog.glennklockwood.com/2022/05/life-and-leaving-nersc.html
 [Blob]: https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-overview
 [Azure Managed Lustre]: https://learn.microsoft.com/en-us/azure/azure-managed-lustre/amlfs-overview

@@ -234,7 +234,7 @@ end, I've written on a page on [how to use a digital potentiometer (digipot)
 and an analog-digital converter (ADC) along with Raspberry Pi to automate these
 experiments][my digipot page].
 
-[mk152 blog]: https://glennklockwood.blogspot.com/2016/10/learning-electronics-with-roulette.html
+[mk152 blog]: https://blog.glennklockwood.com/2016/10/learning-electronics-with-roulette.html
 [sparkfun transistor page]: https://learn.sparkfun.com/tutorials/transistors#operation-modes
 [2N2222 NPN transistor]: https://en.wikipedia.org/wiki/2N2222
 [my digipot page]: digipots.html
