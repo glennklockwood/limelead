@@ -5,3 +5,8 @@ Redirect 301 /sysadmin-howtos/terasic-de10-nano.html /embedded/terasic-de10-nano
 RedirectMatch 301 ^/data-intensive/analysis/ai-(.*)\.html$ /ai/ai-$1.html
 RedirectMatch 301 ^/data-intensive/analysis/(.*)perceptron\.html$ /ai/$1perceptron.html
 ErrorDocument 404 /404.html
+
+RewriteEngine On
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}\.html -f
+RewriteRule ^(.*)$ $1.html [L]
