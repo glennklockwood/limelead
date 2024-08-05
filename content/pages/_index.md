@@ -17,8 +17,12 @@ is in ceramic engineering.  More information about my current and past work can
 be found on [LinkedIn][] and [Google Scholar][], and excruciating details about
 my life are in my [biography][].
 
-This site contains various notes I've taken related to technical computing over
-the years.  I welcome any feedback about its contents at the e-mail address
+This site contains various notes I've taken related to technical
+computing over the years. Long-form notes and how-to guides are linked directly
+below, and I have begun maintaining short-form notes in my [own personal
+knowledgebase](/garden).
+
+I welcome any feedback about its contents at the e-mail address
 listed at the bottom of every page.  You can also find me
 on [Twitter][twitter],
 HPC.social ([chat][hpc.social chat] and [Mastodon][]),
