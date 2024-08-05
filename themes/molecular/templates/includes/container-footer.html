@@ -1,9 +1,8 @@
 <footer>
   <div class="row footer-box text-box mt-1 mb-2 pt-3 pb-3" id="footer">
-    <div class="col-sm-6 order-1">Last modified {{ page.metadata.overridelastmod if page and page.metadata.overridelastmod else ((page.source_path if page else None) | getmtime_git).strftime("%B %d, %Y") }} <a rel="me" href="https://mast.hpc.social/@glennklockwood"></a></div>
+    <div class="col-sm-6 order-1">Last modified {{ page.metadata.overridelastmod if page and page.metadata.overridelastmod else ((page.source_path if page else None) | getmtime_git).strftime("%B %d, %Y") }}</div>
     <div class="col-sm-6 order-12 text-right">
-    <a href="https://twitter.com/intent/tweet?screen_name=glennklockwood&ref_src=twsrc%5Etfw" class="twitter-mention-button" data-dnt="true" data-show-count="false">Tweet to @glennklockwood</a>
-    <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+    <a rel="me" href="https://mast.hpc.social/@glennklockwood" target="_blank" rel="noopener noreferrer" style="display: inline-block; padding: 2px 4px; font-size: 12px; color: #fff; background-color: #4b4ca5; text-align: center; text-decoration: none; border-radius: 5px;">mast.hpc.social/@glennklockwood</a> 
     </div>
   </div>
 </footer>
