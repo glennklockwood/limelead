@@ -20,7 +20,7 @@ my life are in my [biography][].
 This site contains various notes I've taken related to technical
 computing over the years. Long-form notes and how-to guides are linked directly
 below, and I have begun maintaining short-form notes in my [own personal
-knowledgebase](/garden).
+knowledgebase](/garden/).
 
 I welcome any feedback about its contents at the e-mail address
 listed at the bottom of every page.  You can also find me
