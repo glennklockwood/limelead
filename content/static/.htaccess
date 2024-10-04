@@ -2,6 +2,7 @@ Redirect 301 /electronics/bmc2835-gpio.html /embedded/bmc2835-gpio.html
 Redirect 301 /sysadmin-howtos/beaglebone.html /embedded/beaglebone.html
 Redirect 301 /sysadmin-howtos/nvidia-jetson-nano.html /embedded/nvidia-jetson-nano.html
 Redirect 301 /sysadmin-howtos/terasic-de10-nano.html /embedded/terasic-de10-nano.html
+RedirectMatch 301 ^/garden$ /garden/
 RedirectMatch 301 ^/data-intensive/analysis/ai-(.*)\.html$ /ai/ai-$1.html
 RedirectMatch 301 ^/data-intensive/analysis/(.*)perceptron\.html$ /ai/$1perceptron.html
 ErrorDocument 404 /404.html
