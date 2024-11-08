@@ -43,8 +43,8 @@ help:
 	@echo 'Set the RELATIVE variable to 1 to enable relative urls                    '
 	@echo '                                                                          '
 
-NOTEBOOKS = content/pages/data-intensive/analysis/perceptron.ipynb \
-            content/pages/data-intensive/analysis/multilayer-perceptron.ipynb
+NOTEBOOKS = content/pages/ai/perceptron.ipynb \
+            content/pages/ai/multilayer-perceptron.ipynb
 
 BENCHMARK_FILES = content/data/benchmarks/arm_processors.yaml \
                   content/data/benchmarks/mips_processors.yaml \
