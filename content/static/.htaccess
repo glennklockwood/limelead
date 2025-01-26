@@ -4,6 +4,11 @@ Redirect 301 /sysadmin-howtos/nvidia-jetson-nano.html /embedded/nvidia-jetson-na
 Redirect 301 /sysadmin-howtos/terasic-de10-nano.html /embedded/terasic-de10-nano.html
 Redirect 301 /ai/ai-requirements.html /garden/LLM-training
 Redirect 301 /personal/productivity-tools.html /garden/productivity-tools
+Redirect 301 /benchmarks/ior-results.html /garden/IOR
+Redirect 301 /benchmarks/mdtest.html /garden/mdtest
+Redirect 301 /benchmarks/elbencho.html /garden/elbencho
+Redirect 301 /benchmarks/fio.html /garden/fio
+Redirect 301 /data-intensive/storage/nfs.html /garden/NFS
 RedirectMatch 301 ^/garden$ /garden/
 RedirectMatch 301 ^/data-intensive/analysis/ai-(.*)\.html$ /ai/ai-$1.html
 RedirectMatch 301 ^/data-intensive/analysis/(.*)perceptron\.html$ /ai/$1perceptron.html
