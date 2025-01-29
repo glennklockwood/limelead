@@ -30,4 +30,4 @@ or [HPC.social chat][hpc.social chat].
 [biography]: personal/about.html
 [hpc.social chat]: https://hpc.social/projects/chat/
 [Mastodon]: https://mast.hpc.social/@glennklockwood
-[Bluesky]: https://bsky.app/profile/glennklockwood.bsky.social
+[Bluesky]: https://bsky.app/profile/glennklockwood.com
