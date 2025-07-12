@@ -53,7 +53,7 @@ This page has fallen out of date.  Please see my [LinkedIn][] and
     <div class="cv-head-container">
         <div class="cv-head-left">Principal Engineer</div>
         <div class="cv-head-mid">Microsoft/Azure AI Engineering</div>
-        <div class="cv-head-right">January 2024 - Present</div>
+        <div class="cv-head-right">January 2024 - July 2025</div>
     </div>
     <ul class="cv-vertical-list">
         <li>Leading workload-based requirements gathering and documentation for Microsoft's largest AI training customers.</li>

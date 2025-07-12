@@ -3,12 +3,15 @@ title: Glenn K. Lockwood
 status: hidden
 ---
 
-I am a principal engineer at Microsoft where I bring a workload-centric view
-to systems design for the [largest AI supercomputers being built in Azure][azurehpc].
-Prior to working at Microsoft, I was a systems architect at the [National
-Energy Research Scientific Computing Center (NERSC)][nersc] where I focused on
-storage and data. More information about my current and past work can be
-found on [Google Scholar][] and in my [biography][].
+I am a technologist working in supercomputing and infrastructure for HPC and AI.
+I combine direct operational experience with systems-level analysis to inform
+architecture, strategy, and industry understanding.
+
+I used to work at Microsoft where I supported the [largest AI supercomputers
+being built in Azure][azurehpc]. Prior to that, I was a systems architect at
+the [National Energy Research Scientific Computing Center (NERSC)][nersc] where
+I focused on storage and data. More information about my current and past work
+can be found on [Google Scholar][] and in my [biography][].
 
 <div class="alert alert-info" role="alert">
 <div class="alertbox-icon"><span aria-hidden="true" class="fa fa-info-circle"></span></div>

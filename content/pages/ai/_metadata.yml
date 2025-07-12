@@ -10,7 +10,9 @@ links:
     url: https://www.glennklockwood.com/garden/LLM-training-at-scale
   - title: Data processing for LLM training
     url: https://www.glennklockwood.com/garden/LLM-training-datasets
+  - title: LLM training without a parallel file system
+    linktype: blog
+    url: https://blog.glennklockwood.com/2025/02/llm-training-without-parallel-file.html
   - title: A closer look at "training" a trillion-parameter model on Frontier
     linktype: blog
     url: https://blog.glennklockwood.com/2024/01/a-closer-look-at-training-trillion.html
-

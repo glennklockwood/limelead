@@ -199,9 +199,9 @@ two dimensions:
    the compute infrastructure that isn't general-purpose (like GPUs and
    InfiniBand) falls.
 
-I am now a Principal Software Engineer supporting the HPC infrastructure used by
-Microsoft's largest AI customers. My responsibility is to understand what
-massive-scale AI workloads will need to accomplish in the coming years, how
+I became a Principal Software Engineer supporting the HPC infrastructure used by
+Microsoft's largest AI customers. My responsibility was to understand what
+massive-scale AI workloads would need to accomplish in the coming years, how
 those workloads plan to approach those problems from a software standpoint, and
 how that workload-centric view should steer the overall system architecture of
 next-generation supercomputers.
