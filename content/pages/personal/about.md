@@ -10,18 +10,19 @@ time I'm asked, and hopefully they're up to date.
 
 ### Biosketch
 
-Here's a biosketch as of April 2024:
+Here's a biosketch as of July 2025:
 
-> Glenn K. Lockwood is a Principal Engineer at Microsoft, where he is
-> responsible for supporting Microsoft’s largest AI supercomputers through
-> workload-driven systems design. His work has focused on applied research and
-> development in extreme-scale and parallel computing systems for
-> high-performance computing, and he has specific expertise in scalable
-> architectures, performance modeling, and emerging technologies for I/O and
-> storage. Prior to joining Microsoft, Glenn led the design of several
-> large-scale storage systems, including the world’s first 30+ PB all-NVMe
-> Lustre file system for the Perlmutter supercomputer at NERSC. He holds a Ph.D.
-> in Materials Science.
+> Glenn K. Lockwood is a Principal Technical Strategist at VAST Data, where he
+> applies deep expertise in HPC and AI infrastructure to help providers of HPC
+> and AI infrastructure address the demands of extreme-scale workloads. His
+> career has focused on applied research and development in extreme-scale and
+> parallel computing systems for high-performance computing, and he has
+> specific expertise in scalable architectures, performance modeling, and
+> emerging technologies for I/O and storage. Prior to joining VAST, Glenn
+> supported the design and operations some of the world's largest AI
+> supercomputers at Microsoft, and helped design large-scale storage systems
+> for HPC at Lawrence Berkeley National Laboratory. He holds a Ph.D. in
+> materials science from Rutgers University.
 
 ### Research statement
 
@@ -206,6 +207,10 @@ those workloads plan to approach those problems from a software standpoint, and
 how that workload-centric view should steer the overall system architecture of
 next-generation supercomputers.
 
+### Somewhere in the middle
+
+In July 2025, [I left Microsoft][left msft] and joined VAST Data.
+
 [ru engineering]: http://soe.rutgers.edu
 [imsl]: http://glass.rutgers.edu/
 [lehigh]: http://www.lehigh.edu/matsci/
@@ -229,3 +234,4 @@ next-generation supercomputers.
 [life and leaving nersc]: https://blog.glennklockwood.com/2022/05/life-and-leaving-nersc.html
 [Blob]: https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-overview
 [Azure Managed Lustre]: https://learn.microsoft.com/en-us/azure/azure-managed-lustre/amlfs-overview
+[left msft]: https://blog.glennklockwood.com/2025/07/lessons-learned-from-three-years-in.html
