@@ -209,7 +209,8 @@ next-generation supercomputers.
 
 ### Somewhere in the middle
 
-In July 2025, [I left Microsoft][left msft] and joined VAST Data.
+In July 2025, [I left Microsoft][left msft] and joined VAST Data as a Principal
+Technical Strategist.
 
 [ru engineering]: http://soe.rutgers.edu
 [imsl]: http://glass.rutgers.edu/
