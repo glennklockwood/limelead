@@ -10,19 +10,24 @@ time I'm asked, and hopefully they're up to date.
 
 ### Biosketch
 
-Here's a biosketch as of July 2025:
+Here's a biosketch as of August 2025 that ChatGPT helped me write based on my
+formal job description at VAST:
 
 > Glenn K. Lockwood is a Principal Technical Strategist at VAST Data, where he
-> applies deep expertise in HPC and AI infrastructure to help providers of HPC
-> and AI infrastructure address the demands of extreme-scale workloads. His
-> career has focused on applied research and development in extreme-scale and
-> parallel computing systems for high-performance computing, and he has
-> specific expertise in scalable architectures, performance modeling, and
-> emerging technologies for I/O and storage. Prior to joining VAST, Glenn
-> supported the design and operations some of the world's largest AI
-> supercomputers at Microsoft, and helped design large-scale storage systems
-> for HPC at Lawrence Berkeley National Laboratory. He holds a Ph.D. in
-> materials science from Rutgers University.
+> works on the architecture, performance analysis, and deployment strategies for
+> high-performance computing and AI infrastructure. He collaborates with
+> engineering teams, customers, and the HPC and AI research community to
+> inform product direction and share best practices for building and operating
+> large-scale systems. His career has focused on applied research and
+> development in extreme-scale and parallel computing systems, with specific
+> expertise in scalable architectures, performance modeling, and emerging
+> technologies for I/O and storage. Prior to joining VAST, Glenn served as
+> principal engineer at Microsoft, where he supported the design and
+> operations of the Azure supercomputers that trained many leading large
+> language models. Earlier, at NERSC, he led the design of several large-scale
+> storage systems, including the world’s first 30+ PB all-NVMe Lustre file
+> system for the Perlmutter supercomputer. He holds a Ph.D. in Materials
+> Science from Rutgers University.
 
 ### Research statement
 
@@ -207,10 +212,12 @@ those workloads plan to approach those problems from a software standpoint, and
 how that workload-centric view should steer the overall system architecture of
 next-generation supercomputers.
 
-### Somewhere in the middle
+<!-- ### Somewhere in the middle
 
 In July 2025, [I left Microsoft][left msft] and joined VAST Data as a Principal
 Technical Strategist.
+
+-->
 
 [ru engineering]: http://soe.rutgers.edu
 [imsl]: http://glass.rutgers.edu/

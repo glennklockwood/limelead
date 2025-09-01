@@ -3,15 +3,22 @@ title: Glenn K. Lockwood
 status: hidden
 ---
 
-I am a technologist working in supercomputing and infrastructure for HPC and AI.
-I combine direct operational experience with systems-level analysis to inform
-architecture, strategy, and industry understanding.
+I am a Principal Technical Strategist at [VAST Data][] where I maintain
+an understanding of where HPC/AI technologies are headed to help people, both
+inside and outside of VAST, make decisions about the future. In practice, my
+job involves a mix of talking to practitioners to understand their workloads,
+analyzing new technologies to understand their capabilities, and sharing what
+I've learned in whatever ways make sense to people facing uncertainy and tough
+challenges.
 
-I used to work at Microsoft where I supported the [largest AI supercomputers
-being built in Azure][azurehpc]. Prior to that, I was a systems architect at
-the [National Energy Research Scientific Computing Center (NERSC)][nersc] where
-I focused on storage and data. More information about my current and past work
-can be found on [Google Scholar][] and in my [biography][].
+Before joining VAST, I was a Principal Engineer at Microsoft where I supported
+the design and operations of the [largest AI supercomputers being built in
+Azure][azurehpc]. Prior to that, I was a systems architect at the [National
+Energy Research Scientific Computing Center (NERSC)][nersc] where I focused on
+storage and data research and designed a couple of large, high-performance
+storage systems.
+
+More information about my current and past work can be found on [Google Scholar][] and in my [biography][].
 
 <div class="alert alert-info" role="alert">
 <div class="alertbox-icon"><span aria-hidden="true" class="fa fa-info-circle"></span></div>
@@ -34,3 +41,4 @@ or [HPC.social chat][hpc.social chat].
 [hpc.social chat]: https://hpc.social/projects/chat/
 [Mastodon]: https://mast.hpc.social/@glennklockwood
 [Bluesky]: https://bsky.app/profile/glennklockwood.com
+[VAST Data]: https://www.vastdata.com/

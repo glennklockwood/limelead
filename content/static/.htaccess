@@ -9,6 +9,9 @@ Redirect 301 /benchmarks/mdtest.html /garden/mdtest
 Redirect 301 /benchmarks/elbencho.html /garden/elbencho
 Redirect 301 /benchmarks/fio.html /garden/fio
 Redirect 301 /data-intensive/storage/nfs.html /garden/NFS
+Redirect 301 /garden/LRA /garden/personal/LRA
+Redirect 301 /garden/Waterfield /garden/personal/Waterfield
+Redirect 301 /garden/co-op /garden/personal/co-op
 RedirectMatch 301 ^/garden$ /garden/
 RedirectMatch 301 ^/data-intensive/analysis/ai-(.*)\.html$ /ai/ai-$1.html
 RedirectMatch 301 ^/data-intensive/analysis/(.*)perceptron\.html$ /ai/$1perceptron.html
