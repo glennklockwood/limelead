@@ -206,18 +206,53 @@ two dimensions:
    InfiniBand) falls.
 
 I became a Principal Software Engineer supporting the HPC infrastructure used by
-Microsoft's largest AI customers. My responsibility was to understand what
-massive-scale AI workloads would need to accomplish in the coming years, how
-those workloads plan to approach those problems from a software standpoint, and
-how that workload-centric view should steer the overall system architecture of
-next-generation supercomputers.
+Microsoft's largest AI customers--which is to say, I worked on the team that
+operated OpenAI's "frontier" supercomputers.
 
-<!-- ### Somewhere in the middle
+My responsibility was to understand what massive-scale AI training workloads
+would be trying to do in the next few years, how those workloads plan to
+approach those problems from a software standpoint, and how that
+workload-centric view should steer the overall system architecture of
+next-generation supercomputers. About six months after this change, I wrote
+about my time at Microsoft in a blog post titled, [How has life after leaving
+the Labs been going?][msft-blog-1] 
 
-In July 2025, [I left Microsoft][left msft] and joined VAST Data as a Principal
-Technical Strategist.
+I learned a ton about the way LLM training is done at scale by the good people
+at OpenAI. However, AI reshaped both the priorities of Azure's HPC/AI
+organization and OpenAI's infrastructure people. Things eventually evolved to
+a point where I realized that I was not getting the enjoyment that I once was
+from my position, and I decided it was time to move on.  In July 2025, I turned
+in my badge and wrote about my experiences in a blog post titled, [Lessons
+learned from three years in cloud supercomputing][left msft].
 
--->
+### Joining VAST Data
+
+I then joined VAST Data, a company with whom I had worked since early 2018, as
+Principal Technical Strategist. This vague-sounding title reflects the broad
+charge I was given: help people understand what they need to know to make the
+best decisions about the infrastructure they deploy for HPC and AI. This role
+was created for me and designed to leverage my strengths; in practice, it has
+been a mixture of learning, analysis, and communication. A few examples of the
+things I do:
+
+- **Technical communication**: I writing and speak about emerging trends in
+  infrastructure to the HPC/AI community. I give talks at technical conferences
+  about what I'm seeing across VAST's customers, and I bring things I learn at
+  conferences back to VAST.
+- **Staying current on workload trends**: I maintain a pretty deep understanding
+  exactly how HPC and AI researchers use infrastructure through discussion and
+  data analysis.  This involves learning from the latest publications in
+  popular press, the talks and papers coming out of the HPC and AI research
+  community, and understanding the latest changes in community software.
+- **Technical analysis**: I do a little bit of technical analysis and novel
+  research. While I am not a developer, there are plenty of areas where nobody
+  has taken a hard look at data or run specific experiments to answer questions
+  that are critical to VAST's business. For example, I developed a method for
+  identifying checkpoints amidst VAST's phone-home telemtry, then [analyzed the
+  checkpoint behavior of large model training in practice][vast-blog-1] to
+  determine if VAST's customers were getting enough write bandwidth.
+
+At the time of writing (October 2025), I am still having great fun at VAST.
 
 [ru engineering]: http://soe.rutgers.edu
 [imsl]: http://glass.rutgers.edu/
@@ -243,3 +278,5 @@ Technical Strategist.
 [Blob]: https://learn.microsoft.com/en-us/azure/storage/blobs/storage-blobs-overview
 [Azure Managed Lustre]: https://learn.microsoft.com/en-us/azure/azure-managed-lustre/amlfs-overview
 [left msft]: https://blog.glennklockwood.com/2025/07/lessons-learned-from-three-years-in.html
+[msft-blog-1]: https://blog.glennklockwood.com/2024/08/how-has-life-after-leaving-labs-been.html
+[vast-blog-1]: https://www.vastdata.com/blog/optimizing-checkpoint-bandwidth-for-llm-training
