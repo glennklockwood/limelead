@@ -32,7 +32,7 @@ notes to my <b><a href="/garden/">digital garden</a></b> which I update continuo
 To get in touch, send me an email or contact me via [Bluesky][], [Mastodon][],
 or [HPC.social chat][hpc.social chat].
 
-[azurehpc]: /garden/systems/eagle
+[azurehpc]: /garden/systems/Eagle
 [nersc]: https://www.nersc.gov/
 [Libera]: https://libera.chat/
 [LinkedIn]: https://www.linkedin.com/in/glennklockwood
