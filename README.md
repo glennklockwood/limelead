@@ -148,7 +148,7 @@ typically modify something from the Pelican context, e.g.,
 There are also some functions which are exposed from Python into Jinja2 which
 can be called outright, e.g.,
 
-    {{ json2table('path/to/table.json') }}
+    {{ includefile('path/to/table.json') }}
 
 The `limeleadlib.jinja2content` explicitly imports the filters and functions
 defined in `limeleadlib.filters` plugin so that they are available inside of

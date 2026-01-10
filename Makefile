@@ -85,9 +85,13 @@ content/pages/data-intensive/analysis/multilayer-perceptron.md: notebooks/multil
 	&& (test ! -d notebooks/multilayer-perceptron_files || rmdir notebooks/multilayer-perceptron_files)) || rm "$@"
 
 content/static/benchmarks/benchmark-results.json: $(BENCHMARK_FILES)
-	$(PY) -mlimeleadlib.benchmarks $^ -o "$@"
+	$(PY) -mlimeleadlib.benchmarks_json --mode plot $^ -o "$@"
 
-html: $(NOTEBOOKS:ipynb=md) content/static/benchmarks/benchmark-results.json
+content/static/benchmarks/benchmark-tables.json: $(BENCHMARK_FILES)
+	$(PY) -mlimeleadlib.benchmarks_json --mode tables $^ -o "$@"
+
+html: $(NOTEBOOKS:ipynb=md) content/static/benchmarks/benchmark-results.json content/static/benchmarks/benchmark-tables.json
+	echo "$(SITEURL)"
 	$(PELICAN) $(INPUTDIR) -o $(OUTPUTDIR) -s $(CONFFILE) $(PELICANOPTS)
 
 clean:

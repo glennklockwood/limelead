@@ -34,44 +34,36 @@ positions in memory to increase cache hit rate.  Because this optimization was
 not available at the time I started doing these benchmarks, many of the older
 systems do not have it.
 
-{%
-set show_cols = [
-    ('model', 'System'),
-    ('processor', 'Processor'),
-    ('cores_and_clock', 'Clock'),
-    ('wall_secs', "Time (sec)"),
-    ('memreorder_secs', "Optimized Time (sec)")]
-%}
-
 ## SPARC Processors
 
-{{ yaml2table("content/data/benchmarks/sparc_processors.yaml", show_cols=show_cols) }}
+<div class="benchmark-table" data-isa="sparc"></div>
 
 ## MIPS Processors
 
-{{ yaml2table("content/data/benchmarks/mips_processors.yaml", show_cols=show_cols) }}
+<div class="benchmark-table" data-isa="mips"></div>
 
 ## POWER/PowerPC Processors
 
-{{ yaml2table("content/data/benchmarks/power_processors.yaml", show_cols=show_cols) }}
+<div class="benchmark-table" data-isa="power"></div>
 
 ## PA-RISC Processors
 
-{{ yaml2table("content/data/benchmarks/parisc_processors.yaml", show_cols=show_cols) }}
+<div class="benchmark-table" data-isa="parisc"></div>
 
 ## Itanium Processors
 
-{{ yaml2table("content/data/benchmarks/ia64_processors.yaml", show_cols=show_cols) }}
+<div class="benchmark-table" data-isa="ia64"></div>
 
 ## ARM Processors
 
-{{ yaml2table("content/data/benchmarks/arm_processors.yaml", show_cols=show_cols) }}
+<div class="benchmark-table" data-isa="arm"></div>
 
 ## x86 Processors
 
-{{ yaml2table("content/data/benchmarks/x86_processors.yaml", show_cols=show_cols) }}
+<div class="benchmark-table" data-isa="x86"></div>
 
 <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 <script src="benchmark-plot.js"></script>
+<script src="benchmark-tables.js"></script>
 
 [my website's git repository]: https://github.com/glennklockwood/limelead/tree/master/content/data/benchmarks

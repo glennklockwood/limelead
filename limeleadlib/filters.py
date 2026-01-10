@@ -7,18 +7,12 @@ limeleadlib.jinja2content plugin where there is no Pelican context explicitly
 available during rendering.
 """
 import os
-import yaml
 import datetime
 
 import pelican
 import markdown
-import pandas
-import numpy
-import tabulate
 
 from .core import get_dir_metadata, pagepath2sourcepath, get_git_mtime
-from .tables import fix_md_table, DEFAULT_TABLE_CLASSES
-from .benchmarks import benchmarks2dataframe
 
 def md2html(md_content, settings):
     """Converts arbitrary Markdown to HTML
@@ -35,66 +29,6 @@ def md2html(md_content, settings):
     return _md.convert(md_content)
 
 
-
-def json2table(*args, **kwargs):
-    return yaml2table(*args, **kwargs)
-
-def yaml2table(datafile, show_cols, tablefmt='unsafehtml', **kwargs):
-    """Converts contents of a JSON data file into an ASCII table
-
-    Takes a JSON encoded list of dictionaries, converts it into a Pandas
-    DataFrame, then converts that DataFrame into an ASCII table using the
-    ``tabulate`` library.  The datafile should contain JSON of the form::
-
-        [
-            {
-                "col1: val1,
-                "col2": val2,
-                ...
-            },
-            ...
-        ]
-
-    Args:
-        datafile (str): Absolute path to a JSON data file
-        show_cols (list): List of tuples where first element contains column
-            names in _datafile_ that should be rendered in the ASCII table and
-            whose second elements are the column names to be rendered
-        tablefmt (str): ASCII format to render table; passed directly to the
-            ``tabulate.tabulate()`` function
-
-    Returns:
-        str: HTML representation of _datafile_ in the given ASCII encoding
-    """
-    from_dict = yaml.load(open(datafile, 'r'), Loader=yaml.FullLoader)
-
-    dataframe = benchmarks2dataframe(from_dict)
-
-    # hack to fix some sparse integer columns - print nothing instead of nan,
-    # and print integers instead of floats
-    if 'memreorder_secs' in dataframe:
-        dataframe['memreorder_secs'] = dataframe['memreorder_secs'].apply(
-            lambda x: "" if numpy.isnan(x) else "{:d}".format(int(x)))
-
-    show_cols_keys = []
-    colalign = []
-    for show_col in show_cols:
-        if show_col[0] in dataframe.columns:
-            show_cols_keys.append(show_col[0])
-            if show_col[0] in ('memreorder_secs', 'wall_secs', 'cores_and_clock'):
-                colalign.append("right")
-            else:
-                colalign.append(None)
-
-    html = tabulate.tabulate(
-        dataframe[show_cols_keys],
-        tablefmt=tablefmt,
-        headers=[x[1] for x in show_cols if x[0] in show_cols_keys],
-        showindex=False,
-        colalign=colalign,
-        **kwargs)
-    html, _ = fix_md_table(html, add_table_classes=DEFAULT_TABLE_CLASSES + ["table-responsive-md"])
-    return html
 
 def add_filters(pelican_obj):
     pelican_obj.env.filters.update(FILTERS)
@@ -118,7 +52,5 @@ FILTERS = {
 }
 
 FUNCTIONS = {
-    "json2table": json2table,
     "includefile": lambda x: open(x, 'r').read(),
-    "yaml2table": json2table,
 }
