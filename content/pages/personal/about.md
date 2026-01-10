@@ -10,24 +10,17 @@ time I'm asked, and hopefully they're up to date.
 
 ### Biosketch
 
-Here's a biosketch as of August 2025 that ChatGPT helped me write based on my
-formal job description at VAST:
+Here's a biosketch as of January 2026:
 
 > Glenn K. Lockwood is a Principal Technical Strategist at VAST Data, where he
-> works on the architecture, performance analysis, and deployment strategies for
-> high-performance computing and AI infrastructure. He collaborates with
-> engineering teams, customers, and the HPC and AI research community to
-> inform product direction and share best practices for building and operating
-> large-scale systems. His career has focused on applied research and
-> development in extreme-scale and parallel computing systems, with specific
-> expertise in scalable architectures, performance modeling, and emerging
-> technologies for I/O and storage. Prior to joining VAST, Glenn served as
-> principal engineer at Microsoft, where he supported the design and
-> operations of the Azure supercomputers that trained many leading large
-> language models. Earlier, at NERSC, he led the design of several large-scale
-> storage systems, including the world’s first 30+ PB all-NVMe Lustre file
-> system for the Perlmutter supercomputer. He holds a Ph.D. in Materials
-> Science from Rutgers University.
+> helps teams building HPC and AI infrastructure reason about system
+> architecture, data paths, and performance at scale. His focus is translating
+> the mechanics of AI training and inference into practical guidance for
+> extreme-scale design and operations. Previously, he worked on large-scale
+> supercomputing platforms at Microsoft Azure and NERSC, including Azure
+> systems used to train leading large language models and a 30+ PB all-NVMe
+> Lustre file system for Perlmutter. He holds a Ph.D. in Materials Science
+> from Rutgers University.
 
 ### Research statement
 
