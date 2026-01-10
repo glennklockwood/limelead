@@ -318,3 +318,32 @@
   - cores_used:       96
     wall_secs:        507
     memreorder_secs:  500
+- model:        "MacBook Air M4"
+  hostname:     "-"
+  processor:    "Apple M4"
+  cache_l1i_kib: 192
+  cache_l1d_kib: 128
+  cache_l2_kib:  28672
+  _cache_comment: "big cores: 4x 192K L1I, 4x 128K L1D, 4x 16M L2; small cores: 6x 128K L1I, 6x 64K L1D, 6x 4M L2"
+  mem:          "16384 MB"
+  mem_type:     "LPDDR5-7500"
+  mem_speed:    "120 GB/s"
+  compiler:     "GNU Fortran (Homebrew GCC 15.2.0) 15.2.0"
+  compile_flags: "-mtune=generic -O3 -fdefault-real-8 -fdefault-double-8"
+  clock_mhz:    4400
+  results:
+  - cores_used:       1
+    wall_secs:        61
+    memreorder_secs:  56
+  - cores_used:       2
+    wall_secs:        47
+    memreorder_secs:  44
+  - cores_used:       4
+    wall_secs:        39
+    memreorder_secs:  39
+  - cores_used:       8
+    wall_secs:        40
+    memreorder_secs:  40
+  - cores_used:       10
+    wall_secs:        43
+    memreorder_secs:  42
