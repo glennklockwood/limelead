@@ -1,6 +1,12 @@
 PY?=python3
+ifneq ("$(wildcard $(CURDIR)/pelican/bin/python)","")
+PY := $(CURDIR)/pelican/bin/python
+endif
 SED=$(shell which gsed 2>/dev/null || which sed)
 PELICAN?=pelican
+ifneq ("$(wildcard $(CURDIR)/pelican/bin/pelican)","")
+PELICAN := $(CURDIR)/pelican/bin/pelican
+endif
 PELICANOPTS=
 
 BASEDIR=$(CURDIR)
