@@ -12,15 +12,19 @@ time I'm asked, and hopefully they're up to date.
 
 Here's a biosketch as of January 2026:
 
-> Glenn K. Lockwood is a Principal Technical Strategist at VAST Data, where he
-> helps teams building HPC and AI infrastructure reason about system
-> architecture, data paths, and performance at scale. His focus is translating
-> the mechanics of AI training and inference into practical guidance for
-> extreme-scale design and operations. Previously, he worked on large-scale
-> supercomputing platforms at Microsoft Azure and NERSC, including Azure
-> systems used to train leading large language models and a 30+ PB all-NVMe
-> Lustre file system for Perlmutter. He holds a Ph.D. in Materials Science
-> from Rutgers University.
+> Glenn K. Lockwood is the Principal Technical Strategist at VAST Data, where he
+> focuses on the relationship between AI workload mechanics and infrastructure
+> architecture at scale. He has designed and operated some of the world's
+> largest computing systems across multiple contexts: at Microsoft Azure, he
+> contributed to GPU cluster architecture and reliability engineering for
+> systems used to train some of the world's leading frontier language models,
+> and at the National Energy Research Scientific Computing Center (NERSC), he
+> led the design of hundreds of petabytes of data infrastructure ranging from
+> early production all-NVMe Lustre file systems to deep tape archives. His
+> work has spanned both on-premises supercomputers and cloud-scale
+> infrastructure, giving him perspective on the evolution of extreme-scale
+> computing across public and private sectors. He holds a Ph.D. in Materials
+> Science from Rutgers University.
 
 ### Research statement
 
