@@ -8,6 +8,7 @@ Redirect 301 /benchmarks/ior-results.html /garden/IOR
 Redirect 301 /benchmarks/mdtest.html /garden/mdtest
 Redirect 301 /benchmarks/elbencho.html /garden/elbencho
 Redirect 301 /benchmarks/fio.html /garden/fio
+Redirect 301 /benchmarks/io500.html /garden/IO500
 Redirect 301 /data-intensive/storage/nfs.html /garden/NFS
 Redirect 301 /garden/LRA /garden/personal/LRA
 Redirect 301 /garden/Waterfield /garden/personal/Waterfield
