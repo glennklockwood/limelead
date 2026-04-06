@@ -4,12 +4,16 @@ order: 5
 links:
   - title: Scaling laws for LLM training
     url: https://www.glennklockwood.com/garden/scaling-laws
+    linktype: garden
   - title: Computational requirements of LLM training
     url: https://www.glennklockwood.com/garden/LLM-training
+    linktype: garden
   - title: Challenges of LLM training at scale
     url: https://www.glennklockwood.com/garden/LLM-training-at-scale
+    linktype: garden
   - title: Data processing for LLM training
     url: https://www.glennklockwood.com/garden/LLM-training-datasets
+    linktype: garden
   - title: LLM training without a parallel file system
     linktype: blog
     url: https://blog.glennklockwood.com/2025/02/llm-training-without-parallel-file.html

@@ -4,6 +4,7 @@ order: 20
 links:
   - title: How NFS works
     url: https://www.glennklockwood.com/garden/NFS
+    linktype: garden
   - title: VAST Data's storage system architecture
     linktype: blog
     url: https://blog.glennklockwood.com/2019/02/vast-datas-storage-system-architecture.html
